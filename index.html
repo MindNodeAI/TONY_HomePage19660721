@@ -1,0 +1,804 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>楊文澤 Tony Yang｜AI 共創導師 × 創新顧問 | 互動教案傳送門</title>
+    
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@300;400;500;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <script src="https://cdn.tailwindcss.com"></script>
+    
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        primary: '#2563EB',
+                        secondary: '#1E40AF',
+                        accent: '#F59E0B',
+                        dark: '#0F172A',
+                        light: '#F8FAFC',
+                    },
+                    fontFamily: {
+                        sans: ['Noto Sans TC', 'sans-serif'],
+                    }
+                }
+            }
+        }
+    </script>
+
+    <style>
+        .hide-scrollbar::-webkit-scrollbar { display: none; }
+        .hide-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
+        
+        .lesson-card { transition: all 0.3s ease; }
+        .lesson-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.1), 0 8px 10px -6px rgba(0, 0, 0, 0.1);
+        }
+
+        .profile-highlight {
+            background: linear-gradient(120deg, #FEF3C7 0%, #FEF3C7 100%);
+            background-repeat: no-repeat;
+            background-size: 100% 35%;
+            background-position: 0 90%;
+        }
+
+        .timeline-item {
+            position: relative;
+            padding-left: 2rem;
+            padding-bottom: 2rem;
+            border-left: 2px solid #E2E8F0;
+        }
+        .timeline-item:last-child {
+            border-left: 2px solid transparent;
+            padding-bottom: 0;
+        }
+        .timeline-dot {
+            position: absolute;
+            left: -0.55rem;
+            top: 0.25rem;
+            width: 1.125rem;
+            height: 1.125rem;
+            border-radius: 50%;
+            background-color: white;
+            border: 4px solid #2563EB;
+        }
+
+        .modal {
+            transition: opacity 0.3s ease-in-out;
+            opacity: 0;
+            pointer-events: none;
+        }
+        .modal.active {
+            opacity: 1;
+            pointer-events: auto;
+        }
+        .modal-content {
+            transform: scale(0.95);
+            transition: transform 0.3s ease-in-out;
+        }
+        .modal.active .modal-content {
+            transform: scale(1);
+        }
+    </style>
+</head>
+<body class="bg-gray-50 text-gray-800 font-sans min-h-screen flex flex-col">
+
+    <header class="bg-gradient-to-r from-slate-900 to-slate-800 text-white shadow-lg">
+        <div class="container mx-auto px-4 py-8">
+            <div class="flex flex-col md:flex-row items-center justify-between gap-6">
+                <div class="flex items-center gap-4">
+                    <div class="w-20 h-20 rounded-full bg-white shadow-xl flex items-center justify-center overflow-hidden shrink-0 relative">
+                        <img src="https://i.postimg.cc/fT2sQW09/1.png" alt="TONY STUDIO Logo" class="w-full h-full object-cover" onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';">
+                        <div class="absolute inset-0 hidden items-center justify-center bg-white text-primary">
+                            <i class="fa-solid fa-wand-magic-sparkles text-3xl"></i>
+                        </div>
+                    </div>
+                    <div>
+                        <h1 class="text-xl md:text-3xl font-bold tracking-wide flex flex-col md:block items-start">
+                            <span>楊文澤 Tony Yang</span>
+                            <span class="text-gray-300 md:ml-2 text-base md:text-2xl font-medium mt-1 md:mt-0">｜AI 共創導師 × 創新顧問</span>
+                        </h1>
+                        <div class="mt-2">
+                            <p class="text-gray-100 text-base font-medium tracking-wide">與 AI 共創，用智慧領航。</p>
+                            <p class="text-gray-400 text-xs uppercase tracking-wider mt-0.5">Co-create with AI. Lead with wisdom.</p>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="flex gap-3">
+                    <a href="https://www.facebook.com/share/1Aciyr4XW9/?mibextid=wwXIfr" target="_blank" class="w-9 h-9 rounded-full bg-slate-700 hover:bg-primary flex items-center justify-center transition-colors text-sm" title="Facebook"><i class="fa-brands fa-facebook-f"></i></a>
+                    <a href="https://www.instagram.com/2026tonystudio/" target="_blank" class="w-9 h-9 rounded-full bg-slate-700 hover:bg-pink-600 flex items-center justify-center transition-colors text-sm" title="Instagram"><i class="fa-brands fa-instagram"></i></a>
+                    <a href="https://substack.com/@tonyaistudio" target="_blank" class="w-9 h-9 rounded-full bg-slate-700 hover:bg-orange-500 flex items-center justify-center transition-colors text-sm" title="Substack 部落格"><i class="fa-solid fa-newspaper"></i></a>
+                    <a href="https://youtube.com/@mindnodestudio4045?si=JmEfbd1giiBYeOmJ" target="_blank" class="w-9 h-9 rounded-full bg-slate-700 hover:bg-red-600 flex items-center justify-center transition-colors text-sm" title="YouTube: MindNode Studio"><i class="fa-brands fa-youtube"></i></a>
+                    <a href="https://youtube.com/@mindnodeai?si=MpWsPtGf1uwK6NtM" target="_blank" class="w-9 h-9 rounded-full bg-slate-700 hover:bg-red-600 flex items-center justify-center transition-colors text-sm" title="YouTube: MindNode AI"><i class="fa-brands fa-youtube"></i></a>
+                    <a href="https://www.tiktok.com/@mindnodeai?_r=1&_t=ZS-91toLgMGUJL" target="_blank" class="w-9 h-9 rounded-full bg-slate-700 hover:bg-gray-900 flex items-center justify-center transition-colors text-sm" title="TikTok: MindNode AI"><i class="fa-brands fa-tiktok"></i></a>
+                    <a href="https://www.tiktok.com/@citypilotai?_r=1&_t=ZS-91toKJPMvyc" target="_blank" class="w-9 h-9 rounded-full bg-slate-700 hover:bg-gray-900 flex items-center justify-center transition-colors text-sm" title="TikTok: CityPilot AI"><i class="fa-brands fa-tiktok"></i></a>
+                    <a href="mailto:mindnodeai@gmail.com" class="w-9 h-9 rounded-full bg-slate-700 hover:bg-green-600 flex items-center justify-center transition-colors text-sm" title="Email"><i class="fa-solid fa-envelope"></i></a>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <section class="bg-white border-b border-gray-200 py-12">
+        <div class="container mx-auto px-4">
+            <div class="flex flex-col lg:flex-row gap-12">
+                <div class="lg:w-1/2 flex flex-col gap-6">
+                    <div>
+                        <div class="inline-flex items-center gap-2 px-3 py-1 bg-blue-50 text-primary text-xs font-bold rounded-full mb-3 border border-blue-100">
+                            <i class="fa-solid fa-user-circle"></i> About Me
+                        </div>
+                        <h2 class="text-3xl md:text-4xl font-bold text-slate-900 leading-tight">
+                            融合 60 年人生智慧的<br>
+                            <span class="profile-highlight px-1">AI 導師與資深顧問</span>
+                        </h2>
+                    </div>
+
+                    <div class="flex flex-col sm:flex-row gap-6 items-start">
+                        <div class="w-full sm:w-2/5 flex-shrink-0 relative group">
+                             <div class="absolute inset-0 bg-primary rounded-2xl transform translate-x-3 translate-y-3 opacity-10 group-hover:translate-x-2 group-hover:translate-y-2 transition-transform duration-300"></div>
+                             <div class="relative w-full aspect-[3/4] bg-gray-200 rounded-2xl overflow-hidden shadow-md border border-gray-100">
+                                <img src="https://i.postimg.cc/Gh8Zt7SX/S_56844323.jpg" alt="Tony 老師專業形象照" class="w-full h-full object-cover group-hover:scale-[1.01] transition-transform duration-500" onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';">
+                                <div class="absolute inset-0 hidden items-center justify-center bg-gray-100 text-gray-400">
+                                    <i class="fa-solid fa-user text-4xl"></i>
+                                </div>
+                             </div>
+                        </div>
+                        
+                        <div class="flex-1 space-y-4">
+                            <p class="text-gray-600 text-base leading-relaxed text-justify">
+                                <i class="fa-solid fa-quote-left text-2xl text-blue-200 float-left mr-2 -mt-1"></i>
+                                <span class="font-bold text-slate-800">我是 Tony</span>，一位始終保持好奇心的創業者與教育者。擁有設計、行銷、商業與創業的跨領域實務經驗，並將這些經驗結合最新的生成式 AI 技術，致力於發展獨特的教學框架。
+                            </p>
+                            <p class="text-gray-600 text-base leading-relaxed text-justify">
+                                我善良、熱愛學習，並擁有獨立的觀點。我相信 AI 不僅是工具，更是擴展人類思考邊界的夥伴。在這裡，我將帶領您不僅學會「術」，更掌握「道」。
+                            </p>
+                            <div class="pt-2">
+                                <button onclick="toggleModal('resume-modal')" class="inline-flex items-center text-sm font-bold text-primary hover:text-blue-700 transition-colors group">
+                                    查看完整學經歷 <i class="fa-solid fa-arrow-right ml-1 transform group-hover:translate-x-1 transition-transform"></i>
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="pt-2 border-t border-gray-100 mt-2">
+                        <h3 class="text-xs font-bold text-gray-400 uppercase tracking-wider mb-3">Core Expertise</h3>
+                        <div class="flex flex-wrap gap-2">
+                            <span class="px-3 py-1.5 bg-slate-50 text-slate-700 rounded-lg border border-slate-200 text-xs md:text-sm font-bold hover:border-primary hover:text-primary transition-colors cursor-default">AI SEO 搜尋引擎優化</span>
+                            <span class="px-3 py-1.5 bg-slate-50 text-slate-700 rounded-lg border border-slate-200 text-xs md:text-sm font-bold hover:border-green-500 hover:text-green-600 transition-colors cursor-default">LINE OA 官方帳號行銷</span>
+                            <span class="px-3 py-1.5 bg-slate-50 text-slate-700 rounded-lg border border-slate-200 text-xs md:text-sm font-bold">生成式 AI 應用</span>
+                            <span class="px-3 py-1.5 bg-slate-50 text-slate-700 rounded-lg border border-slate-200 text-xs md:text-sm font-bold">MarTech 數位轉型</span>
+                            <span class="px-3 py-1.5 bg-slate-50 text-slate-700 rounded-lg border border-slate-200 text-xs md:text-sm font-bold">品牌策略與管理</span>
+                            <span class="px-3 py-1.5 bg-slate-50 text-slate-700 rounded-lg border border-slate-200 text-xs md:text-sm font-bold">SORA AI敘事影片創作</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="lg:w-1/2 bg-slate-50 p-6 md:p-8 rounded-2xl border border-slate-100">
+                    <h3 class="text-xl font-bold text-slate-800 mb-6 flex items-center">
+                        <i class="fa-solid fa-briefcase text-primary mr-2"></i> 專業經歷與里程碑
+                    </h3>
+                    <div class="space-y-0">
+                        <div class="timeline-item">
+                            <div class="timeline-dot bg-white !border-purple-600"></div>
+                            <div class="text-sm font-bold text-purple-600 mb-1">Current</div>
+                            <h4 class="text-lg font-bold text-slate-800">TONY STUDIO 霓光AI工作室</h4>
+                            <p class="text-gray-600 text-sm mt-1 font-medium">創辦人 / 生成式 AI 設計創作者</p>
+                        </div>
+                        <div class="timeline-item">
+                            <div class="timeline-dot"></div>
+                            <div class="text-sm font-bold text-primary mb-1">Current</div>
+                            <h4 class="text-lg font-bold text-slate-800">AI 導師 & 數位行銷科技顧問</h4>
+                            <p class="text-gray-600 text-sm mt-1">專注於 AI SEO、LINE OA 行銷、MarTech 導入與生成式 AI 賦能培訓。</p>
+                        </div>
+                        <div class="timeline-item">
+                            <div class="timeline-dot !border-amber-500"></div> 
+                            <div class="text-sm font-bold text-amber-600 mb-1">14 Years Experience</div>
+                            <h4 class="text-lg font-bold text-slate-800">上市公司 發言人</h4>
+                            <p class="text-gray-600 text-sm mt-1">累積 14 年深厚經驗，專精於企業溝通、媒體關係、危機處理與投資人關係(IR)管理。</p>
+                        </div>
+                         <div class="timeline-item">
+                            <div class="timeline-dot !border-slate-300"></div>
+                            <div class="text-sm font-bold text-slate-400 mb-1">Previous</div>
+                            <h4 class="text-lg font-bold text-slate-700">創業者 & 品牌總監</h4>
+                            <p class="text-gray-500 text-sm mt-1">具備從 0 到 1 的創業實務，以及跨足設計、行銷與商業模式建構的完整歷練。</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <nav class="sticky top-0 z-50 bg-white/95 backdrop-blur-sm border-b border-gray-200 shadow-sm">
+        <div class="container mx-auto px-4 py-3">
+            <div class="mb-3 md:hidden">
+                 <input type="text" id="mobile-search" placeholder="搜尋教案..." class="w-full px-4 py-2 rounded-full border border-gray-300 bg-gray-50 text-sm focus:outline-none focus:ring-2 focus:ring-primary">
+            </div>
+            <div class="flex items-center justify-between">
+                <div class="flex gap-2 overflow-x-auto hide-scrollbar pb-1 w-full md:w-auto" id="category-container">
+                    <!-- JS 生成 -->
+                </div>
+                <div class="hidden md:block relative w-64">
+                    <input type="text" id="desktop-search" placeholder="搜尋教案關鍵字..." class="w-full pl-10 pr-4 py-2 rounded-full border border-gray-300 bg-gray-50 text-sm focus:outline-none focus:ring-2 focus:ring-primary transition-all">
+                    <i class="fa-solid fa-magnifying-glass absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400"></i>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <main class="flex-grow container mx-auto px-4 py-8 bg-gray-50">
+        <div class="flex justify-between items-end mb-6 border-b border-gray-200 pb-2">
+            <h2 class="text-xl md:text-2xl font-bold text-gray-800 flex items-center">
+                <i class="fa-solid fa-layer-group text-primary mr-2"></i>
+                <span id="current-category-title">所有教案</span>
+            </h2>
+            <span class="text-sm text-gray-500" id="item-count">共 0 堂課</span>
+        </div>
+
+        <div id="cards-container" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+            <!-- JS 生成 -->
+        </div>
+
+        <div id="no-results" class="hidden text-center py-20">
+            <div class="text-6xl text-gray-300 mb-4"><i class="fa-solid fa-box-open"></i></div>
+            <p class="text-gray-500 text-lg">找不到相關的教案內容，請嘗試其他關鍵字。</p>
+        </div>
+    </main>
+
+    <footer class="bg-slate-900 text-gray-400 py-8 text-center text-sm">
+        <div class="container mx-auto px-4">
+            <div class="mb-4">
+                <i class="fa-solid fa-quote-left text-gray-600 mr-2"></i>
+                AI 不會取代你，但善用 AI 的人將會引領未來。
+                <i class="fa-solid fa-quote-right text-gray-600 ml-2"></i>
+            </div>
+            <p>&copy; 2024 Tony 老師. All rights reserved.</p>
+        </div>
+    </footer>
+
+    <div id="resume-modal" class="modal fixed inset-0 z-[100] flex items-center justify-center p-4">
+        <div class="absolute inset-0 bg-black/60 backdrop-blur-sm" onclick="toggleModal('resume-modal')"></div>
+        <div class="modal-content bg-white rounded-2xl shadow-2xl w-full max-w-4xl max-h-[90vh] overflow-y-auto relative z-10 flex flex-col">
+            <div class="sticky top-0 bg-white border-b border-gray-100 p-6 flex justify-between items-center z-20">
+                <h2 class="text-2xl font-bold text-slate-800 flex items-center">
+                    <i class="fa-solid fa-id-card text-primary mr-3"></i> 完整學經歷
+                </h2>
+                <button onclick="toggleModal('resume-modal')" class="text-gray-400 hover:text-red-500 transition-colors p-2 rounded-full hover:bg-gray-100">
+                    <i class="fa-solid fa-xmark text-xl"></i>
+                </button>
+            </div>
+            
+            <div class="p-6 md:p-8 space-y-8">
+                <div class="grid md:grid-cols-2 gap-8">
+                    <div>
+                        <h3 class="flex items-center text-lg font-bold text-slate-800 mb-4 pb-2 border-b border-gray-200">
+                            <span class="bg-blue-100 text-primary p-2 rounded-lg mr-2"><i class="fa-solid fa-briefcase"></i></span> 現職
+                        </h3>
+                        <ul class="space-y-3">
+                            <li class="flex items-start">
+                                <i class="fa-solid fa-check text-green-500 mt-1.5 mr-2 text-sm"></i>
+                                <span class="text-gray-700"><strong>TONY STUDIO 霓光AI工作室</strong> 創辦人 / 生成式 AI 設計創作者</span>
+                            </li>
+                            <li class="flex items-start">
+                                <i class="fa-solid fa-check text-green-500 mt-1.5 mr-2 text-sm"></i>
+                                <span class="text-gray-700"><strong>龍華科技大學</strong> 數位行銷暨跨境商務系 講師</span>
+                            </li>
+                            <li class="flex items-start">
+                                <i class="fa-solid fa-check text-green-500 mt-1.5 mr-2 text-sm"></i>
+                                <span class="text-gray-700"><strong>智策慧品牌顧問有限公司</strong> 資深數位行銷科技顧問</span>
+                            </li>
+                        </ul>
+                    </div>
+                    <div>
+                        <h3 class="flex items-center text-lg font-bold text-slate-800 mb-4 pb-2 border-b border-gray-200">
+                            <span class="bg-amber-100 text-amber-600 p-2 rounded-lg mr-2"><i class="fa-solid fa-graduation-cap"></i></span> 學歷
+                        </h3>
+                        <ul class="space-y-3">
+                            <li class="flex items-start">
+                                <i class="fa-solid fa-school text-gray-400 mt-1.5 mr-2 text-sm"></i>
+                                <span class="text-gray-700"><strong>台大 EMBA</strong> 商學組</span>
+                            </li>
+                            <li class="flex items-start">
+                                <i class="fa-solid fa-school text-gray-400 mt-1.5 mr-2 text-sm"></i>
+                                <span class="text-gray-700"><strong>美國 Arizona State University (ASU)</strong> 互動式電腦多媒體設計</span>
+                            </li>
+                            <li class="flex items-start">
+                                <i class="fa-solid fa-school text-gray-400 mt-1.5 mr-2 text-sm"></i>
+                                <span class="text-gray-700"><strong>北科大</strong> 工業設計</span>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+
+                <div>
+                    <h3 class="flex items-center text-lg font-bold text-slate-800 mb-4 pb-2 border-b border-gray-200">
+                        <span class="bg-purple-100 text-purple-600 p-2 rounded-lg mr-2"><i class="fa-solid fa-building-user"></i></span> 經歷
+                    </h3>
+                    <ul class="space-y-3 pl-1">
+                        <li class="pl-4 border-l-2 border-slate-200 py-1">
+                            <span class="block font-bold text-slate-700">轉型創業：脈動心聯股份有限公司</span><span class="text-sm text-gray-600">創辦人暨執行長</span>
+                        </li>
+                        <li class="pl-4 border-l-2 border-slate-200 py-1">
+                            <span class="block font-bold text-slate-700">宏碁集團建碁AOPEN (代碼:3046)</span><span class="text-sm text-gray-600">整合營銷處處長 / 全球品牌行銷總監 / 企業發言人</span>
+                        </li>
+                        <li class="pl-4 border-l-2 border-slate-200 py-1">
+                            <span class="block font-bold text-slate-700">台灣數位看板多媒體聯盟 (DSMA)</span><span class="text-sm text-gray-600">副會長</span>
+                        </li>
+                        <li class="pl-4 border-l-2 border-slate-200 py-1">
+                            <span class="block font-bold text-slate-700">第29屆亞太廣告年會-雲創台北</span><span class="text-sm text-gray-600">雲端數位體驗科技及場域數據行銷整合總規劃</span>
+                        </li>
+                        <li class="pl-4 border-l-2 border-slate-200 py-1">
+                            <span class="block font-bold text-slate-700">經濟部騰龍計畫</span><span class="text-sm text-gray-600">顧客參與式服務設計規劃，偕同計畫主持人</span>
+                        </li>
+                        <li class="pl-4 border-l-2 border-slate-200 py-1">
+                            <span class="block font-bold text-slate-700">台灣農產品生產追溯資訊系統及行銷推廣</span><span class="text-sm text-gray-600">計畫主持人</span>
+                        </li>
+                        <li class="pl-4 border-l-2 border-slate-200 py-1">
+                            <span class="block font-bold text-slate-700">基隆5G智慧街區多元美食導購推動計畫</span><span class="text-sm text-gray-600">偕同計畫主持人</span>
+                        </li>
+                    </ul>
+                </div>
+
+                <div>
+                    <h3 class="flex items-center text-lg font-bold text-slate-800 mb-4 pb-2 border-b border-gray-200">
+                        <span class="bg-rose-100 text-rose-600 p-2 rounded-lg mr-2"><i class="fa-solid fa-chalkboard-user"></i></span> 專家授課經歷
+                    </h3>
+                    <div class="bg-gray-50 rounded-xl p-5 border border-gray-100">
+                        <ul class="space-y-2 text-sm md:text-base text-gray-700">
+                            <li class="flex gap-2"><i class="fa-solid fa-star text-accent mt-1"></i> CPC (中國生產力中心) 第34/35/36/40屆『經營管理顧問師班』講師</li>
+                            <li class="flex gap-2"><i class="fa-solid fa-star text-accent mt-1"></i> CPC (中國生產力中心) 培育中小企業成長創價能量 講師</li>
+                            <li class="flex gap-2"><i class="fa-solid fa-star text-accent mt-1"></i> 台大EMBA / 長榮EMBA 業師</li>
+                            <li class="flex gap-2"><i class="fa-solid fa-star text-accent mt-1"></i> 台北科技大學工業設計系 / 互動系 / 政大企管系/ 世新傳播管理系 / 企管系 業師</li>
+                            <li class="flex gap-2"><i class="fa-solid fa-star text-accent mt-1"></i> 2021 MarTech行銷科技行銷長認證班 講師</li>
+                            <li class="flex gap-2"><i class="fa-solid fa-star text-accent mt-1"></i> 2021 / 2024 / 2025 T大使與產業尖兵 講師</li>
+                            <li class="flex gap-2"><i class="fa-solid fa-star text-accent mt-1"></i> 第三屆/第四屆/第五屆/第六屆 MarTech行銷科技經理人培訓班講師</li>
+                            <li class="flex gap-2"><i class="fa-solid fa-star text-accent mt-1"></i> 2021/2022/2023 雲世代商圈數位轉型及永續經營 輔導顧問</li>
+                            <li class="flex gap-2"><i class="fa-solid fa-star text-accent mt-1"></i> 2025 新光人壽AI工具應用 企業內訓講師</li>
+                            <li class="flex gap-2"><i class="fa-solid fa-star text-accent mt-1"></i> 2025 經濟部中小企業暨新創署 – 中小微企業數位轉型計畫 講師</li>
+                        </ul>
+                    </div>
+                </div>
+
+                <div class="text-center pt-4">
+                    <button onclick="toggleModal('resume-modal')" class="bg-gray-200 text-gray-700 px-6 py-2 rounded-full hover:bg-gray-300 transition-colors font-medium">關閉</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        function toggleModal(modalID) {
+            const modal = document.getElementById(modalID);
+            if (modal) {
+                modal.classList.toggle('active');
+                document.body.style.overflow = modal.classList.contains('active') ? 'hidden' : 'auto';
+            }
+        }
+
+        const categories = [
+            { id: 'all', name: '全部顯示', icon: 'fa-solid fa-border-all' },
+            { id: 'line-oa', name: 'LINE OA行銷', icon: 'fa-brands fa-line' },
+            { id: 'ai-industries', name: '百工百業用AI', icon: 'fa-solid fa-briefcase' },
+            { id: 'school', name: '學校課程', icon: 'fa-solid fa-graduation-cap' },
+            { id: 'consulting', name: '顧問諮詢', icon: 'fa-solid fa-handshake' },
+            { id: 'wisdom', name: '人間智慧', icon: 'fa-solid fa-book-open-reader' },
+            { id: 'tools', name: '創作工具', icon: 'fa-solid fa-toolbox' },
+            { id: 'gem-auto', name: 'Gem自動化 (H系列)', icon: 'fa-solid fa-robot' }
+        ];
+
+        const lessons = [
+            // ==========================================
+            // 1. LINE OA行銷 (L系列)
+            // ==========================================
+            { title: "L1. 民宿獲利實戰 | AI 數位管家 x LINE OA", category: "line-oa", desc: "結合 AI 數位管家與 LINE OA，打造民宿自動化獲利與熟客經營系統。", link: "https://mindnodeai.github.io/TONY_E4HomestayLINEOA20260221/", image: "https://images.unsplash.com/photo-1520250497591-112f2f40a3f4?auto=format&fit=crop&w=800&q=80", tag: "獲利實戰" },
+            { title: "L2. 百工百業用 LINE OA (註冊專業版)", category: "line-oa", desc: "專為各行各業量身打造的 LINE OA 經營指南，從傳統產業到新創服務，全面解鎖社群行銷潛力。", link: "https://mindnodeai.github.io/TONY_L2LINEOAforAll20260531/", image: "https://images.unsplash.com/photo-1556740738-b6a63e27c4df?auto=format&fit=crop&w=800&q=80", tag: "LINE應用" },
+            { title: "L3. 百工百業 LINE OA商業轉換規劃顧問助手", category: "line-oa", desc: "結合 TONY 老師深厚的商業顧問經驗，專為各行各業量身打造 LINE OA 行銷漏斗，精準優化商業轉換率與顧客經營策略。", link: "https://mindnodeai.github.io/TONY_E44LineOAPlanning20260403/", image: "https://images.unsplash.com/photo-1542744094-3a31f272c490?auto=format&fit=crop&w=800&q=80", tag: "商業轉換" },
+            { title: "L4. LINE OA x AI行銷自動化運營規劃系統【任務】【TONY老師 系列二】(學員註冊版)", category: "line-oa", desc: "深度結合 LINE 官方帳號與 AI 行銷自動化，打造高效運營規劃系統，全面提升顧客黏著度與轉換率。", link: "https://mindnodeai.github.io/TONY_G6LineOAMkting20260503/", image: "https://images.unsplash.com/photo-1611162616305-c69b3fa7fbe0?auto=format&fit=crop&w=800&q=80", tag: "自動化運營" },
+            { title: "L5. LINE OA x AI行銷自動化運營規劃系統【心法】【TONY老師 系列二】(學員註冊版)", category: "line-oa", desc: "深度解析 LINE 官方帳號與 AI 自動化運營的核心心法，專屬註冊學員的進階理論與策略指引。", link: "https://mindnodeai.github.io/TONY_L5LineOAMktingSpeechReg20260601/", image: "https://images.unsplash.com/photo-1556740738-b6a63e27c4df?auto=format&fit=crop&w=800&q=80", tag: "註冊專屬" },
+            { title: "L6. 寵物業 LINE OA 行銷", category: "line-oa", desc: "專為寵物業設計的 LINE OA 行銷策略與 AI 應用，提升毛孩家長的忠誠度與互動率。", link: "#", image: "https://images.unsplash.com/photo-1583337130417-3346a1be7dee?auto=format&fit=crop&w=800&q=80", tag: "寵物業" },
+            { title: "L7. 洗衣業 LINE OA 數位轉型", category: "line-oa", desc: "傳統洗衣業的數位轉型指南，運用 LINE OA 打造智能收送與客戶管理系統。", link: "#", image: "https://images.unsplash.com/photo-1517677208171-0bc6725a3e60?auto=format&fit=crop&w=800&q=80", tag: "洗衣業" },
+            { title: "L8. 農業產銷 LINE OA 應用", category: "line-oa", desc: "協助農友透過 LINE OA 建立產銷直達通道，運用 AI 撰寫農產品故事與行銷文案。", link: "#", image: "https://images.unsplash.com/photo-1499529112087-3cb3b73cec95?auto=format&fit=crop&w=800&q=80", tag: "農業產銷" },
+            { title: "L9. 2026 LINE OA 戰略實戰平台 (趨勢與任務)", category: "line-oa", desc: "掌握最新 LINE OA 發展趨勢，並透過實戰任務提升官方帳號營運與行銷效益。", link: "https://mindnodeai.github.io/TONY_L9LINEOA2026Strategy20260601/", image: "https://images.unsplash.com/photo-1611162616475-46b635cb6868?auto=format&fit=crop&w=800&q=80", tag: "實戰戰略" },
+
+            // ==========================================
+            // 2. 百工百業用AI
+            // ==========================================
+            { title: "壽險業 AI 賦能提示詞", category: "ai-industries", desc: "專為保險從業人員設計的 AI Prompt，協助客戶分析、保單解說與信件撰寫。", link: "https://mindnodeai.github.io/TONY_AI_Prompt_Insurance_NEW02/", image: "https://images.unsplash.com/photo-1450101499163-c8848c66ca85?auto=format&fit=crop&w=800&q=80", tag: "金融保險" },
+            { title: "餐飲業 AI 行銷應用", category: "ai-industries", desc: "利用 AI 生成菜單文案、社群貼文與顧客評論回應，提升餐飲品牌形象。", link: "https://mindnodeai.github.io/TONY_AI_Prompt_Restaurant01/", image: "https://images.unsplash.com/photo-1517248135467-4c7edcad34c4?auto=format&fit=crop&w=800&q=80", tag: "餐飲行銷" },
+            { title: "品牌顧問業 AI 策略輔助", category: "ai-industries", desc: "運用 AI 進行市場分析、競品調查與品牌定位發想，提升顧問諮詢效率。", link: "https://mindnodeai.github.io/TONY_AI_Prompt_BrandConsulting01/", image: "https://images.unsplash.com/photo-1552664730-d307ca884978?auto=format&fit=crop&w=800&q=80", tag: "專業服務" },
+            { title: "觀光工廠 AI 導覽與行銷", category: "ai-industries", desc: "結合 AI 技術優化觀光工廠的導覽體驗、活動設計與數位行銷推廣。", link: "https://mindnodeai.github.io/TONY_AI_Prompt_Tour_Factory01/", image: "https://images.unsplash.com/photo-1581091226825-a6a2a5aee158?auto=format&fit=crop&w=800&q=80", tag: "觀光旅遊" },
+            { title: "文創伴手禮 AI 行銷應用", category: "ai-industries", desc: "專針對文創及伴手禮產業，解析如何應用 AI 工具於日常行銷、產品故事包裝與社群文案撰寫。", link: "https://mindnodeai.github.io/TONY_Promopt_literary01/", image: "https://images.unsplash.com/photo-1513201099705-a9746e1e201f?auto=format&fit=crop&w=800&q=80", tag: "文創行銷" },
+
+            // ==========================================
+            // 3. 學校課程 (G系列)
+            // ==========================================
+            { title: "G1. 多媒體製作技巧課程介紹 (大三)", category: "school", desc: "為大三學生設計的多媒體製作進階課程，涵蓋影音編輯、動畫基礎與視覺特效。", link: "https://mindnodeai.github.io/TONY_11402ClassG1_20260304/", image: "https://images.unsplash.com/photo-1626814026160-2237a95fc5a0?auto=format&fit=crop&w=800&q=80", tag: "大三課程" },
+            { title: "G2. 數位影視製作與行銷課程介紹 (大二)", category: "school", desc: "針對大二學生，結合數位影視拍攝、後製剪輯與影音行銷策略。", link: "https://mindnodeai.github.io/TONY_11402ClassG2_20260304/", image: "https://images.unsplash.com/photo-1574717024653-61fd2cf4d44d?auto=format&fit=crop&w=800&q=80", tag: "大二課程" },
+            { title: "G3. 影片剪輯與短影音創作實務課程介紹 (大一)", category: "school", desc: "大一入門必修！從零開始學習影片剪輯基礎，掌握短影音創作節奏。", link: "https://mindnodeai.github.io/TONY_11402ClassG3_20260305/", image: "https://images.unsplash.com/photo-1611162617474-5b21e879e113?auto=format&fit=crop&w=800&q=80", tag: "大一課程" },
+            { title: "G4. TONY楊老師 AI內容產線系統【TONY老師 系列一】", category: "school", desc: "建立自動化與標準化的 AI 內容產線，提升內容創作效率。", link: "https://mindnodeai.github.io/TONY_G4DigitalToolProgramS120260511/", image: "https://images.unsplash.com/photo-1522202176988-66273c2fd55f?auto=format&fit=crop&w=800&q=80", tag: "內容產線" },
+            { title: "G5. AI 價值轉化五階系統™ 【TONY老師 特別系列一任務實作】", category: "school", desc: "透過獨創的五階系統，引導學員將 AI 技術層層轉化為實際商業與個人價值。", link: "https://mindnodeai.github.io/TONY_G5AIFiveTierSys20260503/", image: "https://images.unsplash.com/photo-1552664730-d307ca884978?auto=format&fit=crop&w=800&q=80", tag: "價值轉化" },
+            { title: "G6. AI 短影音競賽腳本創作 APP (重要資產)", category: "school", desc: "專為影音競賽設計的 AI 腳本創作助理，引導創作者從概念發想到結構鋪陳。", link: "https://mindnodeai.github.io/TONY_B12ScriptwringforContest20260315/", image: "https://images.unsplash.com/photo-1455390582262-044cdead277a?auto=format&fit=crop&w=800&q=80", tag: "競賽腳本" },
+            { title: "G6-1. AI 短影音競賽腳本創作 APP (BGM加強版)", category: "school", desc: "強化背景音樂 (BGM) 與音效提示的生成，讓短影音聽覺張力更強。", link: "https://mindnodeai.github.io/TONY_B13ScriptwringforContestBGM20260328/", image: "https://images.unsplash.com/photo-1611162617474-5b21e879e113?auto=format&fit=crop&w=800&q=80", tag: "BGM加強" },
+            { title: "G7. iPAS AI 應用規劃師考古題AI學習系統 3.5 (114-4 +115-1試題)", category: "school", desc: "結合 AI 技術的考古題學習系統，提供歷屆試題解析與弱點強化。", link: "https://mindnodeai.github.io/TONY_G7AILearningForExam35-20260713/", image: "https://images.unsplash.com/photo-1434030216411-0b793f4b4173?auto=format&fit=crop&w=800&q=80", tag: "考古題學習" },
+            { title: "G7-1. iPAS AI 應用規劃師考古題AI學習系統 3.5【115-2試題】", category: "school", desc: "最新版 iPAS 考古題系統，涵蓋至 115-2 梯次，提供更精準的解析與 AI 學習輔助。", link: "https://mindnodeai.github.io/TONY_G7-1AILearningForExam35-20260713/", image: "https://images.unsplash.com/photo-1434030216411-0b793f4b4173?auto=format&fit=crop&w=800&q=80", tag: "最新考題" },
+            { title: "G8. iPAS AI應用規劃師考前衝刺系統 3.5 (學員註冊版)", category: "school", desc: "針對 iPAS 考試最後階段量身打造的考前衝刺系統。", link: "https://mindnodeai.github.io/TONY_G8iPASAIExam35-20260714/", image: "https://images.unsplash.com/photo-1606326608606-aa0b62935f2b?auto=format&fit=crop&w=800&q=80", tag: "考前衝刺" },
+            { title: "G8-1. IPAS 生成式 AI 應用規劃師(簡報分頁)", category: "school", desc: "專為 iPAS 考生打造的簡報分頁重點解析，快速掌握生成式 AI 應用規劃核心。", link: "https://mindnodeai.github.io/TONY_E31IPAS_AIPLANERExam20260301/", image: "https://images.unsplash.com/photo-1434030216411-0b793f4b4173?auto=format&fit=crop&w=800&q=80", tag: "簡報分頁" },
+            { title: "G9. iPAS-AI應用規劃師備考系統3.5 (學員註冊版)", category: "school", desc: "提供完整的歷屆題庫演練、AI 弱點分析與考前衝刺指南。", link: "https://mindnodeai.github.io/TONY_G9IPAS_AIPLANERExam35-20260714/", image: "https://images.unsplash.com/photo-1434030216411-0b793f4b4173?auto=format&fit=crop&w=800&q=80", tag: "備考系統" },
+            { title: "G10. 決勝2026壽險AI工作坊(學員註冊版)", category: "school", desc: "專為壽險菁英打造的實戰工作坊，全面提升保單規劃與精準行銷戰鬥力。", link: "https://mindnodeai.github.io/TONY_E45InsuranceAIWorkshop20260413/", image: "https://images.unsplash.com/photo-1556761175-5973dc0f32e7?auto=format&fit=crop&w=800&q=80", tag: "壽險實戰" },
+            { title: "G11. TONY老師的人壽保險業務AI智能助理(註冊版)", category: "school", desc: "保險業務專屬助理，串接進階客情分析與對話生成。", link: "https://mindnodeai.github.io/TONY_E42-1AIforLifeInsurance20260405/", image: "https://images.unsplash.com/photo-1560520653-9e0e4c89eb11?auto=format&fit=crop&w=800&q=80", tag: "智能助理" },
+            { title: "G12. 人生財務風險診斷工具(註冊版)", category: "school", desc: "提供更深度的資產配置演算與個人化風險防禦報告。", link: "https://mindnodeai.github.io/TONY_E41-1FinancialRiskReg20260406/", image: "https://images.unsplash.com/photo-1579532537598-459ecdaf39cc?auto=format&fit=crop&w=800&q=80", tag: "財務風險" },
+            { title: "G13. 2026 Tony老師品牌行銷 AI 工具包(註冊及數據分析版)", category: "school", desc: "開放進階的 AI 商業分析與企劃生成權限。", link: "https://mindnodeai.github.io/TONY_G13-2AIBrandMarketingRecovery20260617/", image: "https://images.unsplash.com/photo-1551288049-bebda4e38f71?auto=format&fit=crop&w=800&q=80", tag: "品牌數據" },
+            { title: "G13-1. 2026 Tony老師品牌行銷 AI 工具包 3.5 (專業進階版Advance)", category: "school", desc: "提供專業進階版功能，深度整合 AI 商業分析與企劃生成權限，打造全方位品牌行銷方案。", link: "https://mindnodeai.github.io/TONY_G13-1AIBrandMarketingAdvance35-20260714/", image: "https://images.unsplash.com/photo-1551288049-bebda4e38f71?auto=format&fit=crop&w=800&q=80", tag: "品牌進階" },
+            { title: "G14. 2026 Tony老師品牌行銷 AI 工具包(平台說明圖解版)", category: "school", desc: "提供平台架構與操作流程圖解，幫助快速掌握應用邏輯。", link: "https://mindnodeai.github.io/TONY_E3-5-1BrandMarketingGraph20260420/", image: "https://images.unsplash.com/photo-1542744173-8e7e53415bb0?auto=format&fit=crop&w=800&q=80", tag: "平台圖解" },
+            { title: "G15. AI 短影音競賽腳本創作 APP 3.5 (學員註冊版)", category: "school", desc: "提供深度的分鏡規劃與 BGM 音效建議，鎖定競賽得獎標準。", link: "https://mindnodeai.github.io/TONY_G15ScriptwringforContestReg35-20260714/", image: "https://images.unsplash.com/photo-1626814026160-2237a95fc5a0?auto=format&fit=crop&w=800&q=80", tag: "腳本創作" },
+            { title: "G16. 教師／行政 AI 任務產生器 (學員註冊版)", category: "school", desc: "解鎖自訂表單模板與深度文件生成功能，極致提升辦公效率。", link: "https://mindnodeai.github.io/TONY_E36-1AIGenForTecherReg20260407/", image: "https://images.unsplash.com/photo-1497366216548-37526070297c?auto=format&fit=crop&w=800&q=80", tag: "任務產生器" },
+            { title: "G17. 行政排班自動生成系統 (正式優化版)", category: "school", desc: "具備完整條件約束與最佳化運算能力，適用於複雜班表需求。", link: "https://mindnodeai.github.io/TONY_E38AISchedulingGen20260328/", image: "https://images.unsplash.com/photo-1554224155-8d04cb21cd6c?auto=format&fit=crop&w=800&q=80", tag: "排班系統" },
+            { title: "G18. 中藥商品牌行銷輔導 AI 工具包 (店家註冊版)", category: "school", desc: "中藥行專屬行銷工具包，解鎖在地化經營與數位轉型策略。", link: "https://mindnodeai.github.io/TONY_E3-3HerbGuardAIBrandMKTReg20260407/", image: "https://images.unsplash.com/photo-1546868871-7041f2a55e12?auto=format&fit=crop&w=800&q=80", tag: "店家註冊" },
+            { title: "G19. 中藥行數位內容法規審核平台 (註冊版)", category: "school", desc: "進階法規審核，具備完整醫藥字庫與文案校對功能。", link: "https://mindnodeai.github.io/TONY_E3-4HerbGuardAIReg20260406/", image: "https://images.unsplash.com/photo-1587370560942-ad2a04eabb6d?auto=format&fit=crop&w=800&q=80", tag: "法規審核" },
+            { title: "G20. 2026 TONY AI 品牌行銷手冊製作工具設計(任務)", category: "school", desc: "設計專屬品牌行銷手冊，整合 AI 實作任務。", link: "https://mindnodeai.github.io/TONY_BrandMarketing20251219/", image: "https://images.unsplash.com/photo-1542744173-05336fcc7ad4?auto=format&fit=crop&w=800&q=80", tag: "手冊任務" },
+            { title: "G21. AI行銷管理全局觀(大一 行銷管理AI課綱)", category: "school", desc: "宏觀解析 AI 在行銷管理上的全面應用，建構完整全局觀。", link: "https://mindnodeai.github.io/TONY_E46MarketingManagement20260409/", image: "https://images.unsplash.com/photo-1519389950473-47ba0277781c?auto=format&fit=crop&w=800&q=80", tag: "全局觀" },
+            { title: "G22. 生成式 AI × 永續報告書", category: "school", desc: "合規且高效地運用生成式 AI 輔助 ESG 報告書資料整理。", link: "https://mindnodeai.github.io/TONY_ESGReport02/", image: "https://images.unsplash.com/photo-1464938050520-ef2270bb8ce8?auto=format&fit=crop&w=800&q=80", tag: "ESG報告" },
+            { title: "G23. AI庫存管理與銷售", category: "school", desc: "運用 AI 進行庫存預測與銷售分析，打造高效率的智慧供應鏈管理。", link: "https://mindnodeai.github.io/TONY_G23AiInventoryManagement20260530/", image: "https://images.unsplash.com/photo-1553413077-190dd305871c?auto=format&fit=crop&w=800&q=80", tag: "智慧庫存" },
+            { title: "G24. UI/UX 設計與 AI 應用", category: "school", desc: "運用 AI 工具輔助 UI/UX 設計流程，提升設計效率與體驗。", link: "https://mindnodeai.github.io/TONY_UIUX20260211/", image: "https://images.unsplash.com/photo-1545235617-9465d2a55698?auto=format&fit=crop&w=800&q=80", tag: "UI/UX" },
+            { title: "G25. SORA 2 影片生成應用(APP已下架)", category: "school", desc: "探索 Sora 模型高階應用，將文字腳本轉化為電影級 AI 影片。", link: "https://mindnodeai.github.io/TONY_AI_Prompt_SORA2-20251204/", image: "https://images.unsplash.com/photo-1626814026160-2237a95fc5a0?auto=format&fit=crop&w=800&q=80", tag: "影片生成" },
+            { title: "G26. 敘事 × AI：品牌故事新講法", category: "school", desc: "運用 AI 輔助敘事結構設計，打造打動人心的品牌故事。", link: "https://mindnodeai.github.io/TONY_BRAND_2026NEWSTORY01/", image: "https://images.unsplash.com/photo-1519791883288-dc8bd696e667?auto=format&fit=crop&w=800&q=80", tag: "品牌故事" },
+            { title: "G27. AI 品牌數位行銷實戰", category: "school", desc: "結合生成式 AI 工具進行品牌內容產出與廣告優化。", link: "https://mindnodeai.github.io/TONY_AI_Prompt_TAmbassador_brandMKT01/", image: "https://images.unsplash.com/photo-1611162617474-5b21e879e113?auto=format&fit=crop&w=800&q=80", tag: "數位行銷" },
+            { title: "G28. Google Nano Banana Pro 實戰教學", category: "school", desc: "掌握最新 Nano Banana Pro 核心功能，將 AI 技術落地於專案。", link: "https://mindnodeai.github.io/TONY_NanoBananaPro01/", image: "https://images.unsplash.com/photo-1573164713988-8665fc963095?auto=format&fit=crop&w=800&q=80", tag: "實戰教學" },
+            { title: "G29. OMO 事件行銷策略", category: "school", desc: "線上融合線下 OMO 事件行銷規劃，創造無縫體驗。", link: "https://mindnodeai.github.io/TONY_AI_OMO01/", image: "https://images.unsplash.com/photo-1563013544-824ae1b704d3?auto=format&fit=crop&w=800&q=80", tag: "OMO行銷" },
+            { title: "G30. 120 大行銷心理效應", category: "school", desc: "深入淺出解析 120 個經典行銷心理學效應。", link: "https://mindnodeai.github.io/TONY_120Theories01/", image: "https://images.unsplash.com/photo-1507413245164-6160d8298b31?auto=format&fit=crop&w=800&q=80", tag: "行銷心理" },
+            { title: "G31. 商業模式畫布實戰", category: "school", desc: "利用商業模式畫布檢視並創新企業的獲利模式。", link: "https://mindnodeai.github.io/TONY_BusinessModel01/", image: "https://images.unsplash.com/photo-1531403009284-440f080d1e12?auto=format&fit=crop&w=800&q=80", tag: "商業模式" },
+            { title: "G32. 數位知識智庫", category: "school", desc: "彙整數位行銷、管理新知與科技趨勢的知識庫，隨時充電。", link: "https://mindnodeai.github.io/TONY_DigiKnowledge03/", image: "https://images.unsplash.com/photo-1481627834876-b7833e8f5570?auto=format&fit=crop&w=800&q=80", tag: "知識庫" },
+            { title: "G33. 影音行銷策略發展與判斷 【TONY老師 系列3-1】", category: "school", desc: "從策略高度切入，教你如何精準發展與判斷影音行銷策略，讓每一支影片都能發揮最大商業價值。", link: "https://mindnodeai.github.io/TONY_G33AudioVisualStrategies20260601/", image: "https://images.unsplash.com/photo-1574717024653-61fd2cf4d44d?auto=format&fit=crop&w=800&q=80", tag: "影音策略" },
+            { title: "G34. 生活產業 AI 預測(工研院產業課程)", category: "school", desc: "透過 AI 預測模型，分析生活產業趨勢，協助品牌掌握先機，制定精準的產品與行銷策略。", link: "https://mindnodeai.github.io/TONY_G34AIPredictionForLifeStyle20260610/", image: "https://images.unsplash.com/photo-1518770660439-4636190af475?auto=format&fit=crop&w=800&q=80", tag: "趨勢預測" },
+            { title: "G35. 影音成效分析與優化 (註冊版)", category: "school", desc: "深度解析影音數據，運用 AI 提供具體優化建議，全面提升影片觀看與轉換成效。", link: "https://mindnodeai.github.io/TONY_G35AIVideoPerformanceAnysis20260615/", image: "https://images.unsplash.com/photo-1460925895917-afdab827c52f?auto=format&fit=crop&w=800&q=80", tag: "數據優化" },
+            { title: "G36. YouTube 縮圖設計靈感與 4K 咒語產生器", category: "school", desc: "專為 YouTuber 打造，一鍵生成吸睛縮圖靈感與 4K 畫質的高階 AI 繪圖提示詞。", link: "https://mindnodeai.github.io/TONY_G36YTAIThumgnailDesign20260619/", image: "https://images.unsplash.com/photo-1611162616475-46b635cb6868?auto=format&fit=crop&w=800&q=80", tag: "縮圖設計" },
+            { title: "G37. TONY老師AI社群貼文魔法師", category: "school", desc: "結合熱門話題與品牌調性，快速生成具備高互動潛力的創意社群貼文。", link: "https://mindnodeai.github.io/TONY_G37TONYAISocialPost20260620/", image: "https://images.unsplash.com/photo-1611926653458-09294b3142bf?auto=format&fit=crop&w=800&q=80", tag: "社群行銷" },
+            { title: "G38. TONY 封面海報設計工作室", category: "school", desc: "專屬海報設計助理，透過 AI 快速產出具備高視覺張力與專業排版的封面海報。", link: "https://mindnodeai.github.io/TONY_G38CoverPosterAI20260620/", image: "https://images.unsplash.com/photo-1558655146-d09347e92766?auto=format&fit=crop&w=800&q=80", tag: "海報設計" },
+            { title: "G39. 資策會生成式AI能力認證模擬考系統(無註冊)", category: "school", desc: "提供資策會生成式 AI 能力認證的線上模擬測驗，幫助考生快速熟悉題型與測驗節奏。", link: "https://mindnodeai.github.io/TONY_G39iiiGenAISimulationExam20260623/", image: "https://images.unsplash.com/photo-1606326608606-aa0b62935f2b?auto=format&fit=crop&w=800&q=80", tag: "認證模擬" },
+            { title: "G40. 資策會生成式AI能力認證模擬考系統 3.5 (註冊版)", category: "school", desc: "專屬學員的進階版模擬考系統，解鎖完整題庫演練、AI 弱點分析與考前衝刺指南。", link: "https://mindnodeai.github.io/TONY_G40iiiGenAISimulationExamReg35-20260713/", image: "https://images.unsplash.com/photo-1434030216411-0b793f4b4173?auto=format&fit=crop&w=800&q=80", tag: "註冊專屬" },
+
+            // ==========================================
+            // 4. 顧問諮詢 (K系列 & E系列)
+            // ==========================================
+            { title: "K1. 卡爾吉特數位轉型與品牌升級", category: "consulting", desc: "針對卡爾吉特提供的數位轉型與品牌升級顧問諮詢方案。", link: "https://mindnodeai.github.io/TONY_K1CogitoImage20260526/", image: "https://images.unsplash.com/photo-1542744094-3a31f272c490?auto=format&fit=crop&w=800&q=80", tag: "品牌升級" },
+            { title: "K02. 2026 (上) AI 競賽評分系統", category: "consulting", desc: "專為 2026 年上半年度 AI 競賽打造的專業評分系統，提供客觀、高效的評核標準與數據分析。", link: "https://mindnodeai.github.io/TONY_K220261HAIScoringSystem20260526/", image: "https://images.unsplash.com/photo-1460925895917-afdab827c52f?auto=format&fit=crop&w=800&q=80", tag: "評分系統" },
+            { title: "K3. 卡爾吉特 6 大需求任務協作顧問平台", category: "consulting", desc: "整合 6 大核心需求，專為卡爾吉特打造的任務協作顧問平台，提升專案執行與跨部門協作效率。", link: "https://mindnodeai.github.io/TONY_K3CogitoImageTaskConsultant20260528/", image: "https://images.unsplash.com/photo-1522071820081-009f0129c71c?auto=format&fit=crop&w=800&q=80", tag: "任務協作" },
+            { title: "K4. 卡爾吉特 Pitch Proposal_Samsung SIP proposal_2024OCT01(示範)", category: "consulting", desc: "卡爾吉特 Samsung SIP 提案示範，展示高端企劃與 Pitch 技巧。", link: "https://mindnodeai.github.io/TONY_K4CogitoPitchSIPDemo20260530/", image: "https://images.unsplash.com/photo-1557804506-669a67965ba0?auto=format&fit=crop&w=800&q=80", tag: "提案示範" },
+            { title: "K5. 企業提案需求RFP拆解及回應決策系統3.5", category: "consulting", desc: "運用 AI 系統化拆解 RFP 需求，並生成高勝率的回應決策與企劃架構。", link: "https://mindnodeai.github.io/TONY_K5RFPAnalysiSystem35-20260714/", image: "https://images.unsplash.com/photo-1454165804606-c3d57bc86b40?auto=format&fit=crop&w=800&q=80", tag: "RFP拆解" },
+            { title: "K6. 智慧社區 AI 管理平台", category: "consulting", desc: "導入 AI 技術優化社區管理流程，從行政、財務到住戶服務全方位升級。", link: "https://mindnodeai.github.io/TONY_K6CommunityAIManage20260603/", image: "https://images.unsplash.com/photo-1560518883-ce09059eeffa?auto=format&fit=crop&w=800&q=80", tag: "智慧社區" },
+            { title: "K7. 社區發票AI入帳系統3.5", category: "consulting", desc: "自動化辨識與處理社區發票，減少人工登打錯誤，大幅提升財務入帳效率與準確度。", link: "https://mindnodeai.github.io/TONY_K7CommunityInvoiceSystem35-20260714/", image: "https://images.unsplash.com/photo-1554224155-6726b3ff858f?auto=format&fit=crop&w=800&q=80", tag: "財務自動化" },
+            { title: "K8. AI 智創品牌健檢工作平台3.5 (TONYSTUDIO)", category: "consulting", desc: "專為品牌打造的 AI 健檢工作平台，提供深度的品牌體質診斷與優化建議。", link: "https://mindnodeai.github.io/TONY_K8BrandBase12AIBrandQA35-20260714/", image: "https://images.unsplash.com/photo-1552664730-d307ca884978?auto=format&fit=crop&w=800&q=80", tag: "品牌健檢" },
+            { title: "K9. BrandBase AI 智創品牌健檢工作平台 3.5 (中英文)", category: "consulting", desc: "運用 BrandBase 框架，透過 AI 系統性檢視品牌策略與市場定位。", link: "https://mindnodeai.github.io/TONY_K9-BrandBaseAIBrand35-QA20260714/", image: "https://images.unsplash.com/photo-1551288049-bebda4e38f71?auto=format&fit=crop&w=800&q=80", tag: "品牌診斷" },
+            { title: "K10. AI企業導入決策評估平台", category: "consulting", desc: "協助企業評估 AI 導入的成本效益與風險，制定最佳的數位轉型與決策藍圖。", link: "https://mindnodeai.github.io/TONY_K10AIDecisionEvaluation20260707/", image: "https://images.unsplash.com/photo-1460925895917-afdab827c52f?auto=format&fit=crop&w=800&q=80", tag: "導入評估" },
+            { title: "E1. 台灣民宿 Copilot", category: "consulting", desc: "專為台灣民宿業者打造的 AI 營運助手，協助客服回應與行銷。", link: "https://mindnodeai.github.io/TONY_E1TaiwanHomestay20260224/", image: "https://images.unsplash.com/photo-1566073771259-6a8506099945?auto=format&fit=crop&w=800&q=80", tag: "旅宿科技" },
+            { title: "E2. 2026 旅宿業智能助理教案 (晶泉丰旅)", category: "consulting", desc: "探討旅宿業如何導入智能助理，提升旅客服務體驗。", link: "https://mindnodeai.github.io/TONY_E2AIhospitality20260221/", image: "https://images.unsplash.com/photo-1582719508461-905c673771fd?auto=format&fit=crop&w=800&q=80", tag: "智慧旅館" },
+            { title: "E3. 2026 Tony老師品牌行銷 AI 工具包", category: "consulting", desc: "2026 年最新版品牌行銷工具包，涵蓋前瞻趨勢。", link: "https://mindnodeai.github.io/TONY_E3BrandMarketing20260308/", image: "https://images.unsplash.com/photo-1551288049-bebda4e38f71?auto=format&fit=crop&w=800&q=80", tag: "品牌行銷" },
+            { title: "E3-1. TONY楊老師漢方新生品牌行銷輔導 AI 工具包", category: "consulting", desc: "結合中醫藥文化底蘊與 AI 科技的漢方品牌數位轉型工具包。", link: "https://mindnodeai.github.io/TONY_E3_1ChineseMedicineBrandMKT20260321/", image: "https://images.unsplash.com/photo-1546868871-7041f2a55e12?auto=format&fit=crop&w=800&q=80", tag: "品牌輔導" },
+            { title: "E3-2. (店家版)TONY楊老師中藥商品牌行銷輔導 AI 工具包", category: "consulting", desc: "專為第一線中藥行店家設計的實戰版 AI 行銷工具包。", link: "https://mindnodeai.github.io/TONY_E3_2ChineseMedicineBrandMKTSTORE20260326/", image: "https://images.unsplash.com/photo-1556742049-0cfed4f6a45d?auto=format&fit=crop&w=800&q=80", tag: "店家實戰" },
+            { title: "E3-6. 中藥行數位內容法規審核平台", category: "consulting", desc: "運用 AI 自動檢視中藥行銷文案，確保符合醫藥法規。", link: "https://mindnodeai.github.io/TONY_E3-2HerbGuardAI20260322/", image: "https://images.unsplash.com/photo-1587370560942-ad2a04eabb6d?auto=format&fit=crop&w=800&q=80", tag: "法規審核" },
+            { title: "E5. 商業企劃AI實戰指南", category: "consulting", desc: "運用 AI 輔助撰寫專業商業企劃書，打造具說服力的藍圖。", link: "https://mindnodeai.github.io/TONY_E5BusinessPlan20260221/", image: "https://images.unsplash.com/photo-1454165804606-c3d57bc86b40?auto=format&fit=crop&w=800&q=80", tag: "企劃指南" },
+            { title: "E6. 鴻圖主顧 6 脈 18 掌體質自測", category: "consulting", desc: "透過 6 脈 18 掌檢測架構，全方位診斷企業經營體質。", link: "https://mindnodeai.github.io/TONY_E6SMEbig18Palms20260221/", image: "https://images.unsplash.com/photo-1554224155-8d04cb21cd6c?auto=format&fit=crop&w=800&q=80", tag: "體質診斷" },
+            { title: "E7. AI 語音資產轉化系統", category: "consulting", desc: "將語音內容高效轉化為文字與摘要，活化企業語音資產。", link: "https://mindnodeai.github.io/TONY_E7VoiceConver20260221/", image: "https://images.unsplash.com/photo-1589903308904-1010c2294adc?auto=format&fit=crop&w=800&q=80", tag: "語音應用" },
+            { title: "E8. TBSA商務企劃能力進階檢定實戰系統", category: "consulting", desc: "針對 TBSA 進階檢定的輔導系統，結合 AI 輔助案例分析。", link: "https://mindnodeai.github.io/TONY_E8TBSAExam20260221/", image: "https://images.unsplash.com/photo-1554224155-6726b3ff858f?auto=format&fit=crop&w=800&q=80", tag: "檢定實戰" },
+            { title: "E9. PM Master：AI 專案管理", category: "consulting", desc: "結合 AI 的專案管理大師工具，全面優化專案執行效率。", link: "https://mindnodeai.github.io/TONY_E9PMMaster20260221/", image: "https://images.unsplash.com/photo-1553877522-43269d4ea984?auto=format&fit=crop&w=800&q=80", tag: "專案管理" },
+            { title: "E10. TONY老師的行銷企劃學院認證班", category: "consulting", desc: "TONY 老師親授的行銷企劃實戰學院與 AI 應用心法。", link: "https://mindnodeai.github.io/TONY_E10MktPlaning20260705/", image: "https://images.unsplash.com/photo-1531545514256-b1400bc00f31?auto=format&fit=crop&w=800&q=80", tag: "行銷學院" },
+            { title: "E11. AI任務卡生成與管理系統", category: "consulting", desc: "自動化分類與進度追蹤，提升團隊協作與專案管理效率。", link: "https://mindnodeai.github.io/TONY_E11TaskCard20260221/", image: "https://images.unsplash.com/photo-1542626991-cbc4e32524cc?auto=format&fit=crop&w=800&q=80", tag: "任務管理" },
+            { title: "E12. 品牌聲量與輿情戰情室", category: "consulting", desc: "即時監測網路聲量，視覺化數據協助精準決策與危機預警。", link: "https://mindnodeai.github.io/TONY_BrandVolAnalysis20260106/", image: "https://images.unsplash.com/photo-1551288049-bebda4e38f71?auto=format&fit=crop&w=800&q=80", tag: "輿情分析" },
+            { title: "E13. 利害關係人平衡三圈談判模型", category: "consulting", desc: "運用獨創模型分析需求，輔助談判策略制定，達成多方共贏。", link: "https://mindnodeai.github.io/TONY_StakeholderBalance20260107/", image: "https://images.unsplash.com/photo-1577962917302-cd874c4e31d2?auto=format&fit=crop&w=800&q=80", tag: "談判策略" },
+            { title: "E14. 產業趨勢洞察與決策輔助", category: "consulting", desc: "結合大數據掃描產業趨勢，提供商業決策輔助與風險評估。", link: "https://mindnodeai.github.io/TONY_E14IndustryTrend20260221/", image: "https://images.unsplash.com/photo-1451187580459-43490279c0fa?auto=format&fit=crop&w=800&q=80", tag: "趨勢洞察" },
+            { title: "E15. 產品市場策略決策飛行模擬器", category: "consulting", desc: "針對產品進入市場變數進行沙盤推演，制定最佳 Go-to-Market 策略。", link: "https://mindnodeai.github.io/TONY_E15ProductMKT20260221/", image: "https://images.unsplash.com/photo-1517976487492-5750f3195933?auto=format&fit=crop&w=800&q=80", tag: "決策模擬" },
+            { title: "E16. AI 協作電商後台內容優化 (銀享科技商機媒合平台)", category: "consulting", desc: "運用 AI 優化電商後台內容，提升商品上架效率與文案品質。", link: "https://mindnodeai.github.io/TONY_E16ECBackendican20260221/", image: "https://images.unsplash.com/photo-1504868584819-f8e8b4b6d7e3?auto=format&fit=crop&w=800&q=80", tag: "電商優化" },
+            { title: "E17. 情境決策模擬引擎架構設計", category: "consulting", desc: "透過 AI 構建多維度模擬引擎，針對複雜商業變數進行沙盤推演。", link: "https://mindnodeai.github.io/TONY_E17ScenarioDecision20260221/", image: "https://images.unsplash.com/photo-1528819622765-d6bcf132f793?auto=format&fit=crop&w=800&q=80", tag: "決策引擎" },
+            { title: "E18. 策略新點子發想實驗室", category: "consulting", desc: "提供多元思考框架，激發創新點子，協助團隊突破盲點。", link: "https://mindnodeai.github.io/TONY_E18NewIdeaBrainstorming20260221/", image: "https://images.unsplash.com/photo-1517245386807-bb43f82c33c4?auto=format&fit=crop&w=800&q=80", tag: "創意發想" },
+            { title: "E19. 趨勢探索 TrendScout", category: "consulting", desc: "運用 AI 掃描市場趨勢，洞察潛在商機，協助搶先佈局未來。", link: "https://mindnodeai.github.io/TONY_E19TrendScout20260219/", image: "https://images.unsplash.com/photo-1486406146926-c627a92ad1ab?auto=format&fit=crop&w=800&q=80", tag: "趨勢分析" },
+            { title: "E20. AEO/ GEO 內容引擎編輯系統", category: "consulting", desc: "協助品牌佈局 AEO 與 GEO，讓內容成為 AI 搜尋的首選來源。", link: "https://mindnodeai.github.io/TONY_E20AnswerOS20260220/", image: "https://images.unsplash.com/photo-1432888498266-38ffec3eaf0a?auto=format&fit=crop&w=800&q=80", tag: "SEO優化" },
+            { title: "E21. AI 企業研究顧問", category: "consulting", desc: "深度分析企業財報與定位，提供專業的研究報告與決策洞察。", link: "https://mindnodeai.github.io/TONY_E21CompanyResearch20260220/", image: "https://images.unsplash.com/photo-1507679799987-c73779587ccf?auto=format&fit=crop&w=800&q=80", tag: "企業研究" },
+            { title: "E22. Vibe Coding規格說明書生成平台", category: "consulting", desc: "結合 Vibe Coding 理念，運用 AI 生成精確的軟體規格說明書。", link: "https://mindnodeai.github.io/TONY_E22ViberCodingSD20260220/", image: "https://images.unsplash.com/photo-1555066931-4365d14bab8c?auto=format&fit=crop&w=800&q=80", tag: "規格生成" },
+            { title: "E22-1. Vibe Coding規格說明書生成平台3.5 (註冊版)", category: "consulting", desc: "專屬註冊學員的進階版 Vibe Coding 規格說明書生成平台，提供更深度的自訂與匯出功能。", link: "https://mindnodeai.github.io/TONY_E22ViberCodingSDREG35-20260714/", image: "https://images.unsplash.com/photo-1555066931-4365d14bab8c?auto=format&fit=crop&w=800&q=80", tag: "註冊專屬" },
+            { title: "E23. AI 廣告疑點辨識器", category: "consulting", desc: "透過 AI 快速分析廣告內容，辨識潛在的誇大不實、詐騙疑點或風險。", link: "https://mindnodeai.github.io/TONY_D23AdDoubt20260205/", image: "https://images.unsplash.com/photo-1555421689-3f034debb7a6?auto=format&fit=crop&w=800&q=80", tag: "防詐辨識" },
+            { title: "E24. TONY老師的 AI 數位孿生", category: "consulting", desc: "與 TONY 老師的 AI 數位分身進行諮詢，獲取即時的專業建議。", link: "https://mindnodeai.github.io/TONY_E24TonyDigitalTwin20260624/", image: "https://images.unsplash.com/photo-1616161560417-66d4db5892ec?auto=format&fit=crop&w=800&q=80", tag: "數位分身" },
+            { title: "E25. 頂級私募基金經理股票分析", category: "consulting", desc: "模擬頂級經理思維進行股票分析，提供專業的投資決策輔助。", link: "https://mindnodeai.github.io/TONY_E25StockAnalysis20260129/", image: "https://images.unsplash.com/photo-1590283603385-17ffb3a7f29f?auto=format&fit=crop&w=800&q=80", tag: "投資分析" },
+            { title: "E26. 每日精選新聞與知識", category: "consulting", desc: "智能彙整每日關鍵新聞與專業知識，快速掌握世界趨勢。", link: "https://mindnodeai.github.io/TONY_E26DailyNews20260130/", image: "https://images.unsplash.com/photo-1504711434969-e33886168f5c?auto=format&fit=crop&w=800&q=80", tag: "新知彙整" },
+            { title: "E27. 新創企業生意模式研究AI顧問系統", category: "consulting", desc: "對商業模式進行全方位 AI 健檢，提供獲利優化與策略建議。", link: "https://mindnodeai.github.io/TONY_E27StartupBZM20260130/", image: "https://images.unsplash.com/photo-1556761175-5973dc0f32e7?auto=format&fit=crop&w=800&q=80", tag: "創業顧問" },
+            { title: "E28. 人機協作藍圖設計", category: "consulting", desc: "構建人與 AI 高效共舞的藍圖，優化流程並提升團隊產能。", link: "https://mindnodeai.github.io/TONY_E28AICollaboration20260202/", image: "https://images.unsplash.com/photo-1522071820081-009f0129c71c?auto=format&fit=crop&w=800&q=80", tag: "協作藍圖" },
+            { title: "E30. 活動創意藍圖", category: "consulting", desc: "運用 AI 輔助活動策劃，構建具創意且可執行的活動藍圖。", link: "https://mindnodeai.github.io/TONY_E30ActivityBlueprint20260203/", image: "https://images.unsplash.com/photo-1531403009284-440f080d1e12?auto=format&fit=crop&w=800&q=80", tag: "活動策劃" },
+            { title: "E31. iPAS-AI應用規劃師備考系統", category: "consulting", desc: "針對 iPAS 證照考試開發的備考系統，提供模擬試題與解析。", link: "https://mindnodeai.github.io/TONY_E31IPAS_AIPLANERExam20260301/", image: "https://images.unsplash.com/photo-1434030216411-0b793f4b4173?auto=format&fit=crop&w=800&q=80", tag: "證照備考" },
+            { title: "E31-1. iPAS-AI應用規劃師備考系統(學員帳密版)", category: "consulting", desc: "專屬學員的進階版，憑帳密登入解鎖完整模擬題庫與學習分析。", link: "https://mindnodeai.github.io/TONY_E31IPAS_AIPLANERExam20260301IDPW/", image: "https://images.unsplash.com/photo-1516321497487-e288fb19713f?auto=format&fit=crop&w=800&q=80", tag: "專屬系統" },
+            { title: "E32. 情境故事案例產生器", category: "consulting", desc: "快速生成情境故事與商業案例，協助講師教學或企劃提案。", link: "https://mindnodeai.github.io/TONY_D32ScanarioCase20260207/", image: "https://images.unsplash.com/photo-1506784983877-45594efa4cbe?auto=format&fit=crop&w=800&q=80", tag: "案例生成" },
+            { title: "E33. 主角模式 (衝突管理)", category: "consulting", desc: "運用 AI 模擬主角視角，協助理性溝通與情緒管理，化解衝突。", link: "https://mindnodeai.github.io/TONY_D22ConflictManag20260205/", image: "https://images.unsplash.com/photo-1573497620053-ea5300f94f21?auto=format&fit=crop&w=800&q=80", tag: "衝突管理" },
+            { title: "E34. 創意發想器", category: "consulting", desc: "運用發散與收斂思維，快速生成具可行性與創新價值的點子。", link: "https://mindnodeai.github.io/TONY_E34IdeaGen20260209/", image: "https://images.unsplash.com/photo-1596495578065-6e0763fa1178?auto=format&fit=crop&w=800&q=80", tag: "靈感生成" },
+            { title: "E35. 面試問答提問系統", category: "consulting", desc: "模擬真實面試情境，生成提問與回答建議，助求職者做好準備。", link: "https://mindnodeai.github.io/TONY_InterviewQuestion/", image: "https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?auto=format&fit=crop&w=800&q=80", tag: "面試模擬" },
+            { title: "E37. AI 排班生成器 (教學初版)", category: "consulting", desc: "透過 AI 快速運算解決排班問題，適合學習排班邏輯與設定。", link: "https://mindnodeai.github.io/TONY_E37AISchedulingGen20260329/", image: "https://images.unsplash.com/photo-1506784983877-45594efa4cbe?auto=format&fit=crop&w=800&q=80", tag: "排班教學" },
+            { title: "E39. 微積分 AI 教學助手", category: "consulting", desc: "為學生提供微積分觀念解析與解題步驟引導，讓抽象理論變易懂。", link: "https://mindnodeai.github.io/TONY_E39CalculusAI20260328/", image: "https://images.unsplash.com/photo-1518133910546-b6c2fb7d79e3?auto=format&fit=crop&w=800&q=80", tag: "理科教學" },
+            { title: "E40. AI 智能商務報價系統", category: "consulting", desc: "導入智能運算，協助快速產出精準、專業的商務報價單。", link: "https://mindnodeai.github.io/TONY_E40AIQuotation20260331/", image: "https://images.unsplash.com/photo-1460925895917-afdab827c52f?auto=format&fit=crop&w=800&q=80", tag: "商務系統" },
+            { title: "E43-3. BrandBase 品牌行銷 AI 工具包 3.5 (中英文版)", category: "consulting", desc: "支援雙語，協助企業無縫接軌國際市場，佈局全球化策略。", link: "https://mindnodeai.github.io/TONY_E43-3BrandBaseAIToolkitData-CHtoEN35-20260713/", image: "https://images.unsplash.com/photo-1542744173-05336fcc7ad4?auto=format&fit=crop&w=800&q=80", tag: "雙語品牌" },
+
+            // ==========================================
+            // 5. 人間智慧 (D系列)
+            // ==========================================
+            { title: "D1. 世界廚神料理食譜大全", category: "wisdom", desc: "匯集各國風味與名廚智慧，運用 AI 生成詳細食譜與料理靈感。", link: "https://mindnodeai.github.io/TONY_D1WorldChef20260122/", image: "https://images.unsplash.com/photo-1577219491135-ce391730fb2c?auto=format&fit=crop&w=800&q=80", tag: "料理食譜" },
+            { title: "D2. 中國24節氣祝福卡設計", category: "wisdom", desc: "結合傳統節氣智慧與現代設計，生成充滿文化底蘊的祝福卡片。", link: "https://mindnodeai.github.io/TONY_D224SolarTerms20260122/", image: "https://images.unsplash.com/photo-1523712999610-f77fbcfc3843?auto=format&fit=crop&w=800&q=80", tag: "文化設計" },
+            { title: "D3. AI 中醫諮詢師 (手機版+語音優化)", category: "wisdom", desc: "隨身中醫顧問，結合語音互動與文字輸入，提供即時健康諮詢。", link: "https://mindnodeai.github.io/TONY_D3ChineseMedicine20260626/", image: "https://images.unsplash.com/photo-1512621776951-a57141f2eefd?auto=format&fit=crop&w=800&q=80", tag: "健康諮詢" },
+            { title: "D4. AI 穴道指引", category: "wisdom", desc: "智能穴位查詢系統，圖文解說穴道位置與功效，協助居家保健。", link: "https://mindnodeai.github.io/TONY_Acupoint20260101/", image: "https://images.unsplash.com/photo-1544161515-4ab6ce6db874?auto=format&fit=crop&w=800&q=80", tag: "穴道保健" },
+            { title: "D5. 中藥商 AI 行銷互動平台", category: "wisdom", desc: "協助傳統中藥商轉型數位化，提供藥材科普與 AI 互動問答。", link: "https://mindnodeai.github.io/TONY_D5AIChineseMedicineMKT20260626/", image: "https://images.unsplash.com/photo-1546868871-7041f2a55e12?auto=format&fit=crop&w=800&q=80", tag: "產業行銷" },
+            { title: "D6. 金句 QuoteOS生成器", category: "wisdom", desc: "一鍵生成充滿智慧與靈感的金句，適用於社群文案或演講。", link: "https://mindnodeai.github.io/TONY_D6QuoteOS20260626/", image: "https://images.unsplash.com/photo-1526721940322-10fb6e3ae94a?auto=format&fit=crop&w=800&q=80", tag: "金句生成" },
+            { title: "D7. 祝福語BlessingOS生成器", category: "wisdom", desc: "針對不同節日與對象，生成溫暖得體的祝福語。", link: "https://mindnodeai.github.io/TONY_D7BlessingOS20260626/", image: "https://images.unsplash.com/photo-1576158113928-4c240eaaf360?auto=format&fit=crop&w=800&q=80", tag: "節慶祝福" },
+            { title: "D8. 語言智慧引擎生成器(俚語、雙關語)", category: "wisdom", desc: "生成俚語與成語，為文案或對話增添語言趣味與文化深度。", link: "https://mindnodeai.github.io/TONY_D8LanguageScentence20260625/", image: "https://images.unsplash.com/photo-1620662736427-b8a198f52a4d?auto=format&fit=crop&w=800&q=80", tag: "語言創意" },
+            { title: "D9. 24食令節氣智慧", category: "wisdom", desc: "結合傳統二十四節氣與現代飲食智慧，提供養生食譜。", link: "https://mindnodeai.github.io/TONY_D924SolarFood20260221/", image: "https://images.unsplash.com/photo-1540420773420-3366772f4999?auto=format&fit=crop&w=800&q=80", tag: "食農教育" },
+            { title: "D10. AI 台灣在地特色地方采風集", category: "wisdom", desc: "生成台灣各地特色景點與人文介紹，為旅遊規劃增添魅力。", link: "https://mindnodeai.github.io/TONY_D10LocalScenery20260624/", image: "https://images.unsplash.com/photo-1552993873-0dd1110e025f?auto=format&fit=crop&w=800&q=80", tag: "在地采風" },
+            { title: "D11. 綜合命理-探索自己的本命區", category: "wisdom", desc: "結合 AI 與命理智慧，深度解析個人特質與潛能。", link: "https://mindnodeai.github.io/TONY_D11Numerology20260221/", image: "https://images.unsplash.com/photo-1532968961962-8a0cb3a2d4f5?auto=format&fit=crop&w=800&q=80", tag: "命理諮詢" },
+            { title: "D12. 文體轉譯寫作引擎", category: "wisdom", desc: "將文字內容進行風格轉換、潤飾與改寫，輕鬆駕馭各種文體。", link: "https://mindnodeai.github.io/TONY_D12AIWriting20260221/", image: "https://images.unsplash.com/photo-1455390582262-044cdead277a?auto=format&fit=crop&w=800&q=80", tag: "風格轉換" },
+            { title: "D13. 語意轉多媒體提示詞生成OS", category: "wisdom", desc: "將創意轉化為精準 AI 提示詞，適用於圖像與影片生成。", link: "https://mindnodeai.github.io/TONY_D13PromptGenOS20260221/", image: "https://images.unsplash.com/photo-1620641788421-7a1c342ea42e?auto=format&fit=crop&w=800&q=80", tag: "提示詞OS" },
+            { title: "D14. 影評及書評摘要平台", category: "wisdom", desc: "自動生成精華摘要與核心觀點，協助快速吸收知識。", link: "https://mindnodeai.github.io/TONY_D14ReviewSummary20260221/", image: "https://images.unsplash.com/photo-1512820790803-83ca734da794?auto=format&fit=crop&w=800&q=80", tag: "內容摘要" },
+            { title: "D15. 課程大綱產生器", category: "wisdom", desc: "自動規劃完整的課程大綱與學習目標，大幅縮短備課時間。", link: "https://mindnodeai.github.io/TONY_D15CourseSyllabous20260417/", image: "https://images.unsplash.com/photo-1503676260728-1c00da094a0b?auto=format&fit=crop&w=800&q=80", tag: "課程規劃" },
+            { title: "D16. 企劃案評分及優化系統", category: "wisdom", desc: "針對企劃案進行評分與邏輯檢測，並提供優化建議。", link: "https://mindnodeai.github.io/TONY_ProposalScoring20260126/", image: "https://images.unsplash.com/photo-1534536281715-e28d76689b4d?auto=format&fit=crop&w=800&q=80", tag: "企劃優化" },
+            { title: "D17. 名片辨識 WebAPP", category: "wisdom", desc: "透過網頁鏡頭辨識名片資訊，並自動整理成數位通訊錄。", link: "https://mindnodeai.github.io/TONY_D17NameCard20260625/", image: "https://images.unsplash.com/photo-1589829085413-56de8ae18c73?auto=format&fit=crop&w=800&q=80", tag: "效率工具" },
+            { title: "D18. NotebookLM PDF簡報 轉PPT", category: "wisdom", desc: "將 PDF 文件快速轉化為結構化的 PPT 簡報大綱與內容。", link: "https://reurl.cc/5bn0zM", image: "https://images.unsplash.com/photo-1586281380349-632531db7ed4?auto=format&fit=crop&w=800&q=80", tag: "簡報神器" },
+            { title: "D19. AI Diary 每日的心情記事", category: "wisdom", desc: "自動分析情緒並提供溫暖回饋，成為專屬心靈夥伴。", link: "https://mindnodeai.github.io/TONY_D19AIDiary20260624/", image: "https://images.unsplash.com/photo-1517842645767-c639042777db?auto=format&fit=crop&w=800&q=80", tag: "心靈陪伴" },
+            { title: "D20. 穴位導航查詢系統", category: "wisdom", desc: "提供精確的位置指引與功效說明，居家保健最佳幫手。", link: "https://mindnodeai.github.io/TONY_D20Acupoint20260204/", image: "https://images.unsplash.com/photo-1579684385127-1ef15d508118?auto=format&fit=crop&w=800&q=80", tag: "健康導航" },
+            { title: "D21. 2026漁業署月曆", category: "wisdom", desc: "結合海洋生態與藝術設計，展現台灣豐富的漁業文化。", link: "https://online.fliphtml5.com/icajf/lfnn/#p=1", image: "https://images.unsplash.com/photo-1520116468816-95b69f847357?auto=format&fit=crop&w=800&q=80", tag: "數位月曆" },
+            { title: "D22. 妙語如珠 (智慧開場)", category: "wisdom", desc: "生成幽默風趣或充滿智慧的開場白，瞬間抓住聽眾注意力。", link: "https://mindnodeai.github.io/TONY_E33WiseOpening20260207/", image: "https://images.unsplash.com/photo-1544168190-79c17527004f?auto=format&fit=crop&w=800&q=80", tag: "演講魅力" },
+            { title: "D23. AI 英日文會話練習", category: "wisdom", desc: "與 AI 進行英日文口語對話練習，提升語言流利度與自信心。", link: "https://mindnodeai.github.io/TONY_E23EngJapConversation20260220/", image: "https://images.unsplash.com/photo-1516321318423-f06f85e504b3?auto=format&fit=crop&w=800&q=80", tag: "語言學習" },
+            { title: "D24. AI解籤", category: "wisdom", desc: "結合傳統籤詩智慧與 AI 深度解讀，為您指點迷津。", link: "https://mindnodeai.github.io/TONY_D24ForuneTelling20260205/", image: "https://images.unsplash.com/photo-1550684848-fac1c5b4e853?auto=format&fit=crop&w=800&q=80", tag: "民俗智慧" },
+            { title: "D25. AI掌紋解命", category: "wisdom", desc: "解析生命線與智慧線，探索潛在性格特質與命運軌跡。", link: "https://mindnodeai.github.io/TONY_D25AIPalmFortune20260205/", image: "https://images.unsplash.com/photo-1589254066213-a0c9dc853511?auto=format&fit=crop&w=800&q=80", tag: "掌紋命理" },
+            { title: "D26. 科技紫微", category: "wisdom", desc: "紫微斗數結合科技運算，精準排盤並提供運勢分析。", link: "https://mindnodeai.github.io/TONY_D26ZiWeiTech20260205/", image: "https://images.unsplash.com/photo-1502481851512-e9e2529bfbf9?auto=format&fit=crop&w=800&q=80", tag: "科技命理" },
+            { title: "G39. 資策會生成式AI能力認證模擬考系統(無註冊)", category: "school", desc: "提供資策會生成式 AI 能力認證的線上模擬測驗，幫助考生快速熟悉題型與測驗節奏。", link: "https://mindnodeai.github.io/TONY_G39iiiGenAISimulationExam20260623/", image: "https://images.unsplash.com/photo-1606326608606-aa0b62935f2b?auto=format&fit=crop&w=800&q=80", tag: "認證模擬" },
+            { title: "G40. 資策會生成式AI能力認證模擬考系統 3.5 (註冊版)", category: "school", desc: "專屬學員的進階版模擬考系統，解鎖完整題庫演練、AI 弱點分析與考前衝刺指南。", link: "https://mindnodeai.github.io/TONY_G40iiiGenAISimulationExamReg35-20260713/", image: "https://images.unsplash.com/photo-1434030216411-0b793f4b4173?auto=format&fit=crop&w=800&q=80", tag: "註冊專屬" },
+            { title: "G41. AI 語音助教與任務系統", category: "school", desc: "結合語音互動與任務系統的 AI 助教，提供更直覺、高效的學習體驗與作業指導。", link: "https://share.gemini.google/nuDJkFpKp3Pb", image: "https://images.unsplash.com/photo-1589903308904-1010c2294adc?auto=format&fit=crop&w=800&q=80", tag: "語音助教" },
+
+            // ==========================================
+            // 6. 創作工具 (A/B/C 系列)
+            // ==========================================
+            // --- A 系列：品牌設計與視覺 ---
+            { title: "A1. 企業LOGO設計生成器", category: "tools", desc: "輸入品牌理念，快速生成多款符合企業精神的 LOGO 設計方案與配色建議。", link: "https://mindnodeai.github.io/TONY_A1LOGOGEN20260122/", image: "https://images.unsplash.com/photo-1558655146-d09347e92766?auto=format&fit=crop&w=800&q=80", tag: "品牌設計" },
+            { title: "A2. 行銷素材 Mockup 生成器", category: "tools", desc: "將設計稿一鍵合成到真實場景（如手機、電腦、看板），提升提案專業度。", link: "https://mindnodeai.github.io/TONY_A2Mockup20260122/", image: "https://images.unsplash.com/photo-1581291518633-83b4ebd1d83e?auto=format&fit=crop&w=800&q=80", tag: "展示工具" },
+            { title: "A3. 品牌吉祥物生成器", category: "tools", desc: "打造專屬的品牌吉祥物角色，為品牌注入親和力與記憶點。", link: "https://mindnodeai.github.io/TONY_A3Mascot20260122/", image: "https://images.unsplash.com/photo-1533518463841-d62e1fc91373?auto=format&fit=crop&w=800&q=80", tag: "IP角色" },
+            { title: "A4. 品牌虛擬代言人創作", category: "tools", desc: "應用 AI 創建符合品牌形象的虛擬代言人，應用於社群互動與廣告素材。", link: "https://mindnodeai.github.io/TONY_A4BrandPerson20260122/", image: "https://images.unsplash.com/photo-1535295972055-1c762f4483e5?auto=format&fit=crop&w=800&q=80", tag: "虛擬人" },
+            { title: "A5. AI 商品攝影產生器", category: "tools", desc: "無需專業攝影棚，用 AI 快速生成高質感的商品情境攝影圖。", link: "https://mindnodeai.github.io/TONY_A5ProductPhoto20260122/", image: "https://images.unsplash.com/photo-1526170375885-4d8ecf77b99f?auto=format&fit=crop&w=800&q=80", tag: "商業攝影" },
+            { title: "A6. AI貼圖魔法師 (主角式)", category: "tools", desc: "以固定主角為核心，生成系列化的表情包與 LINE 貼圖素材。", link: "https://mindnodeai.github.io/TONY_A6LINESticker_PEOPLE20260122/", image: "https://images.unsplash.com/photo-1634926878768-2a5b3c42f139?auto=format&fit=crop&w=800&q=80", tag: "貼圖創作" },
+            { title: "A7. AI貼圖創意發動機", category: "tools", desc: "激發創意靈感，生成風格多元的趣味貼圖與插畫素材。", link: "https://mindnodeai.github.io/TONY_A7AIStickerTheme20260122/", image: "https://images.unsplash.com/photo-1572044162444-ad60f128bdea?auto=format&fit=crop&w=800&q=80", tag: "創意插畫" },
+            { title: "A8. 品牌行銷一頁式企劃", category: "tools", desc: "輸入關鍵資訊，AI 自動產出架構完整、邏輯清晰的一頁式品牌企劃書。", link: "https://mindnodeai.github.io/TONY_BrandOnePage20251222/", image: "https://images.unsplash.com/photo-1517048676732-d65bc937f952?auto=format&fit=crop&w=800&q=80", tag: "企劃工具" },
+            { title: "A9. SMEBig品牌智造所 (12套工具生成)", category: "tools", desc: "整合 12 套品牌建構必備工具，從視覺識別到策略規劃，一站式完成品牌智造。", link: "https://mindnodeai.github.io/TONY_BrandBook20251221/", image: "https://images.unsplash.com/photo-1497366216548-37526070297c?auto=format&fit=crop&w=800&q=80", tag: "品牌智造" },
+
+            // --- B 系列：社群與內容行銷 ---
+            { title: "B1. AI社群貼文生成的魔法世界", category: "tools", desc: "針對 FB、IG 等不同平台特性，生成吸睛的社群文案與配圖建議。", link: "https://mindnodeai.github.io/TONY_B1SocialMedia20260219/", image: "https://images.unsplash.com/photo-1611926653458-09294b3142bf?auto=format&fit=crop&w=800&q=80", tag: "社群小編" },
+            { title: "B4. AI協作式{腳本}生成魔法世界", category: "tools", desc: "人機協作撰寫影音腳本，優化故事結構、對白與分鏡描述。", link: "https://mindnodeai.github.io/TONY_ScriptWrite20251223/", image: "https://images.unsplash.com/photo-1485846234645-a62644f84728?auto=format&fit=crop&w=800&q=80", tag: "腳本創作" },
+            { title: "B5. 短影音{腳本分鏡圖}設計", category: "tools", desc: "專為 TikTok、Reels 設計的短影音腳本與視覺化分鏡生成工具。", link: "https://mindnodeai.github.io/TONY_B5ScriptView20260122/", image: "https://images.unsplash.com/photo-1616469829581-73993eb86b02?auto=format&fit=crop&w=800&q=80", tag: "短影音" },
+            { title: "B6. AI智能LINE圖文選單 生成設計", category: "tools", desc: "設計 LINE 官方帳號的圖文選單 (Rich Menu)，提升用戶互動與點擊率。", link: "https://mindnodeai.github.io/TONY_B6LINERichMenu20260310/", image: "https://images.unsplash.com/photo-1611162616305-c69b3fa7fbe0?auto=format&fit=crop&w=800&q=80", tag: "LINE設計" },
+            { title: "B7. SORA Prompt 生成器", category: "tools", desc: "輔助撰寫高品質的 OpenAI Sora 影片生成提示詞，精準控制畫面細節。", link: "https://mindnodeai.github.io/TONY_SORA2PROMPT20251223/", image: "https://images.unsplash.com/photo-1598899134739-24c46f58b8c0?auto=format&fit=crop&w=800&q=80", tag: "Sora Prompt" },
+            { title: "B8. Tony老師品牌行銷 AI 工具包 (完整版)", category: "tools", desc: "整合品牌行銷所需的各類 AI 工具與資源，提供一站式的實戰解決方案。", link: "https://mindnodeai.github.io/TONY_BrandMarketing20251219/", image: "https://images.unsplash.com/photo-1507925921958-8a62f3d1a50d?auto=format&fit=crop&w=800&q=80", tag: "工具包" },
+            { title: "B9. AI 風格一致性PROMPT生成引擎", category: "tools", desc: "專為圖像生成設計的提示詞引擎，確保系列作品的角色、畫風與細節高度一致。", link: "https://mindnodeai.github.io/TONY_B9AIConsistency20260204/", image: "https://images.unsplash.com/photo-1549490349-8643362247b5?auto=format&fit=crop&w=800&q=80", tag: "風格統一" },
+            { title: "B10. AI圖影生成提示詞產生器", category: "tools", desc: "為圖像與影片生成模型設計的提示詞產生器，協助精準描述畫面細節與風格。", link: "https://mindnodeai.github.io/TONY_B10AIImageVideoGen20260210/", image: "https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?auto=format&fit=crop&w=800&q=80", tag: "視覺創作" },
+            { title: "B11. SORA2 運鏡模擬教學 APP", category: "tools", desc: "結合 SORA2 技術，提供專業的運鏡模擬教學，精準掌握鏡頭語言。", link: "https://mindnodeai.github.io/TONY_B11SORA2CameraMove20260315/", image: "https://images.unsplash.com/photo-1518770660439-4636190af475?auto=format&fit=crop&w=800&q=80", tag: "運鏡模擬" },
+
+            // --- C 系列：個人風格與生活創作 ---
+            { title: "C2. 我的生活風格", category: "tools", desc: "探索並生成專屬的個人生活風格視覺，展現獨特品味與生活態度。", link: "https://mindnodeai.github.io/TONY_C2MyLifeStyle20260122/", image: "https://images.unsplash.com/photo-1515886657613-9f3515b0c78f?auto=format&fit=crop&w=800&q=80", tag: "個人風格" },
+            { title: "C3. AI (換衣)風格靈感繆思(模型更新版)", category: "tools", desc: "一鍵生成百變穿搭風格，為您的日常造型與視覺創作提供無限靈感。", link: "https://mindnodeai.github.io/TONY_C3AIStyle20260122/", image: "https://images.unsplash.com/photo-1483985988355-763728e1935b?auto=format&fit=crop&w=800&q=80", tag: "時尚穿搭" },
+            { title: "C4. 藝術級生日賀卡設計", category: "tools", desc: "運用 AI 創作具備藝術美感的專屬生日賀卡，傳遞獨一無二的溫暖祝福。", link: "https://mindnodeai.github.io/TONY_C4BirthdayCard20260122/", image: "https://images.unsplash.com/photo-1527481138388-31827a7c94d5?auto=format&fit=crop&w=800&q=80", tag: "節慶賀卡" },
+            { title: "C5. 我的好朋友(合成寫真)", category: "tools", desc: "透過 AI 合成技術，與好朋友共同創造趣味十足且充滿回憶的創意寫真。", link: "https://mindnodeai.github.io/TONY_MyGoodFriend20260122/", image: "https://images.unsplash.com/photo-1529156069898-49953e39b3ac?auto=format&fit=crop&w=800&q=80", tag: "友情寫真" },
+            { title: "C6. 情人與我的戀愛生活寫真", category: "tools", desc: "捕捉戀愛中的甜蜜瞬間，生成浪漫且具故事性的情侶生活寫真。", link: "https://mindnodeai.github.io/TONY_MyLoverStory20260122/", image: "https://images.unsplash.com/photo-1518199266791-5375a83190b7?auto=format&fit=crop&w=800&q=80", tag: "情侶寫真" },
+            { title: "C6-1. 情人與我的戀愛生活寫真 (PROMPT版)", category: "tools", desc: "專為情侶寫真設計的進階提示詞工具，精準控制畫面風格與浪漫氛圍。", link: "https://mindnodeai.github.io/TONY_C6MyLoverStoryPrompt20260122/", image: "https://images.unsplash.com/photo-1522673607200-164d1b6ce486?auto=format&fit=crop&w=800&q=80", tag: "提示詞版" },
+            { title: "C7. 寵物與我生活寫真集", category: "tools", desc: "捕捉主人與寵物的溫馨互動瞬間，製作專屬的毛小孩生活寫真集。", link: "https://mindnodeai.github.io/TONY_MyPet20251227/", image: "https://images.unsplash.com/photo-1583337130417-3346a1be7dee?auto=format&fit=crop&w=800&q=80", tag: "寵物寫真" },
+
+            // ==========================================
+            // 7. Gem 自動化 (H系列)
+            // ==========================================
+            { title: "H1. AI名人合影生成器™（直出影像版)", category: "gem-auto", desc: "快速合成與名人的逼真合影，提升社群話題性與互動率。", link: "https://gemini.google.com/gem/1khaRT8ABCWWnfBolEj6NiGcjM9jX9CpL?usp=sharing", image: "https://images.unsplash.com/photo-1516035069371-29a1b244cc32?auto=format&fit=crop&w=800&q=80", tag: "影像生成" },
+            { title: "H2. 我內心Q版小人分身 - 情緒肖像生成器 (共10種)", category: "gem-auto", desc: "探索內心世界，生成 10 種不同情緒的 Q 版專屬分身肖像。", link: "https://gemini.google.com/gem/1yCrojX2ESVNgp8O9q-wQ_3zCjs9r48su?usp=sharing", image: "https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=800&q=80", tag: "虛擬分身" },
+            { title: "H3. 自拍照3D九宮格 表情貼紙生成器", category: "gem-auto", desc: "一鍵將自拍照轉換為生動活潑的 3D 九宮格表情貼紙。", link: "https://gemini.google.com/gem/1lyv7OqwDWSfV9HCDqmpHvVnqEqK-0BgP?usp=sharing", image: "https://images.unsplash.com/photo-1511556532299-8f662fc26c06?auto=format&fit=crop&w=800&q=80", tag: "3D貼紙" },
+            { title: "H4. LINE OA圖文選單設計", category: "gem-auto", desc: "結合 AI 視覺創意，快速設計具備高點擊率與轉換邏輯的圖文選單。", link: "https://gemini.google.com/gem/1cRsN5UJFvPIFWaMA44fJJZJdGUNewUrx?usp=sharing", image: "https://images.unsplash.com/photo-1611162616305-c69b3fa7fbe0?auto=format&fit=crop&w=800&q=80", tag: "LINE行銷" },
+            { title: "H5. 霓光教授 LINE 貼圖設計", category: "gem-auto", desc: "專屬客製化的 LINE 貼圖設計流程，包含精準去背處理與情境對白。", link: "https://gemini.google.com/gem/1z-IGtpVPBAorFiMAj_-F9_Ca0XZc34E2?usp=sharing", image: "https://images.unsplash.com/photo-1634926878768-2a5b3c42f139?auto=format&fit=crop&w=800&q=80", tag: "貼圖設計" },
+            { title: "H6. 個人形象決策系統(髮型設計)", category: "gem-auto", desc: "透過 AI 臉型與五官分析，精準推薦並模擬最適合的髮型設計。", link: "https://gemini.google.com/gem/1XEedByKCgEMu8JsCkfQVVn76nKlkjJ65?usp=sharing", image: "https://images.unsplash.com/photo-1562322140-8baeececf3df?auto=format&fit=crop&w=800&q=80", tag: "形象設計" },
+            { title: "H7. TONY老師 品牌AI轉換Gem架構師", category: "gem-auto", desc: "汲取 TONY 老師智慧，建構專屬的品牌 AI 轉換與溝通架構。", link: "https://gemini.google.com/gem/1Jfovwt6gDdkOl2znROeX1fmkgLDvjcWR?usp=sharing", image: "https://images.unsplash.com/photo-1507925921958-8a62f3d1a50d?auto=format&fit=crop&w=800&q=80", tag: "品牌轉換" },
+            { title: "H8. 智商戰 SMEBig | AI 品牌轉型與全球化架構師 (示範)", category: "gem-auto", desc: "協助中小企業突破格局，運用 AI 制定品牌轉型與全球化擴張架構。", link: "https://gemini.google.com/gem/1y3Mk_mpr4E-xaL_ernaGAbGC7tl4yWv8?usp=sharing", image: "https://images.unsplash.com/photo-1529400971008-f566de0e6dfc?auto=format&fit=crop&w=800&q=80", tag: "全球化轉型" },
+            { title: "H9. 秘密遊 Mimiyo 國際行銷導師 (示範範例)", category: "gem-auto", desc: "旅遊與生活風格品牌的國際行銷戰略模擬，打造跨境行銷完美平衡。", link: "https://gemini.google.com/gem/1WZTtw1E5DMzz4RVAQtGjc0DX1YFYzQRd?usp=sharing", image: "https://images.unsplash.com/photo-1488646953014-85cb44e25828?auto=format&fit=crop&w=800&q=80", tag: "國際行銷" },
+            { title: "H10. 卡柏蒂 CUPETIT 法式優雅行銷導師 (示範)", category: "gem-auto", desc: "深入探討高端法式甜點品牌的優雅行銷美學。", link: "https://gemini.google.com/gem/1DZMe2KTL26iybfAi3-_zuWv1QRTQ0C45?usp=sharing", image: "https://images.unsplash.com/photo-1550617931-e17a7b70dce2?auto=format&fit=crop&w=800&q=80", tag: "精品行銷" },
+            { title: "H11. 龍華科大 數銷暨跨境商務領航員(示範)", category: "gem-auto", desc: "結合大學教學實務與趨勢，培育新一代數位行銷頂尖實戰人才。", link: "https://gemini.google.com/gem/1e1qvS97bG1NYRmXzVcYE1rTpOB44l_Zb?usp=sharing", image: "https://images.unsplash.com/photo-1524178232363-1fb2b075b655?auto=format&fit=crop&w=800&q=80", tag: "跨境商務" },
+            { title: "H12. 新光人壽 智慧守護保險顧問 (示範)", category: "gem-auto", desc: "結合保險專業知識與 AI 互動，提供精準的保單諮詢與客戶服務。", link: "https://gemini.google.com/gem/1_6EOHReGoH1xbc2JRqqqRYkQ-kfM8WHW?usp=sharing", image: "https://images.unsplash.com/photo-1560520653-9e0e4c89eb11?auto=format&fit=crop&w=800&q=80", tag: "保險顧問" },
+            { title: "H13. 真人分身互動影像生成器™", category: "gem-auto", desc: "創造高逼真度的真人數位分身，適用於虛擬客服與創新影音行銷。", link: "https://gemini.google.com/gem/1OR50HDwEMfecfPH7bQXswdImBs_A9ZGL?usp=sharing", image: "https://images.unsplash.com/photo-1620641788421-7a1c342ea42e?auto=format&fit=crop&w=800&q=80", tag: "數位分身" },
+            { title: "H14. 3D LED 真實城市廣告導演 Pro", category: "gem-auto", desc: "模擬真實城市環境的 3D LED 廣告牆，生成具視覺張力的數位看板。", link: "https://gemini.google.com/gem/16588H452kMSGDiO8X4OdwtrC9X9X35k5?usp=sharing", image: "https://images.unsplash.com/photo-1492684223066-81342ee5ff30?auto=format&fit=crop&w=800&q=80", tag: "3D廣告" },
+            { title: "H15. 角色定裝圖生成器", category: "gem-auto", desc: "為動畫或品牌 IP 生成包含三視圖與配件細節的專業角色定裝圖。", link: "https://gemini.google.com/gem/1TLHlZd53kx_3B7Wb5QPxsgFj_F0bq5LF?usp=sharing", image: "https://images.unsplash.com/photo-1561070791-2526d30994b5?auto=format&fit=crop&w=800&q=80", tag: "角色設計" },
+            { title: "H16. IP互動合照生成器™", category: "gem-auto", desc: "結合熱門 IP 角色，運用 AI 生成專屬互動合照。", link: "https://gemini.google.com/gem/1ISGtsSKn-DzJFks4jSluwfTpSA6PlM7Q?usp=sharing", image: "https://images.unsplash.com/photo-1608889175123-8ee362201f81?auto=format&fit=crop&w=800&q=80", tag: "IP互動" },
+            { title: "H17. BigHead 風格合影生成器", category: "gem-auto", desc: "一鍵生成誇張逗趣的大頭風格合影照，增添視覺趣味性。", link: "https://gemini.google.com/gem/1XB-q6rJmoKJjVZrgrzcda-Fa50EM1GeB?usp=sharing", image: "https://images.unsplash.com/photo-1544717302-de2939b7ef71?auto=format&fit=crop&w=800&q=80", tag: "趣味合影" },
+            { title: "H18. 新光人壽保險觀念6格漫畫教練™", category: "gem-auto", desc: "將生硬的保險觀念轉化為生動易懂的 6 格漫畫，提升客戶理解。", link: "https://gemini.google.com/gem/1SMJxMNnQFuUfRHIdyd70KGjf7QwVsYcl?usp=sharing", image: "https://images.unsplash.com/photo-1601296200639-89349ce76a48?auto=format&fit=crop&w=800&q=80", tag: "漫畫行銷" },
+            { title: "H19. 新光人壽保險節慶賀卡 Q版生成器", category: "gem-auto", desc: "結合品牌元素，快速生成 Q 版風格節慶賀卡，展現專業與溫度。", link: "https://gemini.google.com/gem/1Stbbm1WzWYe3lEHZZUS570t73zh_InV3?usp=sharing", image: "https://images.unsplash.com/photo-1576158113928-4c240eaaf360?auto=format&fit=crop&w=800&q=80", tag: "品牌賀卡" },
+            { title: "H20. TONY老師Q版節慶賀卡生成器(通用版)", category: "gem-auto", desc: "適用於各種商業與個人情境的通用版 Q 版賀卡生成器。", link: "https://gemini.google.com/gem/1uxYxmY5iSNlUdWFgsMI_mU4IzCfIa1rY?usp=sharing", image: "https://images.unsplash.com/photo-1512909006721-3d6018887383?auto=format&fit=crop&w=800&q=80", tag: "節慶賀卡" },
+            { title: "H21. TONY老師｜台灣及世界旅遊插畫圖譜", category: "gem-auto", desc: "生成極具藝術感與細節的旅遊插畫圖譜，適合旅遊推廣。", link: "https://gemini.google.com/gem/1EcpNU_7ePBFwFbimDHOtFzz660dowp8V?usp=sharing", image: "https://images.unsplash.com/photo-1499856871958-5b9627545d1a?auto=format&fit=crop&w=800&q=80", tag: "旅遊插畫" },
+            { title: "H22. AI虛擬穿搭造型師｜風格× 場合穿搭生成器", category: "gem-auto", desc: "提供客製化的虛擬穿搭建議與高質感視覺模擬，展現最佳形象。", link: "https://gemini.google.com/gem/1O0Y1CEE3C4PCBO_XyvXyt6nM1ZyvDpW_?usp=sharing", image: "https://images.unsplash.com/photo-1515886657613-9f3515b0c78f?auto=format&fit=crop&w=800&q=80", tag: "虛擬穿搭" },
+            { title: "H23. AI 商品情境攝影棚｜產品背景合成廣告圖生成器", category: "gem-auto", desc: "一鍵替換產品背景，生成媲美專業攝影棚的情境廣告圖。", link: "https://gemini.google.com/gem/1QU894dajNSwHqQYXVNwRweeKhrd3nK-H?usp=sharing", image: "https://images.unsplash.com/photo-1505740420928-5e560c06d30e?auto=format&fit=crop&w=800&q=80", tag: "商品攝影" },
+            { title: "H24. 萬物圖譜生成器", category: "gem-auto", desc: "將複雜資訊轉化為結構化且精美的視覺知識圖譜，有助邏輯整理。", link: "https://gemini.google.com/gem/1B9ZOaSYRhsgslxSQMsTFsPMeJZ4kJmWA?usp=sharing", image: "https://images.unsplash.com/photo-1581291518857-4e27b48ff24e?auto=format&fit=crop&w=800&q=80", tag: "知識圖譜" },
+            { title: "H25. TONY老師｜LINE貼圖魔法師", category: "gem-auto", desc: "自動進行「去背景」處理，打造吸睛、實用且高質感的 LINE 貼圖。", link: "https://gemini.google.com/gem/1TNHCkRBCMMj4jj_PFgsW9n8FOmzJHGop?usp=sharing", image: "https://images.unsplash.com/photo-1572044162444-ad60f128bdea?auto=format&fit=crop&w=800&q=80", tag: "貼圖去背" },
+            { title: "H26. 咖啡拉花祝福卡設計師", category: "gem-auto", desc: "以溫暖的咖啡拉花為視覺主題，生成專屬的創意祝福卡片。", link: "https://gemini.google.com/gem/1EuY4x84RgxErbGxFIpimBZ-fnKhKahOr?usp=sharing", image: "https://images.unsplash.com/photo-1497935586351-b67a49e012bf?auto=format&fit=crop&w=800&q=80", tag: "拉花賀卡" },
+            { title: "H27. AI 個人潮流拼貼海報生成器", category: "gem-auto", desc: "將個人照片或圖形元素進行藝術拼貼，打造潮流視覺海報。", link: "https://gemini.google.com/gem/1hNGn8cMzevreW3BEl4n3F_GnonIn5F9E?usp=sharing", image: "https://images.unsplash.com/photo-1557672172-298e090bd0f1?auto=format&fit=crop&w=800&q=80", tag: "潮流海報" },
+            { title: "H28. 品牌輔銷物 Mockup 設計生成器", category: "gem-auto", desc: "快速生成高質感的品牌輔助銷售物，提升提案專業度。", link: "https://gemini.google.com/gem/1fyhv4cZEhKuGDdwvWb4DHlQ14wuGk6Rj?usp=sharing", image: "https://images.unsplash.com/photo-1542744173-05336fcc7ad4?auto=format&fit=crop&w=800&q=80", tag: "品牌設計" },
+            { title: "H29. 紙上破框角色生成器", category: "gem-auto", desc: "創造突破框架、極具視覺張力的 3D 紙上角色插畫。", link: "https://gemini.google.com/gem/1h3sL4Dv70fNJ8HAe2x3NMbMlY3z9IYLt?usp=sharing", image: "https://images.unsplash.com/photo-1580582932707-520aed937b7b?auto=format&fit=crop&w=800&q=80", tag: "創意插畫" },
+            { title: "H30. YouTube 爆款縮圖 AI導演｜提示詞生成", category: "gem-auto", desc: "專為 YouTube 設計的縮圖生成提示詞引擎，助您掌握點擊率密碼。", link: "https://gemini.google.com/gem/1Vqpxlu41H4gGzclJcq8TWrjI19ZM0Rpp?usp=sharing", image: "https://images.unsplash.com/photo-1611162616475-46b635cb6868?auto=format&fit=crop&w=800&q=80", tag: "YouTube行銷" },
+            { title: "H31. AI 穿搭分析指南", category: "gem-auto", desc: "根據身型、風格與場合，提供客製化的穿搭分析與建議。", link: "https://gemini.google.com/gem/11QhJiWTT2ITTAweJGQnGQq3nNb-yYVms?usp=sharing", image: "https://images.unsplash.com/photo-1483985988355-763728e1935b?auto=format&fit=crop&w=800&q=80", tag: "時尚穿搭" },
+            { title: "H32. AI 名人傳奇圖鑑生成器", category: "gem-auto", desc: "深度挖掘人物特質，生成具備傳奇色彩的名人圖鑑素材研究。", link: "https://gemini.google.com/gem/1sU_LmQ12befDj-12cyq1dIbOoEH2aahA?usp=sharing", image: "https://images.unsplash.com/photo-1532012197267-da84d127e765?auto=format&fit=crop&w=800&q=80", tag: "傳奇圖鑑" },
+            { title: "H33. 人物視覺海報生成器", category: "gem-auto", desc: "將人物素材轉化為極具電影感與藝術張力的視覺海報。", link: "https://gemini.google.com/gem/1nYQi8Tz19q0WBh9BSYTiSV8EgC3x5o8q?usp=sharing", image: "https://images.unsplash.com/photo-1534447677768-be436bb09401?auto=format&fit=crop&w=800&q=80", tag: "視覺海報" },
+            { title: "H34. 電影級寫實雕塑誇張人像系統", category: "gem-auto", desc: "生成媲美電影特效的前衛藝術人像，打造獨特視覺衝擊。", link: "https://gemini.google.com/gem/1tqLMxF8W7iDldklFsntOAUCycjbbxew9?usp=sharing", image: "https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?auto=format&fit=crop&w=800&q=80", tag: "藝術人像" },
+            { title: "H35. StepVision 教學步驟視覺化生成系統™", category: "gem-auto", desc: "將複雜教學步驟轉化為清晰易懂的圖解，提升教材易讀性。", link: "https://gemini.google.com/gem/1Beug4Ot2Iv7lP-UoEGm2z3qbo91KH7Q-?usp=sharing", image: "https://images.unsplash.com/photo-1516321497487-e288fb19713f?auto=format&fit=crop&w=800&q=80", tag: "視覺教學" },
+            { title: "H36. 個人化夢境教學生成系統", category: "gem-auto", desc: "透過超现实夢境風格，引導學習者進入沉浸式的教學情境。", link: "https://gemini.google.com/gem/1ndUiQxMjFtSxa6WH88IevX1WAuZpRO_S?usp=sharing", image: "https://images.unsplash.com/photo-1541701494587-cb58502866ab?auto=format&fit=crop&w=800&q=80", tag: "沉浸教學" },
+            { title: "H37. 情緒誇張人像生成系統", category: "gem-auto", desc: "精準捕捉並放大人物情緒，生成極具戲劇張力的人像視覺。", link: "https://gemini.google.com/gem/1cuV6_-0mG3-CPYmmQJmD74TaBoqQbQo1?usp=sharing", image: "https://images.unsplash.com/photo-1542204165-65bf26472b9b?auto=format&fit=crop&w=800&q=80", tag: "情緒人像" },
+            { title: "H38. 電影級寫實水彩人像引擎", category: "gem-auto", desc: "融合光影美學與精緻水彩筆觸，為照片賦予深邃情感。", link: "https://gemini.google.com/gem/17ZzIxKhrobW3d-J8zebxyfNZ2dCMz84z?usp=sharing", image: "https://images.unsplash.com/photo-1513364776144-60967b0f800f?auto=format&fit=crop&w=800&q=80", tag: "水彩藝術" },
+            { title: "H39. 水彩寫實人格肖像生成系統", category: "gem-auto", desc: "生成深刻展現人物內在性格與氣質的藝術水彩肖像。", link: "https://gemini.google.com/gem/1W5Jcu9utxFKdnMU1Iz4ghk54sKlnEot_?usp=sharing", image: "https://images.unsplash.com/photo-1541961017774-22349e4a1262?auto=format&fit=crop&w=800&q=80", tag: "水彩肖像" },
+            { title: "H40. 日系潑墨人物風格生成系統", category: "gem-auto", desc: "創造出極具動態感與瀟灑意境的風格化日系潑墨視覺。", link: "https://gemini.google.com/gem/1-evEHI8VjXVTx0VriwIqQN9B0XCgZm77?usp=sharing", image: "https://images.unsplash.com/photo-1543857778-c4a1a3e0b2eb?auto=format&fit=crop&w=800&q=80", tag: "日系潑墨" },
+            { title: "H41. 藍圖靈魂人像生成系統", category: "gem-auto", desc: "以工程藍圖的獨特風格勾勒人物輪廓，打造前衛科技感。", link: "https://gemini.google.com/gem/1QjGBORZ9KHh-sBHtrmT8xobD0LKJzZgw?usp=sharing", image: "https://images.unsplash.com/photo-1451187580459-43490279c0fa?auto=format&fit=crop&w=800&q=80", tag: "藍圖人像" },
+            { title: "H42. 日常分身敘事視覺系統", category: "gem-auto", desc: "建立日常情境分身，輕鬆產出生活化、具親和力的社群素材。", link: "https://gemini.google.com/gem/1sO26xUQBgLhCIXXR4lnu2MmiIYodL-Ar?usp=sharing", image: "https://images.unsplash.com/photo-1515378791036-0648a3ef77b2?auto=format&fit=crop&w=800&q=80", tag: "分身敘事" },
+            { title: "H43. 高端主色系時尚品牌廣告肖像系統", category: "gem-auto", desc: "鎖定品牌核心主色系，生成媲美高端時尚雜誌封面的質感肖像。", link: "https://gemini.google.com/gem/1byN7qAkwizwFJcRdzl8kyy4ybq_Zi7L9?usp=sharing", image: "https://images.unsplash.com/photo-1490481651871-ab68de25d43d?auto=format&fit=crop&w=800&q=80", tag: "高端時尚" },
+            { title: "H44. 極細緻黑白銅版雕刻肖像系統", category: "gem-auto", desc: "生成極致細膩的黑白銅版雕刻風格肖像，展現深沉古典美學。", link: "https://gemini.google.com/gem/1sBT29MOsZhNgKCkUNIK3xwWvnSem4wWl?usp=sharing", image: "https://images.unsplash.com/photo-1568213816046-0ee1c42bd559?auto=format&fit=crop&w=800&q=80", tag: "銅版雕刻" },
+            { title: "H45. 木質拼貼鑲嵌藝術生成系統", category: "gem-auto", desc: "將圖像轉化為獨特的木質鑲嵌藝術，注入自然手作的溫度。", link: "https://gemini.google.com/gem/1cuvKUPFRTelDrayjxDSwRIv_iv5nICLM?usp=sharing", image: "https://images.unsplash.com/photo-1558002038-1055907df827?auto=format&fit=crop&w=800&q=80", tag: "木質藝術" },
+            { title: "H46. 保險短影音概念轉譯生成系統", category: "gem-auto", desc: "將艱澀的保險觀念轉化為生動易懂的短影音腳本，提升擴散力。", link: "https://gemini.google.com/gem/112b2XyVBWeHIP2jnn_YTZbGXz0zjysp0?usp=sharing", image: "https://images.unsplash.com/photo-1626814026160-2237a95fc5a0?auto=format&fit=crop&w=800&q=80", tag: "保險影音" },
+            { title: "H47. 真人英雄主角 × Q版分身任務宇宙生成系統", category: "gem-auto", desc: "結合真人與 Q 版分身，打造專屬的任務宇宙視覺世界。", link: "https://gemini.google.com/gem/12USoCyIYADSL9-2Pq2Aw9ooDfWPgd8v2?usp=sharing", image: "https://images.unsplash.com/photo-1608889175123-8ee362201f81?auto=format&fit=crop&w=800&q=80", tag: "Q版宇宙" },
+            { title: "H48. TONY老師的社群行銷互動平台 (需認證)", category: "gem-auto", desc: "進階學員專屬的行銷模組與高轉換率實戰策略封閉式平台。", link: "https://gemini.google.com/gem/1fBvfh_VJFWZ9fsaQ7tmcoNF2nr3YaskQ?usp=sharing", image: "https://images.unsplash.com/photo-1611926653458-09294b3142bf?auto=format&fit=crop&w=800&q=80", tag: "需認證" },
+            { title: "H49. 商業微縮 Q 版百工百業商業擴增引擎", category: "gem-auto", desc: "為各行各業量身打造微縮 Q 版商業視覺，增強品牌親和力。", link: "https://gemini.google.com/gem/1sBCoMFduC2UzqiMRClRPnNe-VanSs1n2?usp=sharing", image: "https://images.unsplash.com/photo-1590856029826-c7a73142bbf1?auto=format&fit=crop&w=800&q=80", tag: "微縮視覺" },
+            { title: "H50. (Pop-Out) 立體衝出式社群商業視覺導演", category: "gem-auto", desc: "創造極具視覺衝擊力的立體衝出式社群圖文，打破框架。", link: "https://gemini.google.com/gem/1OkgF2eaZ_1uUtGw6p2BfwXeOY04czU2q?usp=sharing", image: "https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?auto=format&fit=crop&w=800&q=80", tag: "立體視覺" },
+            { title: "H51. 夢幻復古童話肖像生成系統", category: "gem-auto", desc: "將人物照片轉化為充滿夢幻復古氛圍的童話風格肖像。", link: "https://gemini.google.com/gem/1aUpqsV9DkPxdii7wMYtZkHJHJId_JG_J?usp=sharing", image: "https://images.unsplash.com/photo-1534447677768-be436bb09401?auto=format&fit=crop&w=800&q=80", tag: "童話肖像" },
+            { title: "H52. 台灣老街童話小旅人", category: "gem-auto", desc: "生成極具在地特色的旅行主題童話插畫，推廣文創觀光。", link: "https://gemini.google.com/gem/1Bt48syNEr84sLvW1mpqzXoZ10DtD_Sm2?usp=sharing", image: "https://images.unsplash.com/photo-1552993873-0dd1110e025f?auto=format&fit=crop&w=800&q=80", tag: "在地童話" },
+            { title: "H53. 故事關鍵時刻復刻 × 工藝轉譯 × 文創商品生成系統", category: "gem-auto", desc: "轉譯故事關鍵時刻為文創商品設計圖，打造具深度的周邊。", link: "https://gemini.google.com/gem/1EaHFQ4--8hNBfGPbA3U4d0PuCX64kkTN?usp=sharing", image: "https://images.unsplash.com/photo-1513201099705-a9746e1e201f?auto=format&fit=crop&w=800&q=80", tag: "文創商品" },
+            { title: "H54. 微型場景屋創作師™", category: "gem-auto", desc: "生成精緻細膩的微型場景屋視覺，展現獨特的微觀故事。", link: "https://gemini.google.com/gem/18qKa7rFu_OfGGUWyBfIl9smKMDoVWNRO?usp=sharing", image: "https://images.unsplash.com/photo-1590856029826-c7a73142bbf1?auto=format&fit=crop&w=800&q=80", tag: "微型場景" },
+            { title: "H55. 人生角色鑰匙圈 × 職業配件模型生成系統", category: "gem-auto", desc: "打造代表個人職業的特色鑰匙圈與配件視覺，展現品牌符號。", link: "https://gemini.google.com/gem/1unh_GGSlPsjJNMefihu82T8LYN6kb1du?usp=sharing", image: "https://images.unsplash.com/photo-1584432810601-6c7f27d2362b?auto=format&fit=crop&w=800&q=80", tag: "個人配件" },
+            { title: "H56. 百工百業職業/節日 IP 吊飾生成器™", category: "gem-auto", desc: "快速生成討喜的 IP 角色吊飾設計圖，提升行銷活動周邊魅力。", link: "https://gemini.google.com/gem/1RpEabVS17ZjbsDCW99Zk7j6VfK-lk-dE?usp=sharing", image: "https://images.unsplash.com/photo-1533518463841-d62e1fc91373?auto=format&fit=crop&w=800&q=80", tag: "IP周邊" },
+            { title: "H57. 極簡水彩時尚插畫轉換生成器™", category: "gem-auto", desc: "將照片轉換為極簡風格的水彩時尚插畫，展現優雅藝術品味。", link: "https://gemini.google.com/gem/1AFcPZQ7pbUuHBjdVIJmiLS0mKX_MaVY2?usp=sharing", image: "https://images.unsplash.com/photo-1541961017774-22349e4a1262?auto=format&fit=crop&w=800&q=80", tag: "水彩插畫" },
+            { title: "H58. 戲劇厚塗藝術生成器™", category: "gem-auto", desc: "運用厚塗技法與光影對比，生成充滿戲劇張力的油畫藝術人像。", link: "https://gemini.google.com/gem/14r9JK8PIaukwSYGLBSNY5gjFuvs37QO7?usp=sharing", image: "https://images.unsplash.com/photo-1513364776144-60967b0f800f?auto=format&fit=crop&w=800&q=80", tag: "厚塗藝術" },
+            { title: "H59. 職人宣傳海報 (自己當主角)", category: "gem-auto", desc: "為職人量身打造宣傳海報，讓您成為品牌最佳代言人。", link: "https://gemini.google.com/gem/1FmmM17EmkWPheyJtneU8XjYrnOJCwcgQ?usp=sharing", image: "https://images.unsplash.com/photo-1542204165-65bf26472b9b?auto=format&fit=crop&w=800&q=80", tag: "職人海報" },
+            { title: "H60. LINE貼圖創作", category: "gem-auto", desc: "運用 AI 快速生成趣味十足的 LINE 貼圖素材，豐富社群溝通。", link: "https://gemini.google.com/gem/1RzHZX1P_ARupPdLDg3tx8wJHTuUanUTK?usp=sharing", image: "https://images.unsplash.com/photo-1572044162444-ad60f128bdea?auto=format&fit=crop&w=800&q=80", tag: "貼圖創作" },
+            { title: "H61. GEM的母體提示詞（Meta-Prompt）", category: "gem-auto", desc: "探索並構建 Gemini 的母體提示詞，掌握 AI 生成底層架構。", link: "https://gemini.google.com/gem/19A1r48nKpB21VkOdJ4sk8WDRYNgGCHte?usp=sharing", image: "https://images.unsplash.com/photo-1620641788421-7a1c342ea42e?auto=format&fit=crop&w=800&q=80", tag: "提示詞工程" },
+            { title: "H62. 潮流都市藝術大師：時尚數字油畫生成", category: "gem-auto", desc: "一鍵生成具備數字油畫質感的時尚藝術作品，展現都市美學。", link: "https://gemini.google.com/gem/1m002HTdyRU2fej3bIBNMHOnbvP21kOas?usp=sharing", image: "https://images.unsplash.com/photo-1579783902614-a3fb3927b6a5?auto=format&fit=crop&w=800&q=80", tag: "時尚油畫" },
+            { title: "H63. 2027年韓系手繪風桌曆：多模組彈性設計", category: "gem-auto", desc: "打造 2027 年專屬的韓系手繪風格桌曆，滿足溫馨排版需求。", link: "https://gemini.google.com/gem/1euArRXIaORraE20xif4yZNK5dMwUa4GW?usp=sharing", image: "https://images.unsplash.com/photo-1506784365847-bbad939e9335?auto=format&fit=crop&w=800&q=80", tag: "設計排版" },
+            { title: "H64. 極簡人物角色線條插畫", category: "gem-auto", desc: "生成充滿現代感與藝術氣息的簡約線條插畫。", link: "https://gemini.google.com/gem/11kfcUmPUBrlmD56phBojBOHtOHgVcdn1?usp=sharing", image: "https://images.unsplash.com/photo-1513364776144-60967b0f800f?auto=format&fit=crop&w=800&q=80", tag: "極簡插畫" },
+            { title: "H65. 腳底抹油！你別跑!", category: "gem-auto", desc: "生成充滿動態感與幽默情境的趣味插圖，增添社群歡樂氣氛。", link: "https://gemini.google.com/gem/1CjswCsTb-NTaOb88jwNsaoU71JWynmvG?usp=sharing", image: "https://images.unsplash.com/photo-1529156069898-49953e39b3ac?auto=format&fit=crop&w=800&q=80", tag: "趣味插圖" },
+            { title: "H66. 街頭都市塗鴉", category: "gem-auto", desc: "融合街頭文化與都市元素，生成充滿活力與個性的街頭塗鴉。", link: "https://gemini.google.com/gem/1T3Aao22XDWJmWj-isVMVQiAFH_fEROdo?usp=sharing", image: "https://images.unsplash.com/photo-1518235506717-e1ed3306a89b?auto=format&fit=crop&w=800&q=80", tag: "街頭藝術" },
+            { title: "H67. 理賠流程說明助理 (新光人壽)", category: "gem-auto", desc: "專為新光人壽設計，提供清晰、溫暖且專業的理賠指引服務。", link: "https://gemini.google.com/gem/1kql5FcG7gYXCYhIVbQAk5yZlNYr_ir_i?usp=sharing", image: "https://images.unsplash.com/photo-1450101499163-c8848c66ca85?auto=format&fit=crop&w=800&q=80", tag: "保險理賠" },
+            { title: "H68. 都市墨漬時尚肖像風格", category: "gem-auto", desc: "現代都市時尚與狂放墨漬藝術結合，生成極具視覺衝擊力的肖像。", link: "https://gemini.google.com/gem/1G-UGKjNLKI9CJ3hhHwFHwLbA8u1cTCmL?usp=sharing", image: "https://images.unsplash.com/photo-1509631179647-0177331693ae?auto=format&fit=crop&w=800&q=80", tag: "時尚肖像" },
+            { title: "H69. 高級 3D 收藏級場景模型", category: "gem-auto", desc: "生成具備精緻細節的高級 3D 收藏級場景模型，展現頂級工藝質感。", link: "https://gemini.google.com/gem/1WZzTsFWaglEweuWmBPVEE_dZKAEGEV-C?usp=sharing", image: "https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?auto=format&fit=crop&w=800&q=80", tag: "3D場景" },
+            { title: "H70. 3D皮克斯-可樂盡情暢飲", category: "gem-auto", desc: "結合 3D 皮克斯動畫風格，生成充滿歡樂氛圍的暢飲視覺圖像。", link: "https://gemini.google.com/gem/1_2YcuqzoaVvRUaV7--V_LTOfoi3XUq55?usp=sharing", image: "https://images.unsplash.com/photo-1622483767028-3f66f32aef97?auto=format&fit=crop&w=800&q=80", tag: "動畫視覺" },
+            { title: "H71. 微縮手作藝術創意", category: "gem-auto", desc: "創造出充滿手作溫度與細緻工藝的微縮藝術視覺，展現創意世界。", link: "https://gemini.google.com/gem/1ruKpD59vLlm7Eyp21D8wsePI2F5PATS1?usp=sharing", image: "https://images.unsplash.com/photo-1584432810601-6c7f27d2362b?auto=format&fit=crop&w=800&q=80", tag: "微縮藝術" },
+            { title: "H72. 街頭捍衛隊", category: "gem-auto", desc: "生成融合街頭潮流與動態張力的視覺角色，打造專屬的街頭捍衛隊伍。", link: "https://gemini.google.com/gem/15jCRnF0HyX-htTe-gV75c7NiJFUwvdDm?usp=sharing", image: "https://images.unsplash.com/photo-1555680202-c86f0e12f086?auto=format&fit=crop&w=800&q=80", tag: "街頭潮流" },
+            { title: "H74. 人物照片變人物場景圖", category: "gem-auto", desc: "將單一人物照片無縫融入各種情境場景中，快速生成自然且具故事性的視覺圖像。", link: "https://gemini.google.com/gem/1UVP2pStNPKM293qo6YFenWpExKXjZ97T?usp=sharing", image: "https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?auto=format&fit=crop&w=800&q=80", tag: "場景合成" },
+            { title: "H76. AI 逆向提示詞產生器", category: "gem-auto", desc: "解析優秀作品，反向推導出精準的高階提示詞，幫助您快速複製成功模式。", link: "https://gemini.google.com/gem/1P_s-11Amw-3ZA9dCuTGWj34wh6AWYWKl?usp=sharing", image: "https://images.unsplash.com/photo-1620641788421-7a1c342ea42e?auto=format&fit=crop&w=800&q=80", tag: "逆向工程" },
+            
+            // --- 新增公寓大廈與智慧社區系列 ---
+            { title: "H77. (公寓大廈管理) 管委會會議整理與 PPT 助理", category: "gem-auto", desc: "運用 AI 自動彙整會議紀錄，並快速生成結構清晰的簡報，提升管委會運作效率。", link: "https://gemini.google.com/gem/1w8HZ0MuGXpC7hcSLxjnAu2Mi8YbbVYaB?usp=sharing", image: "https://images.unsplash.com/photo-1552664730-d307ca884978?auto=format&fit=crop&w=800&q=80", tag: "會議助理" },
+            { title: "H78. (公寓大廈管理) 廠商比價與優缺點分析助理", category: "gem-auto", desc: "智慧分析各家廠商報價與服務內容，自動產出比較表與決策建議，協助社區做出最佳選擇。", link: "https://gemini.google.com/gem/1--Ig2k-hjg63srQQ049EbxNY2KRauipy?usp=sharing", image: "https://images.unsplash.com/photo-1450101499163-c8848c66ca85?auto=format&fit=crop&w=800&q=80", tag: "廠商評選" },
+            { title: "H79. (公寓大廈管理) 物業公告美化與資訊整理助理", category: "gem-auto", desc: "將生硬的社區公告轉化為圖文並茂、易於閱讀的排版，提升住戶資訊接收度。", link: "https://gemini.google.com/gem/1JqebjLULhdeGYCPfX-FE7FsFiXIblP3F?usp=sharing", image: "https://images.unsplash.com/photo-1560518883-ce09059eeffa?auto=format&fit=crop&w=800&q=80", tag: "公告美化" },
+            { title: "H80. 公寓大廈法規摘要與行動清單助理", category: "gem-auto", desc: "AI 快速摘要繁雜法規，並條列出管委會應執行的具體行動清單，確保社區合規營運。", link: "https://gemini.google.com/gem/10JVCxD0kZoHbLqxCnIm0ktbcZwY0LRQi?usp=sharing", image: "https://images.unsplash.com/photo-1589829085413-56de8ae18c73?auto=format&fit=crop&w=800&q=80", tag: "法規遵循" },
+            { title: "H81. (公寓大廈管理) SOP 規約與新人交接助理", category: "gem-auto", desc: "協助建立標準化作業流程 (SOP) 與社區規約，並生成新人交接手冊，降低管理斷層風險。", link: "https://gemini.google.com/gem/14Zy7JIy1YozEf-1bWFWddxnuXZhXcuTY?usp=sharing", image: "https://images.unsplash.com/photo-1522071820081-009f0129c71c?auto=format&fit=crop&w=800&q=80", tag: "SOP建立" },
+            { title: "H82. (公寓大廈管理) 設備維護紀錄與智控管理助理", category: "gem-auto", desc: "數位化追蹤社區設備維修保養紀錄，提供預測性維護建議，延長設備壽命並確保安全。", link: "https://gemini.google.com/gem/1EbgyG8_fbbKzG4G9dR8uKhEGTQzDw_OG?usp=sharing", image: "https://images.unsplash.com/photo-1581091226825-a6a2a5aee158?auto=format&fit=crop&w=800&q=80", tag: "設備智控" },
+            { title: "H83. (公寓大廈管理) 財務收支與管理費分析助理", category: "gem-auto", desc: "AI 輔助分析社區財務報表與管理費收繳狀況，提供財務健康度診斷與節流建議。", link: "https://gemini.google.com/gem/1CwZRO1IQN2U1iIr3zEzM8XvkTQyrM8X-?usp=sharing", image: "https://images.unsplash.com/photo-1554224155-6726b3ff858f?auto=format&fit=crop&w=800&q=80", tag: "財務分析" },
+            { title: "H84. (公寓大廈管理) 住戶客訴與事件追蹤助理", category: "gem-auto", desc: "系統化管理住戶反映事項，自動分類、指派並追蹤處理進度，提升住戶滿意度與社區和諧。", link: "https://gemini.google.com/gem/1v2D5Dt1rscypc2zOGNpwtozuagF4jmZB?usp=sharing", image: "https://images.unsplash.com/photo-1573497620053-ea5300f94f21?auto=format&fit=crop&w=800&q=80", tag: "客訴追蹤" },
+
+            // --- H85-H87 新增教案 ---
+            { title: "H85. AI 工具選型顧問", category: "gem-auto", desc: "根據您的特定需求與情境，推薦最適合的 AI 工具，大幅節省摸索時間。", link: "https://gemini.google.com/gem/1yTM7Rhl30rLFdE3s--bJoQhpYghSN8Ym?usp=sharing", image: "https://images.unsplash.com/photo-1518770660439-4636190af475?auto=format&fit=crop&w=800&q=80", tag: "工具評測" },
+            { title: "H86. 個人品牌角色板生成器", category: "gem-auto", desc: "系統化建構個人品牌的核心價值、視覺風格與溝通語氣，打造專屬角色設定板。", link: "https://gemini.google.com/gem/1oNVPpW6nTq0UrKVVq63iY38Bt4P0zenb?usp=sharing", image: "https://images.unsplash.com/photo-1533518463841-d62e1fc91373?auto=format&fit=crop&w=800&q=80", tag: "個人品牌" },
+            { title: "H87. 個人品牌電影感速寫角色板生成器", category: "gem-auto", desc: "以極具電影感與藝術張力的速寫風格，呈現您獨特的個人品牌角色視覺形象。", link: "https://gemini.google.com/gem/1ywk1rWLfgsIZWAhgDRSO1grkJjUss4jV?usp=sharing", image: "https://images.unsplash.com/photo-1534447677768-be436bb09401?auto=format&fit=crop&w=800&q=80", tag: "視覺速寫" },
+            { title: "H88. 百工百業 LINE OA 經營規劃顧問", category: "gem-auto", desc: "針對不同行業特性，提供客製化的 LINE OA 經營策略與規劃建議，提升顧客互動與轉換率。", link: "https://gemini.google.com/gem/1g48etByaPIXxTytsnr4YCqbVmgmONHMJ?usp=sharing", image: "https://images.unsplash.com/photo-1556740738-b6a63e27c4df?auto=format&fit=crop&w=800&q=80", tag: "LINE經營" },
+            { title: "H89. AI 保險漫畫客戶溝通資產包顧問", category: "gem-auto", desc: "協助保險業務員運用 AI 快速生成客製化漫畫，將複雜保險觀念視覺化，輕鬆拉近客戶距離。", link: "https://gemini.google.com/gem/1RnLnRowGSQ_Y10Xy0A3BqgDHc2Od8kkb?usp=sharing", image: "https://images.unsplash.com/photo-1601296200639-89349ce76a48?auto=format&fit=crop&w=800&q=80", tag: "保險漫畫" },
+            { title: "H90. 精緻混亂筆觸石墨風格畫像", category: "gem-auto", desc: "將相片轉化為深邃且具獨特藝術張力的石墨繪圖風格，展現混亂筆觸中的細膩質感。", link: "https://gemini.google.com/gem/1tG_b-cKI5-amDBcFCwiDbJOmYPvy6rNC?usp=sharing", image: "https://images.unsplash.com/photo-1568213816046-0ee1c42bd559?auto=format&fit=crop&w=800&q=80", tag: "石墨藝術" }
+        ];
+
+        const categoryContainer = document.getElementById('category-container');
+        const cardsContainer = document.getElementById('cards-container');
+        const searchInputDesktop = document.getElementById('desktop-search');
+        const searchInputMobile = document.getElementById('mobile-search');
+        const currentCategoryTitle = document.getElementById('current-category-title');
+        const itemCountLabel = document.getElementById('item-count');
+        const noResults = document.getElementById('no-results');
+
+        let activeCategory = 'all';
+        let searchQuery = '';
+
+        function init() {
+            renderCategoryButtons();
+            renderCards();
+            
+            searchInputDesktop.addEventListener('input', (e) => {
+                searchQuery = e.target.value.toLowerCase();
+                renderCards();
+            });
+            searchInputMobile.addEventListener('input', (e) => {
+                searchQuery = e.target.value.toLowerCase();
+                renderCards();
+            });
+        }
+
+        function renderCategoryButtons() {
+            categoryContainer.innerHTML = categories.map(cat => `
+                <button 
+                    onclick="setCategory('${cat.id}')"
+                    class="category-btn whitespace-nowrap px-4 py-2 rounded-full text-sm font-medium transition-all duration-300 border flex items-center gap-2
+                    ${activeCategory === cat.id 
+                        ? 'bg-slate-800 text-white border-slate-800 shadow-md' 
+                        : 'bg-white text-gray-600 border-gray-200 hover:bg-gray-100 hover:border-gray-300'}"
+                >
+                    <i class="${cat.icon}"></i>
+                    ${cat.name}
+                </button>
+            `).join('');
+        }
+
+        window.setCategory = function(id) {
+            activeCategory = id;
+            const cat = categories.find(c => c.id === id);
+            currentCategoryTitle.innerText = cat ? cat.name : '列表';
+            renderCategoryButtons();
+            renderCards();
+        }
+
+        function renderCards() {
+            const filteredLessons = lessons.filter(lesson => {
+                const matchCategory = activeCategory === 'all' || lesson.category === activeCategory;
+                const matchSearch = lesson.title.toLowerCase().includes(searchQuery) || 
+                                    lesson.desc.toLowerCase().includes(searchQuery);
+                return matchCategory && matchSearch;
+            });
+
+            itemCountLabel.innerText = `共 ${filteredLessons.length} 項教案`;
+
+            if (filteredLessons.length === 0) {
+                cardsContainer.innerHTML = '';
+                noResults.classList.remove('hidden');
+            } else {
+                noResults.classList.add('hidden');
+                cardsContainer.innerHTML = filteredLessons.map(lesson => {
+                    const categoryObj = categories.find(c => c.id === lesson.category);
+                    const categoryName = categoryObj ? categoryObj.name : '未分類';
+                    
+                    const imageSection = lesson.image 
+                        ? `<div class="relative w-full h-40 overflow-hidden">
+                             <img src="${lesson.image}" alt="${lesson.title}" class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105" onerror="this.style.display='none'; this.nextElementSibling.classList.remove('hidden');">
+                             <div class="hidden absolute inset-0 bg-gradient-to-br from-slate-200 to-slate-300 items-center justify-center text-slate-400">
+                                <i class="fa-solid fa-image text-3xl"></i>
+                             </div>
+                           </div>`
+                        : `<div class="w-full h-40 bg-gradient-to-br from-slate-200 to-slate-300 flex items-center justify-center text-slate-400">
+                             <i class="fa-solid fa-image text-3xl"></i>
+                           </div>`;
+
+                    return `
+                    <div class="lesson-card bg-white rounded-xl overflow-hidden border border-gray-100 shadow-sm flex flex-col h-full relative group">
+                        <a href="${lesson.link}" target="_blank" class="block overflow-hidden relative">
+                            ${imageSection}
+                            ${lesson.tag ? `<span class="absolute top-2 right-2 bg-accent text-white text-xs px-2 py-1 rounded shadow-sm font-bold z-10">${lesson.tag}</span>` : ''}
+                            
+                            <div class="absolute inset-0 bg-black/40 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity duration-300 z-10 pointer-events-none">
+                                 <div class="w-12 h-12 bg-white rounded-full flex items-center justify-center text-primary shadow-lg transform scale-0 group-hover:scale-100 transition-transform duration-300">
+                                    <i class="fa-solid fa-play ml-1"></i>
+                                 </div>
+                            </div>
+                        </a>
+                        <div class="p-5 flex flex-col flex-grow">
+                            <div class="mb-2">
+                                <span class="text-xs font-semibold text-primary bg-blue-50 px-2 py-1 rounded-md">
+                                    ${categoryName}
+                                </span>
+                            </div>
+                            <h3 class="text-lg font-bold text-gray-800 mb-2 line-clamp-2 group-hover:text-primary transition-colors">
+                                <a href="${lesson.link}" target="_blank">${lesson.title}</a>
+                            </h3>
+                            <p class="text-sm text-gray-500 mb-4 flex-grow line-clamp-3 leading-relaxed">
+                                ${lesson.desc}
+                            </p>
+                            <div class="mt-auto pt-4 border-t border-gray-100 flex justify-between items-center">
+                                <a href="${lesson.link}" target="_blank" class="text-sm font-medium text-slate-600 hover:text-primary transition-colors flex items-center">
+                                    開始學習 <i class="fa-solid fa-arrow-right-long ml-2"></i>
+                                </a>
+                                <button class="text-gray-400 hover:text-red-500 transition-colors" title="加入收藏">
+                                    <i class="fa-regular fa-heart"></i>
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                    `;
+                }).join('');
+            }
+        }
+
+        init();
+    </script>
+</body>
+</html>
