@@ -382,6 +382,7 @@
         const categories = [
             { id: 'all', name: '全部顯示', icon: 'fa-solid fa-border-all' },
             { id: 'line-oa', name: 'LINE OA行銷', icon: 'fa-brands fa-line' },
+            { id: 'gamification', name: '遊戲化教學', icon: 'fa-solid fa-gamepad' },
             { id: 'ai-industries', name: '百工百業用AI', icon: 'fa-solid fa-briefcase' },
             { id: 'school', name: '學校課程', icon: 'fa-solid fa-graduation-cap' },
             { id: 'consulting', name: '顧問諮詢', icon: 'fa-solid fa-handshake' },
@@ -730,7 +731,18 @@
             { title: "H114. (第二類) 10秒生命蛻變導演｜昆蟲、小型生物、兩棲變態類", category: "gem-auto", desc: "生動演繹昆蟲、兩棲類等小型生物的 10 秒生命蛻變與進化視覺歷程。", link: "https://gemini.google.com/gem/1nxZzBlHLbjnFDYphDcp5EikrfqoV6Pl7?usp=sharing", image: "https://images.unsplash.com/photo-1589182373726-e4f658ab50f0?auto=format&fit=crop&w=800&q=80", tag: "昆蟲蛻變" },
             { title: "H115. (第三類) 10秒生命成長導演｜動物、鳥類、哺乳類、爬蟲類", category: "gem-auto", desc: "以 10 秒影片動態呈現哺乳類、鳥類等動物生命成長的張力與故事。", link: "https://gemini.google.com/gem/1Yu3k-D-ByidOLSWi_PpF4lB7oUZTN3xP?usp=sharing", image: "https://images.unsplash.com/photo-1456926631375-92c8ce872def?auto=format&fit=crop&w=800&q=80", tag: "動物成長" },
             { title: "H116. (第四類) 10秒海洋生命導演｜魚類、水中生物、海洋生命", category: "gem-auto", desc: "探索魚類與海洋生物的奇妙世界，生成 10 秒海洋生命動態演進視覺。", link: "https://gemini.google.com/gem/14ROi8mwku5OMZ7gJNimUDyYT2UOenHOy?usp=sharing", image: "https://images.unsplash.com/photo-1582967788606-a171c1080cb0?auto=format&fit=crop&w=800&q=80", tag: "海洋生命" },
-            { title: "H117. 資深顧問 Tony 老師風格改寫專家", category: "gem-auto", desc: "汲取資深顧問 Tony 老師的寫作心法，一鍵將文章改寫為具備專業與說服力的專屬風格。", link: "https://gemini.google.com/gem/123xLoGBJx8CaR77iicrn3ZXX1kbzqx_n?usp=sharing", image: "https://images.unsplash.com/photo-1455390582262-044cdead277a?auto=format&fit=crop&w=800&q=80", tag: "寫作專家" }
+            { title: "H117. 資深顧問 Tony 老師風格改寫專家", category: "gem-auto", desc: "汲取資深顧問 Tony 老師的寫作心法，一鍵將文章改寫為具備專業與說服力的專屬風格。", link: "https://gemini.google.com/gem/123xLoGBJx8CaR77iicrn3ZXX1kbzqx_n?usp=sharing", image: "https://images.unsplash.com/photo-1455390582262-044cdead277a?auto=format&fit=crop&w=800&q=80", tag: "寫作專家" },
+
+            // ==========================================
+            // 8. 遊戲化教學 (GAME系列)
+            // ==========================================
+            { title: "GAME01. 霓虹星際打磚塊遊戲", category: "gamification", desc: "結合賽博龐克視覺風格的經典打磚塊遊戲，透過遊戲化機制提升互動樂趣與專注力。", link: "https://mindnodeai.github.io/TONY_GAME01NEON_BREAKOUT20261017/", image: "https://images.unsplash.com/photo-1550745165-9bc0b252726f?auto=format&fit=crop&w=800&q=80", tag: "街機經典" },
+            { title: "GAME02. 1980 經典小蜜蜂射擊遊戲（Galaxian / Galaga）", category: "gamification", desc: "復刻 1980 年代經典小蜜蜂射擊遊戲，在懷舊星際空戰中體驗沉浸式互動。", link: "https://mindnodeai.github.io/TONY_GAME02Galaxian_Galaga20261017/", image: "https://images.unsplash.com/photo-1552820728-8b83bb6b773f?auto=format&fit=crop&w=800&q=80", tag: "飛行射擊" },
+            { title: "GAME03. 俄羅斯方塊 (Tetris)", category: "gamification", desc: "歷久彌新的經典俄羅斯方塊，訓練空間邏輯、反應速度與解題思維。", link: "https://mindnodeai.github.io/TONY_GAME03Tetris20261017/", image: "https://images.unsplash.com/photo-1579373903781-fd5c0c30c4cd?auto=format&fit=crop&w=800&q=80", tag: "益智方塊" },
+            { title: "GAME04. Cyberpunk 霓虹貪食蛇遊戲", category: "gamification", desc: "賽博龐克風格的貪食蛇遊戲，充滿霓虹光影與科技感，挑戰操控極限與策略。", link: "https://mindnodeai.github.io/TONY_GAME04CYBERSNAKE20261017/", image: "https://images.unsplash.com/photo-1620336655055-088d06e36bf0?auto=format&fit=crop&w=800&q=80", tag: "霓虹挑戰" },
+            { title: "GAME05. BrainSpark AI 智創記憶翻牌", category: "gamification", desc: "結合 AI 視覺元素的記憶翻牌遊戲，不僅訓練大腦記憶力，更能激發智創靈感。", link: "https://mindnodeai.github.io/TONY_GAME05BrainSparkCARD20261017/", image: "https://images.unsplash.com/photo-1620641788421-7a1c342ea42e?auto=format&fit=crop&w=800&q=80", tag: "記憶訓練" },
+            { title: "GAME06. 稜鏡翻轉 PRISM FLIP 數位共創平台", category: "gamification", desc: "創新的稜鏡翻轉機制，提供沉浸式的數位共創體驗，顛覆傳統思考框架。", link: "https://mindnodeai.github.io/TONY_GAME06PrismFlipPlatform20261017/", image: "https://images.unsplash.com/photo-1549608276-5786777e6587?auto=format&fit=crop&w=800&q=80", tag: "數位共創" },
+            { title: "GAME06-1. 稜鏡翻轉 PRISM FLIP 數位共創平台教學網頁", category: "gamification", desc: "PRISM FLIP 共創平台的專屬教學指南，引導您快速上手並發揮最大創意潛力。", link: "https://mindnodeai.github.io/TONY_GAME06-1PRISMTONYTHINKING20261017/", image: "https://images.unsplash.com/photo-1516321497487-e288fb19713f?auto=format&fit=crop&w=800&q=80", tag: "教學指南" }
         ];
 
         const categoryContainer = document.getElementById('category-container');
