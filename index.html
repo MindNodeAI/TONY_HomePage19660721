@@ -568,19 +568,27 @@
 
                         <!-- 動態分類管理面板 (點擊「新增/修改分類」展開) -->
                         <div id="category-manager-box" class="hidden bg-blue-50/70 p-4 rounded-xl border border-blue-200 space-y-3">
-                            <div class="flex justify-between items-center">
+                            <div class="flex flex-wrap justify-between items-center gap-2">
                                 <h4 class="text-xs font-bold text-blue-900 flex items-center gap-1.5">
-                                    <i class="fa-solid fa-layer-group"></i> 所屬分類管理（支援新增、修改名稱與圖示，自動同步前台導覽列）
+                                    <i class="fa-solid fa-layer-group"></i> 所屬分類管理（支援新增、修改名稱與圖示、點擊 ◀ ▶ 調整前後順序，自動同步前台導覽列）
                                 </h4>
-                                <button type="button" onclick="toggleCategoryManager()" class="text-xs text-gray-500 hover:text-gray-700"><i class="fa-solid fa-xmark"></i> 收起</button>
+                                <div class="flex items-center gap-2">
+                                    <span id="cat-sync-status" class="text-[11px] font-bold text-emerald-600 bg-emerald-50 px-2 py-0.5 rounded border border-emerald-200">
+                                        <i class="fa-solid fa-cloud-arrow-up"></i> 變更自動儲存中
+                                    </span>
+                                    <button type="button" onclick="forceSaveTaxonomyNow()" class="px-2.5 py-1 bg-emerald-600 hover:bg-emerald-700 text-white font-bold rounded text-xs shadow-sm flex items-center gap-1">
+                                        <i class="fa-solid fa-floppy-disk"></i> 立即儲存分類設定
+                                    </button>
+                                    <button type="button" onclick="toggleCategoryManager()" class="text-xs text-gray-500 hover:text-gray-700 ml-1"><i class="fa-solid fa-xmark"></i> 收起</button>
+                                </div>
                             </div>
                             <div class="grid grid-cols-1 md:grid-cols-12 gap-2 items-end">
                                 <div class="md:col-span-3">
-                                    <label class="block text-[11px] font-bold text-gray-600 mb-0.5">分類代碼 ID (英文/數字)</label>
-                                    <input type="text" id="mgr-cat-id" placeholder="例如：custom-ai" class="w-full px-2.5 py-1.5 rounded border border-gray-300 text-xs bg-white">
+                                    <label class="block text-[11px] font-bold text-gray-600 mb-0.5">分類代碼 ID (可留空自動產生)</label>
+                                    <input type="text" id="mgr-cat-id" placeholder="留空將自動產生代碼" class="w-full px-2.5 py-1.5 rounded border border-gray-300 text-xs bg-white">
                                 </div>
                                 <div class="md:col-span-4">
-                                    <label class="block text-[11px] font-bold text-gray-600 mb-0.5">分類顯示名稱</label>
+                                    <label class="block text-[11px] font-bold text-gray-600 mb-0.5">分類顯示名稱 (必填)</label>
                                     <input type="text" id="mgr-cat-name" placeholder="例如：企業內訓專區" class="w-full px-2.5 py-1.5 rounded border border-gray-300 text-xs bg-white">
                                 </div>
                                 <div class="md:col-span-3">
@@ -588,7 +596,7 @@
                                     <input type="text" id="mgr-cat-icon" value="fa-solid fa-star" placeholder="fa-solid fa-star" class="w-full px-2.5 py-1.5 rounded border border-gray-300 text-xs bg-white">
                                 </div>
                                 <div class="md:col-span-2">
-                                    <button type="button" onclick="saveOrUpdateCategory()" class="w-full py-1.5 px-3 bg-primary hover:bg-secondary text-white font-bold rounded text-xs">
+                                    <button type="button" id="btn-mgr-cat-submit" onclick="saveOrUpdateCategory()" class="w-full py-1.5 px-3 bg-primary hover:bg-secondary text-white font-bold rounded text-xs shadow-sm">
                                         新增 / 更新分類
                                     </button>
                                 </div>
@@ -660,12 +668,26 @@
 
                     <!-- 已上架自訂教案列表 -->
                     <div class="bg-white p-6 rounded-xl border border-gray-200 shadow-sm">
-                        <div class="flex flex-wrap justify-between items-center gap-2 mb-3">
-                            <h4 class="font-bold text-slate-800">所有教案分類與右上角標籤快速修改列表</h4>
-                            <input type="text" id="admin-app-search" oninput="renderCustomAppsAdminList()" placeholder="搜尋要修改分類或標籤的教案..." class="px-3 py-1.5 border rounded-lg text-xs w-64">
+                        <div class="flex flex-wrap justify-between items-center gap-3 mb-4 pb-3 border-b border-gray-100">
+                            <div class="flex flex-wrap items-center gap-2">
+                                <h4 class="font-bold text-slate-800">所有教案分類與右上角標籤快速修改列表</h4>
+                                <span id="admin-app-count" class="px-2.5 py-0.5 bg-blue-50 text-primary rounded-full text-xs font-bold">共 0 筆</span>
+                                <span id="lesson-order-sync-badge" class="px-2 py-0.5 bg-emerald-50 text-emerald-700 border border-emerald-200 rounded text-[11px] font-bold">
+                                    <i class="fa-solid fa-arrows-up-down mr-1"></i>支援上下移動與輸入序號調序
+                                </span>
+                            </div>
+                            <div class="flex flex-wrap items-center gap-2">
+                                <button type="button" onclick="saveLessonsOrderState(true)" class="px-3 py-1.5 bg-emerald-600 hover:bg-emerald-700 text-white rounded-lg text-xs font-bold shadow-sm flex items-center gap-1">
+                                    <i class="fa-solid fa-floppy-disk"></i> 儲存目前教案順序
+                                </button>
+                                <select id="admin-app-cat-filter" onchange="renderCustomAppsAdminList()" class="px-3 py-1.5 border border-gray-300 rounded-lg text-xs bg-white font-medium text-slate-700">
+                                    <option value="all">所有分類 (全部顯示)</option>
+                                </select>
+                                <input type="text" id="admin-app-search" oninput="renderCustomAppsAdminList()" placeholder="搜尋標題、編號(如K40、GAME19)或標籤..." class="px-3 py-1.5 border border-gray-300 rounded-lg text-xs w-64">
+                            </div>
                         </div>
-                        <div id="custom-apps-list" class="space-y-2 text-sm text-gray-600 max-h-96 overflow-y-auto pr-1">
-                            <!-- JS 渲染 -->
+                        <div id="custom-apps-list" class="space-y-2 text-sm text-gray-600 max-h-[550px] overflow-y-auto pr-1">
+                            <!-- JS 渲染完整教案列表 -->
                         </div>
                     </div>
                 </div>
@@ -1348,8 +1370,119 @@
         let activeCategory = 'all';
         let searchQuery = '';
         let presetTags = ['獲利實戰', '企業內訓', '註冊專屬', '全局觀', '品牌行銷', 'AI 實戰', '證照備考', '遊戲沙盤', '熱門推薦'];
+        const TAXONOMY_STORAGE_KEY = 'TONY_SAAS_TAXONOMY_V1';
+        const LESSONS_ORDER_STORAGE_KEY = 'TONY_SAAS_LESSONS_ORDER_V1';
+
+        // 依據已儲存的排序鍵值陣列，重排 lessons 陣列並保留分類與標籤覆寫
+        function applySavedLessonsOrderArray(orderList) {
+            if (!Array.isArray(orderList) || orderList.length === 0) return;
+            const mapByKey = new Map();
+            lessons.forEach((item) => {
+                const key = item.title;
+                if (!mapByKey.has(key)) mapByKey.set(key, item);
+            });
+
+            const reordered = [];
+            const usedKeys = new Set();
+
+            orderList.forEach(saved => {
+                const key = typeof saved === 'string' ? saved : saved.title;
+                if (key && mapByKey.has(key) && !usedKeys.has(key)) {
+                    const target = mapByKey.get(key);
+                    if (typeof saved === 'object' && saved !== null) {
+                        if (saved.category) target.category = saved.category;
+                        if (saved.tag !== undefined) target.tag = saved.tag;
+                    }
+                    reordered.push(target);
+                    usedKeys.add(key);
+                }
+            });
+
+            // 將未在舊排序清單中的新教案排在後面
+            lessons.forEach(item => {
+                if (!usedKeys.has(item.title)) {
+                    reordered.push(item);
+                    usedKeys.add(item.title);
+                }
+            });
+
+            lessons.length = 0;
+            reordered.forEach(item => lessons.push(item));
+        }
+
+        // 啟動時優先從本地儲存載入最新分類順序、標籤與教案排序，確保重新整理絕不遺失
+        function restoreTaxonomyFromLocal() {
+            try {
+                const raw = localStorage.getItem(TAXONOMY_STORAGE_KEY);
+                if (raw) {
+                    const parsed = JSON.parse(raw);
+                    if (Array.isArray(parsed.categories) && parsed.categories.length > 0) {
+                        categories.length = 0;
+                        parsed.categories.forEach(c => categories.push(c));
+                    }
+                    if (Array.isArray(parsed.presetTags) && parsed.presetTags.length > 0) {
+                        presetTags = parsed.presetTags;
+                    }
+                }
+            } catch (e) {
+                console.warn('本地分類設定讀取略過:', e);
+            }
+
+            try {
+                const orderRaw = localStorage.getItem(LESSONS_ORDER_STORAGE_KEY);
+                if (orderRaw) {
+                    const orderParsed = JSON.parse(orderRaw);
+                    if (Array.isArray(orderParsed.order)) {
+                        applySavedLessonsOrderArray(orderParsed.order);
+                    }
+                }
+            } catch (e) {
+                console.warn('本地教案順序讀取略過:', e);
+            }
+        }
+
+        // 儲存所有教案的排列順序、所屬分類與右上角標籤至 LocalStorage 與 Firestore
+        window.saveLessonsOrderState = async function(showExplicitToast = false) {
+            const nowISO = new Date().toISOString();
+            const orderSnapshot = lessons.map(l => ({
+                title: l.title,
+                category: l.category,
+                tag: l.tag || ''
+            }));
+            const payload = {
+                order: orderSnapshot,
+                updatedAt: nowISO
+            };
+
+            const badge = document.getElementById('lesson-order-sync-badge');
+            if (badge) {
+                badge.innerHTML = `<i class="fa-solid fa-spinner fa-spin mr-1"></i>順序儲存中...`;
+            }
+
+            try {
+                localStorage.setItem(LESSONS_ORDER_STORAGE_KEY, JSON.stringify(payload));
+            } catch (e) {}
+
+            if (db) {
+                try {
+                    await db.collection('site_settings').doc('lessons_order').set(payload, { merge: true });
+                    if (badge) {
+                        badge.className = "px-2 py-0.5 bg-emerald-50 text-emerald-700 border border-emerald-200 rounded text-[11px] font-bold";
+                        badge.innerHTML = `<i class="fa-solid fa-circle-check mr-1"></i>教案順序已同步雲端 (${new Date().toLocaleTimeString('zh-TW')})`;
+                    }
+                    if (showExplicitToast) showToast('教案排列順序已成功儲存並同步至雲端！');
+                } catch (err) {
+                    if (badge) {
+                        badge.className = "px-2 py-0.5 bg-amber-50 text-amber-700 border border-amber-200 rounded text-[11px] font-bold";
+                        badge.innerHTML = `<i class="fa-solid fa-hard-drive mr-1"></i>順序已存於本機`;
+                    }
+                    if (showExplicitToast) showToast('教案排列順序已儲存於本機！');
+                }
+            }
+        };
 
         function init() {
+            restoreTaxonomyFromLocal();
             renderCategoryButtons();
             renderAdminCategorySelect();
             renderAdminTagDatalist();
@@ -1379,10 +1512,32 @@
                 }
             }
 
+            const filterEl = document.getElementById('admin-app-cat-filter');
+            if (filterEl) {
+                const currentFilter = filterEl.value || 'all';
+                filterEl.innerHTML = `<option value="all">所有分類 (全部顯示)</option>` + categories
+                    .filter(c => c.id !== 'all')
+                    .map(c => `<option value="${c.id}">${c.name}</option>`)
+                    .join('');
+                if (categories.some(c => c.id === currentFilter) || currentFilter === 'all') {
+                    filterEl.value = currentFilter;
+                }
+            }
+
             const listEl = document.getElementById('mgr-cat-list');
             if (listEl) {
-                listEl.innerHTML = categories.filter(c => c.id !== 'all').map(c => `
-                    <div class="inline-flex items-center gap-1.5 bg-white px-2.5 py-1 rounded-lg border border-blue-200 text-xs shadow-sm">
+                const editableCats = categories.filter(c => c.id !== 'all');
+                listEl.innerHTML = editableCats.map((c, idx) => `
+                    <div class="inline-flex items-center gap-1.5 bg-white px-2.5 py-1.5 rounded-lg border border-blue-200 text-xs shadow-sm transition-all">
+                        <span class="px-1.5 py-0.5 bg-slate-100 text-slate-500 rounded text-[10px] font-mono font-bold">${idx + 1}</span>
+                        <div class="flex items-center gap-0.5 mr-0.5">
+                            <button type="button" onclick="moveCategoryOrder('${c.id}', -1)" ${idx === 0 ? 'disabled' : ''} class="${idx === 0 ? 'text-gray-200 cursor-not-allowed' : 'text-slate-500 hover:text-primary hover:bg-blue-50'} px-1 py-0.5 rounded transition-colors" title="往前移 (左移)">
+                                <i class="fa-solid fa-arrow-left text-[10px]"></i>
+                            </button>
+                            <button type="button" onclick="moveCategoryOrder('${c.id}', 1)" ${idx === editableCats.length - 1 ? 'disabled' : ''} class="${idx === editableCats.length - 1 ? 'text-gray-200 cursor-not-allowed' : 'text-slate-500 hover:text-primary hover:bg-blue-50'} px-1 py-0.5 rounded transition-colors" title="往後移 (右移)">
+                                <i class="fa-solid fa-arrow-right text-[10px]"></i>
+                            </button>
+                        </div>
                         <i class="${c.icon} text-primary"></i>
                         <span class="font-bold text-slate-700">${c.name}</span>
                         <span class="text-[10px] text-gray-400">(${c.id})</span>
@@ -1396,6 +1551,23 @@
                 `).join('');
             }
         }
+
+        // 調整所屬分類的前後順序並即時同步前台與雲端
+        window.moveCategoryOrder = async function(catId, direction) {
+            const idx = categories.findIndex(c => c.id === catId);
+            if (idx <= 0) return; // index 0 是 'all' (全部顯示)，固定在最前面
+            const targetIdx = idx + direction;
+            if (targetIdx <= 0 || targetIdx >= categories.length) return;
+
+            const temp = categories[idx];
+            categories[idx] = categories[targetIdx];
+            categories[targetIdx] = temp;
+
+            renderCategoryButtons();
+            renderAdminCategorySelect();
+            showToast(`已調整「${temp.name}」的排列順序！`);
+            await syncCategoriesAndTagsToCloud();
+        };
 
         // 同步渲染後台「右上角標籤」下拉建議與管理列表
         function renderAdminTagDatalist() {
@@ -1445,15 +1617,30 @@
             document.getElementById('mgr-cat-id').value = cat.id;
             document.getElementById('mgr-cat-name').value = cat.name;
             document.getElementById('mgr-cat-icon').value = cat.icon || 'fa-solid fa-folder';
+            const btn = document.getElementById('btn-mgr-cat-submit');
+            if (btn) btn.innerText = `確認修改「${cat.name}」`;
+            showToast(`已帶入分類「${cat.name}」，修改名稱後請點選「確認修改」！`);
         };
 
         window.saveOrUpdateCategory = async function() {
-            const idInput = document.getElementById('mgr-cat-id').value.trim();
+            let idInput = document.getElementById('mgr-cat-id').value.trim();
             const nameInput = document.getElementById('mgr-cat-name').value.trim();
             const iconInput = document.getElementById('mgr-cat-icon').value.trim() || 'fa-solid fa-folder';
 
-            if (!idInput || !nameInput) {
-                showToast('請輸入分類代碼 ID 與分類顯示名稱！');
+            if (!nameInput) {
+                showToast('請輸入「分類顯示名稱」！');
+                document.getElementById('mgr-cat-name').focus();
+                return;
+            }
+
+            // 若未填寫分類代碼 ID，先檢查是否有同名分類，否則自動生成唯一 ID
+            if (!idInput) {
+                const sameNameCat = categories.find(c => c.name === nameInput && c.id !== 'all');
+                idInput = sameNameCat ? sameNameCat.id : ('cat-' + Date.now().toString().slice(-5));
+            }
+
+            if (idInput === 'all') {
+                showToast('「all」為系統保留代碼，請使用其他代碼！');
                 return;
             }
 
@@ -1461,20 +1648,33 @@
             if (existingIdx > -1) {
                 categories[existingIdx].name = nameInput;
                 categories[existingIdx].icon = iconInput;
-                showToast(`已修改分類「${nameInput}」！`);
+                showToast(`已成功修改分類「${nameInput}」並儲存！`);
             } else {
                 categories.push({ id: idInput, name: nameInput, icon: iconInput });
-                showToast(`已新增分類「${nameInput}」！`);
+                showToast(`已成功新增分類「${nameInput}」並儲存！`);
             }
 
             renderCategoryButtons();
             renderAdminCategorySelect();
             renderCards();
+            renderCustomAppsAdminList();
             document.getElementById('app-cat-input').value = idInput;
             document.getElementById('mgr-cat-id').value = '';
             document.getElementById('mgr-cat-name').value = '';
+            const btn = document.getElementById('btn-mgr-cat-submit');
+            if (btn) btn.innerText = '新增 / 更新分類';
 
             await syncCategoriesAndTagsToCloud();
+        };
+
+        window.forceSaveTaxonomyNow = async function() {
+            // 若輸入框中有正在輸入但還沒按新增的分類名稱，也一併處理儲存
+            const pendingName = document.getElementById('mgr-cat-name')?.value.trim();
+            if (pendingName) {
+                await saveOrUpdateCategory();
+                return;
+            }
+            await syncCategoriesAndTagsToCloud(true);
         };
 
         window.deleteCategoryItem = async function(catId) {
@@ -1490,6 +1690,7 @@
                 renderCategoryButtons();
                 renderAdminCategorySelect();
                 renderCards();
+                renderCustomAppsAdminList();
                 showToast(`已刪除分類：${removedName}`);
                 await syncCategoriesAndTagsToCloud();
             }
@@ -1525,8 +1726,10 @@
                 });
                 showToast(`已將標籤「${oldTag}」全面修改為「${newTag}」！`);
             } else {
-                if (!presetTags.includes(newTag)) presetTags.unshift(newTag);
-                showToast(`已新增右上角標籤：「${newTag}」`);
+                if (!presetTags.includes(newTag)) {
+                    presetTags.unshift(newTag);
+                }
+                showToast(`已新增常用標籤「#${newTag}」！`);
             }
 
             document.getElementById('app-tag-input').value = newTag;
@@ -1538,24 +1741,52 @@
             renderCards();
             renderCustomAppsAdminList();
             await syncCategoriesAndTagsToCloud();
+            await saveLessonsOrderState(false);
         };
 
         window.removePresetTag = async function(tagVal) {
             presetTags = presetTags.filter(t => t !== tagVal);
             renderAdminTagDatalist();
-            showToast(`已從常用清單移除標籤：${tagVal}`);
+            showToast(`已從常用標籤移除：${tagVal}`);
             await syncCategoriesAndTagsToCloud();
         };
 
-        async function syncCategoriesAndTagsToCloud() {
-            if (!db) return;
+        async function syncCategoriesAndTagsToCloud(showExplicitToast = false) {
+            const nowISO = new Date().toISOString();
+            const payload = {
+                categories: categories,
+                presetTags: presetTags,
+                updatedAt: nowISO
+            };
+
+            const statusBadge = document.getElementById('cat-sync-status');
+            if (statusBadge) {
+                statusBadge.innerHTML = `<i class="fa-solid fa-spinner fa-spin"></i> 正在儲存...`;
+            }
+
+            // 1. 立即寫入本地 LocalStorage，確保不論網路或權限狀態皆 100% 持久保存
             try {
-                await db.collection('site_settings').doc('taxonomy').set({
-                    categories: categories,
-                    presetTags: presetTags,
-                    updatedAt: new Date().toISOString()
-                }, { merge: true });
+                localStorage.setItem(TAXONOMY_STORAGE_KEY, JSON.stringify(payload));
             } catch (e) {}
+
+            // 2. 同步寫入 Firestore 雲端資料庫
+            if (db) {
+                try {
+                    await db.collection('site_settings').doc('taxonomy').set(payload, { merge: true });
+                    if (statusBadge) {
+                        statusBadge.className = "text-[11px] font-bold text-emerald-700 bg-emerald-50 px-2 py-0.5 rounded border border-emerald-200";
+                        statusBadge.innerHTML = `<i class="fa-solid fa-circle-check"></i> 已同步儲存至雲端 (${new Date().toLocaleTimeString('zh-TW')})`;
+                    }
+                    if (showExplicitToast) showToast('分類順序與設定已成功儲存至 Firebase 雲端與本地！');
+                } catch (err) {
+                    console.warn('Firestore taxonomy 同步提示:', err);
+                    if (statusBadge) {
+                        statusBadge.className = "text-[11px] font-bold text-amber-700 bg-amber-50 px-2 py-0.5 rounded border border-amber-200";
+                        statusBadge.innerHTML = `<i class="fa-solid fa-hard-drive"></i> 已儲存於本機 (雲端需管理員登入或更新 Rules)`;
+                    }
+                    if (showExplicitToast) showToast('已儲存於本機！（若需跨裝置同步，請確認已用 mindnodeai@gmail.com 正式登入並發布 Firestore Rules）');
+                }
+            }
         }
 
         function renderCategoryButtons() {
@@ -2399,16 +2630,37 @@
                 const taxDoc = await db.collection('site_settings').doc('taxonomy').get();
                 if (taxDoc.exists) {
                     const taxData = taxDoc.data();
-                    if (Array.isArray(taxData.categories) && taxData.categories.length > 0) {
-                        categories.length = 0;
-                        taxData.categories.forEach(c => categories.push(c));
-                    }
-                    if (Array.isArray(taxData.presetTags) && taxData.presetTags.length > 0) {
-                        presetTags = taxData.presetTags;
+                    let localUpdatedAt = '';
+                    try {
+                        const localRaw = localStorage.getItem(TAXONOMY_STORAGE_KEY);
+                        if (localRaw) localUpdatedAt = JSON.parse(localRaw).updatedAt || '';
+                    } catch (e) {}
+
+                    // 只有當雲端資料比本地更新（或本地無紀錄）時，才用雲端資料覆蓋，否則將本地最新修改推上雲端
+                    if (!localUpdatedAt || (taxData.updatedAt && taxData.updatedAt >= localUpdatedAt)) {
+                        if (Array.isArray(taxData.categories) && taxData.categories.length > 0) {
+                            categories.length = 0;
+                            taxData.categories.forEach(c => categories.push(c));
+                        }
+                        if (Array.isArray(taxData.presetTags) && taxData.presetTags.length > 0) {
+                            presetTags = taxData.presetTags;
+                        }
+                        localStorage.setItem(TAXONOMY_STORAGE_KEY, JSON.stringify({
+                            categories: categories,
+                            presetTags: presetTags,
+                            updatedAt: taxData.updatedAt || new Date().toISOString()
+                        }));
+                    } else {
+                        // 本地有更新的順序或分類，自動補同步上雲端
+                        syncCategoriesAndTagsToCloud();
                     }
                     renderCategoryButtons();
                     renderAdminCategorySelect();
                     renderAdminTagDatalist();
+                    renderCustomAppsAdminList();
+                } else {
+                    // 雲端尚無 taxonomy 文件時，主動將目前設定初始化寫入雲端
+                    syncCategoriesAndTagsToCloud();
                 }
             } catch (e) {}
 
@@ -2425,6 +2677,36 @@
                         lessons.unshift(data);
                     }
                 });
+
+                // 載入雲端儲存的教案排列順序 (比對本機與雲端最新時間戳)
+                try {
+                    const orderDoc = await db.collection('site_settings').doc('lessons_order').get();
+                    let localOrderUpdatedAt = '';
+                    let localOrderArr = null;
+                    try {
+                        const localRaw = localStorage.getItem(LESSONS_ORDER_STORAGE_KEY);
+                        if (localRaw) {
+                            const parsed = JSON.parse(localRaw);
+                            localOrderUpdatedAt = parsed.updatedAt || '';
+                            localOrderArr = parsed.order || null;
+                        }
+                    } catch (e) {}
+
+                    if (orderDoc.exists) {
+                        const cloudOrderData = orderDoc.data();
+                        if (!localOrderUpdatedAt || (cloudOrderData.updatedAt && cloudOrderData.updatedAt >= localOrderUpdatedAt)) {
+                            applySavedLessonsOrderArray(cloudOrderData.order);
+                            localStorage.setItem(LESSONS_ORDER_STORAGE_KEY, JSON.stringify(cloudOrderData));
+                        } else if (localOrderArr) {
+                            applySavedLessonsOrderArray(localOrderArr);
+                            saveLessonsOrderState(false);
+                        }
+                    } else if (localOrderArr) {
+                        applySavedLessonsOrderArray(localOrderArr);
+                        saveLessonsOrderState(false);
+                    }
+                } catch (orderErr) {}
+
                 renderAdminTagDatalist();
                 renderCards();
                 renderCustomAppsAdminList();
@@ -2443,38 +2725,171 @@
             const container = document.getElementById('custom-apps-list');
             if (!container) return;
             const kw = (document.getElementById('admin-app-search')?.value || '').toLowerCase().trim();
+            const catFilter = document.getElementById('admin-app-cat-filter')?.value || 'all';
 
             const indexedLessons = lessons
                 .map((item, idx) => ({ item, idx }))
-                .filter(({ item }) => !kw || item.title.toLowerCase().includes(kw) || (item.tag || '').toLowerCase().includes(kw));
+                .filter(({ item }) => {
+                    const matchCat = (catFilter === 'all') || (item.category === catFilter);
+                    const matchKw = !kw ||
+                        item.title.toLowerCase().includes(kw) ||
+                        (item.tag || '').toLowerCase().includes(kw) ||
+                        (item.desc || '').toLowerCase().includes(kw);
+                    return matchCat && matchKw;
+                });
+
+            const countBadge = document.getElementById('admin-app-count');
+            if (countBadge) {
+                countBadge.innerText = `顯示 ${indexedLessons.length} / 共 ${lessons.length} 堂教案`;
+            }
 
             if (!indexedLessons.length) {
-                container.innerHTML = `<p class="text-gray-400 text-xs">找不到符合條件的教案。</p>`;
+                container.innerHTML = `<p class="text-gray-400 text-xs py-6 text-center">找不到符合篩選條件的教案。</p>`;
                 return;
             }
 
-            container.innerHTML = indexedLessons.slice(0, 60).map(({ item, idx }) => {
-                const catObj = categories.find(c => c.id === item.category);
-                const catName = catObj ? catObj.name : item.category;
+            const catOptionsHTML = (selectedCat) => categories
+                .filter(c => c.id !== 'all')
+                .map(c => `<option value="${c.id}" ${c.id === selectedCat ? 'selected' : ''}>${c.name}</option>`)
+                .join('');
+
+            // 解除原本 60 筆限制，完整渲染所有教案，支援上下移動、置頂、輸入序號跳轉及直接改分類與標籤
+            container.innerHTML = indexedLessons.map(({ item, idx }, viewPos) => {
                 const cloudDoc = customLessonsCache.find(c => c.title === item.title && c.link === item.link);
+                const isFirstInView = viewPos === 0;
+                const isLastInView = viewPos === indexedLessons.length - 1;
+                const prevActualIdx = !isFirstInView ? indexedLessons[viewPos - 1].idx : -1;
+                const nextActualIdx = !isLastInView ? indexedLessons[viewPos + 1].idx : -1;
+                const firstActualIdxInView = indexedLessons[0].idx;
 
                 return `
-                <div class="flex flex-wrap justify-between items-center gap-2 p-3 bg-slate-50 hover:bg-blue-50/40 rounded-lg border border-gray-200 transition-colors">
-                    <div class="flex flex-wrap items-center gap-2">
-                        <span class="px-2 py-0.5 bg-blue-100 text-primary rounded text-xs font-bold">${catName}</span>
-                        <span class="px-2 py-0.5 bg-amber-100 text-amber-800 rounded text-xs font-bold">#${item.tag || '無標籤'}</span>
-                        <span class="font-bold text-slate-800 text-sm">${item.title}</span>
+                <div class="flex flex-col md:flex-row justify-between md:items-center gap-2.5 p-2.5 bg-slate-50 hover:bg-blue-50/40 rounded-lg border border-gray-200 transition-colors">
+                    <div class="flex items-center gap-1.5 min-w-0 flex-1">
+                        <!-- 順序調整控制組 (支援目前篩選視角下的上移、下移、置頂與直接輸入序號) -->
+                        <div class="flex items-center gap-0.5 bg-white border border-gray-200 rounded-md px-1 py-0.5 shadow-sm shrink-0">
+                            <button type="button" onclick="moveLessonToTopInView(${idx}, ${firstActualIdxInView})" ${isFirstInView ? 'disabled' : ''} class="${isFirstInView ? 'text-gray-200 cursor-not-allowed' : 'text-slate-500 hover:text-amber-600 hover:bg-amber-50'} px-1 py-0.5 rounded transition-colors" title="移至目前列表最上方 (置頂)">
+                                <i class="fa-solid fa-angles-up text-[10px]"></i>
+                            </button>
+                            <button type="button" onclick="swapLessonPosition(${idx}, ${prevActualIdx})" ${isFirstInView ? 'disabled' : ''} class="${isFirstInView ? 'text-gray-200 cursor-not-allowed' : 'text-slate-600 hover:text-primary hover:bg-blue-50'} px-1 py-0.5 rounded transition-colors" title="往上移一位">
+                                <i class="fa-solid fa-arrow-up text-[11px]"></i>
+                            </button>
+                            <button type="button" onclick="swapLessonPosition(${idx}, ${nextActualIdx})" ${isLastInView ? 'disabled' : ''} class="${isLastInView ? 'text-gray-200 cursor-not-allowed' : 'text-slate-600 hover:text-primary hover:bg-blue-50'} px-1 py-0.5 rounded transition-colors" title="往下移一位">
+                                <i class="fa-solid fa-arrow-down text-[11px]"></i>
+                            </button>
+                        </div>
+                        <div class="flex items-center bg-white border border-gray-200 rounded px-1.5 py-0.5 shrink-0" title="輸入目標序號後按 Enter 可直接跳轉排序位置">
+                            <span class="text-[10px] text-gray-400 font-mono mr-0.5">#</span>
+                            <input type="number" min="1" max="${indexedLessons.length}" value="${viewPos + 1}" onchange="jumpLessonToViewOrder(${viewPos}, this.value)" class="w-10 text-[11px] font-mono font-bold text-slate-700 text-center focus:outline-none bg-transparent">
+                        </div>
+                        <span class="font-bold text-slate-800 text-sm truncate ml-1" title="${item.title}">${item.title}</span>
                     </div>
-                    <div class="flex items-center gap-2">
-                        <button type="button" onclick="editLessonFromAdmin(${idx})" class="px-3 py-1 bg-white border border-blue-300 hover:bg-blue-600 hover:text-white text-blue-600 rounded-lg text-xs font-bold transition-colors flex items-center gap-1">
-                            <i class="fa-solid fa-pen"></i> 修改分類/標籤
+                    <div class="flex flex-wrap items-center gap-2 shrink-0">
+                        <select onchange="quickUpdateLessonTaxonomy(${idx}, this.value, null)" class="px-2 py-1 bg-white border border-blue-200 rounded text-xs font-bold text-primary focus:ring-1 focus:ring-primary" title="直接切換所屬分類">
+                            ${catOptionsHTML(item.category)}
+                        </select>
+                        <div class="flex items-center bg-amber-50 border border-amber-300 rounded px-2 py-0.5">
+                            <span class="text-amber-600 text-xs font-bold mr-1">#</span>
+                            <input type="text" value="${item.tag || ''}" list="app-tag-datalist" onchange="quickUpdateLessonTaxonomy(${idx}, null, this.value)" placeholder="右上角標籤" class="bg-transparent text-amber-900 font-bold text-xs w-24 focus:outline-none" title="輸入完按 Enter 或點擊空白處自動儲存標籤">
+                        </div>
+                        <button type="button" onclick="editLessonFromAdmin(${idx})" class="px-2.5 py-1 bg-white border border-gray-300 hover:bg-blue-600 hover:text-white hover:border-blue-600 text-slate-700 rounded text-xs font-bold transition-colors flex items-center gap-1" title="帶入上方完整表單編輯標題/說明/圖片">
+                            <i class="fa-solid fa-pen"></i> 完整編輯
                         </button>
-                        ${cloudDoc ? `<button type="button" onclick="deleteCustomLesson('${cloudDoc.id}')" class="px-2.5 py-1 bg-rose-50 hover:bg-rose-100 text-rose-600 rounded-lg text-xs font-bold">刪除</button>` : ''}
+                        ${cloudDoc ? `<button type="button" onclick="deleteCustomLesson('${cloudDoc.id}')" class="px-2 py-1 bg-rose-50 hover:bg-rose-100 text-rose-600 rounded text-xs font-bold">刪除</button>` : ''}
                     </div>
                 </div>
                 `;
             }).join('');
         }
+
+        // 上移 / 下移交換教案順序（支援全部列表或單一分類篩選狀態下移動）
+        window.swapLessonPosition = async function(fromIdx, toIdx) {
+            if (fromIdx < 0 || toIdx < 0 || fromIdx >= lessons.length || toIdx >= lessons.length) return;
+            const movedItem = lessons[fromIdx];
+            lessons[fromIdx] = lessons[toIdx];
+            lessons[toIdx] = movedItem;
+
+            renderCards();
+            renderCustomAppsAdminList();
+            showToast(`已移動「${movedItem.title}」的順序！`);
+            await saveLessonsOrderState(false);
+        };
+
+        // 一鍵將教案移至目前篩選列表的最上方 (置頂)
+        window.moveLessonToTopInView = async function(fromIdx, topIdxInView) {
+            if (fromIdx <= topIdxInView || fromIdx < 0 || topIdxInView < 0) return;
+            const [movedItem] = lessons.splice(fromIdx, 1);
+            lessons.splice(topIdxInView, 0, movedItem);
+
+            renderCards();
+            renderCustomAppsAdminList();
+            showToast(`已將「${movedItem.title}」置頂！`);
+            await saveLessonsOrderState(false);
+        };
+
+        // 直接輸入序號跳轉教案位置
+        window.jumpLessonToViewOrder = async function(currentViewPos, targetOrderStr) {
+            const kw = (document.getElementById('admin-app-search')?.value || '').toLowerCase().trim();
+            const catFilter = document.getElementById('admin-app-cat-filter')?.value || 'all';
+            const indexedLessons = lessons
+                .map((item, idx) => ({ item, idx }))
+                .filter(({ item }) => {
+                    const matchCat = (catFilter === 'all') || (item.category === catFilter);
+                    const matchKw = !kw ||
+                        item.title.toLowerCase().includes(kw) ||
+                        (item.tag || '').toLowerCase().includes(kw) ||
+                        (item.desc || '').toLowerCase().includes(kw);
+                    return matchCat && matchKw;
+                });
+
+            let targetViewPos = parseInt(targetOrderStr, 10) - 1;
+            if (isNaN(targetViewPos)) return;
+            targetViewPos = Math.max(0, Math.min(indexedLessons.length - 1, targetViewPos));
+            if (targetViewPos === currentViewPos) return;
+
+            const fromActualIdx = indexedLessons[currentViewPos].idx;
+            const toActualIdx = indexedLessons[targetViewPos].idx;
+            const [movedItem] = lessons.splice(fromActualIdx, 1);
+            lessons.splice(toActualIdx, 0, movedItem);
+
+            renderCards();
+            renderCustomAppsAdminList();
+            showToast(`已將「${movedItem.title}」移至第 ${targetViewPos + 1} 順位！`);
+            await saveLessonsOrderState(false);
+        };
+
+        // 列表內一鍵快速修改分類或右上角標籤
+        window.quickUpdateLessonTaxonomy = async function(lessonIdx, newCat, newTag) {
+            const item = lessons[lessonIdx];
+            if (!item) return;
+
+            if (newCat !== null) item.category = newCat;
+            if (newTag !== null) {
+                item.tag = newTag.trim();
+                if (item.tag && !presetTags.includes(item.tag)) {
+                    presetTags.unshift(item.tag);
+                    renderAdminTagDatalist();
+                }
+            }
+
+            renderCards();
+            await saveLessonsOrderState(false);
+
+            try {
+                if (db) {
+                    const cloudMatch = customLessonsCache.find(c => c.title === item.title || (c.link === item.link && item.link !== '#'));
+                    const payload = { ...item, updatedAt: new Date().toISOString() };
+                    if (cloudMatch && cloudMatch.id) {
+                        await db.collection('custom_lessons').doc(cloudMatch.id).set(payload, { merge: true });
+                    } else {
+                        const docRef = await db.collection('custom_lessons').add({ ...payload, createdAt: new Date().toISOString() });
+                        customLessonsCache.push({ id: docRef.id, ...payload });
+                    }
+                }
+                showToast(`已即時更新「${item.title}」的分類/標籤！`);
+            } catch (e) {
+                showToast(`已更新畫面「${item.title}」的分類/標籤！`);
+            }
+        };
 
         function initProfileFormValues() {
             document.getElementById('cfg-name').value = document.getElementById('profile-name-text').innerText;
