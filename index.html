@@ -85,40 +85,224 @@
             transform: scale(1);
         }
     </style>
+    <!-- Firebase Compat SDKs -->
+    <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-auth-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-storage-compat.js"></script>
 </head>
 <body class="bg-gray-50 text-gray-800 font-sans min-h-screen flex flex-col">
+
+    <!-- 1. 會員登入閘門 (Auth Gate) -->
+    <div id="auth-gate" class="fixed inset-0 z-[200] bg-slate-900 flex items-center justify-center p-4 overflow-y-auto">
+        <div class="max-w-5xl w-full bg-white rounded-3xl shadow-2xl overflow-hidden flex flex-col lg:flex-row my-auto border border-slate-700/30">
+            <!-- 左側：創作者 TONY 顧問簡介面板 -->
+            <div class="lg:w-5/12 bg-gradient-to-br from-slate-900 via-slate-800 to-blue-950 text-white p-6 md:p-8 flex flex-col justify-between relative overflow-hidden">
+                <div class="relative z-10">
+                    <div class="flex items-center gap-3 mb-6">
+                        <img src="https://firebasestorage.googleapis.com/v0/b/k16-tony-ai-wisdom-platform.firebasestorage.app/o/assets%2F6av64EOvvqQNAIoXqcPfHC5BBeF3%2F1785039560457_1.png?alt=media&token=19b27497-4101-4436-bc80-b299741b7984" alt="Logo" class="w-12 h-12 rounded-full bg-white p-0.5 object-cover shadow-md">
+                        <div>
+                            <h2 class="font-bold text-lg tracking-wide text-white">2026 Tony 共創導師</h2>
+                            <p class="text-xs text-blue-300">創新顧問 | 互動教案入口首頁</p>
+                        </div>
+                    </div>
+
+                    <div class="flex items-center gap-4 mb-5 bg-white/5 p-3.5 rounded-2xl border border-white/10 backdrop-blur-sm">
+                        <img src="https://firebasestorage.googleapis.com/v0/b/k16-tony-ai-wisdom-platform.firebasestorage.app/o/assets%2F6av64EOvvqQNAIoXqcPfHC5BBeF3%2F1787580326393_ChatGPT%20Image%202026%E5%B9%B46%E6%9C%8819%E6%97%A5%20%E4%B8%8A%E5%8D%8811_16_14.png?alt=media&token=3c85de41-f36f-46e5-a97a-7bc7eb83a027" alt="TONY 楊文澤老師" class="w-16 h-20 rounded-xl object-cover shadow-md shrink-0 border border-white/20">
+                        <div>
+                            <div class="inline-block px-2 py-0.5 bg-amber-500/20 text-amber-300 text-[11px] font-bold rounded mb-1 border border-amber-400/30">平台創作者簡介</div>
+                            <h3 class="text-lg font-bold">TONY 楊文澤老師</h3>
+                            <p class="text-xs text-gray-300 mt-0.5">資深數位行銷科技顧問 / 生成式 AI 創作者 / 創業導師</p>
+                        </div>
+                    </div>
+
+                    <div class="space-y-3 text-xs text-gray-300 max-h-60 overflow-y-auto pr-2">
+                        <div>
+                            <span class="text-blue-400 font-bold block mb-0.5">現職 Current</span>
+                            <p>▪ 龍華科大數位行銷講師</p>
+                            <p>▪ 智策慧品牌行銷科技顧問</p>
+                        </div>
+                        <div>
+                            <span class="text-blue-400 font-bold block mb-0.5">經歷 Experience</span>
+                            <p>▪ 脈動心聯股份有限公司創辦人暨執行長</p>
+                            <p>▪ 宏碁集團建碁 AOPEN 整合營銷處處長 / 全球品牌行銷總監 / 企業發言人</p>
+                            <p>▪ 台灣數位看板多媒體聯盟 (DSMA) 副會長</p>
+                        </div>
+                        <div>
+                            <span class="text-blue-400 font-bold block mb-0.5">學歷 Education</span>
+                            <p>▪ 台大 EMBA 商學組</p>
+                            <p>▪ 美國 Arizona State University 互動多媒體設計</p>
+                            <p>▪ 北科大工業設計</p>
+                        </div>
+                        <div>
+                            <span class="text-blue-400 font-bold block mb-0.5">專家授課經歷</span>
+                            <p>▪ CPC 生產力中心經營管理顧問師班 / 中小企業成長創價能量 講師</p>
+                            <p>▪ 台大 EMBA / 長榮 EMBA / 北科大 / 政大 / 世新 業師</p>
+                            <p>▪ 2021 MarTech 行銷科技行銷長認證班 講師</p>
+                            <p>▪ 2021/2024/2025 T大使與產業尖兵 講師</p>
+                            <p>▪ 2025 新光人壽 AI 工具應用 企業內訓講師</p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="relative z-10 pt-4 mt-4 border-t border-white/10 text-[11px] text-gray-400 flex justify-between items-center">
+                    <span>與 AI 共創，用智慧領航。</span>
+                    <button onclick="bypassForPreview()" class="text-gray-500 hover:text-gray-300 underline" title="離線或未授權網域時可快速預覽">快速預覽模式</button>
+                </div>
+            </div>
+
+            <!-- 右側：登入 / 註冊 / 忘記密碼 表單 -->
+            <div class="lg:w-7/12 p-6 md:p-10 flex flex-col justify-center bg-white">
+                <!-- 頁籤切換 -->
+                <div class="flex border-b border-gray-200 mb-6" id="auth-tabs">
+                    <button onclick="switchAuthTab('login')" id="tab-login" class="pb-3 px-4 font-bold text-base border-b-2 border-primary text-primary transition-all">會員登入</button>
+                    <button onclick="switchAuthTab('register')" id="tab-register" class="pb-3 px-4 font-bold text-base border-b-2 border-transparent text-gray-400 hover:text-gray-600 transition-all">註冊新帳號</button>
+                    <button onclick="switchAuthTab('reset')" id="tab-reset" class="pb-3 px-4 font-bold text-base border-b-2 border-transparent text-gray-400 hover:text-gray-600 transition-all">忘記密碼</button>
+                </div>
+
+                <!-- 訊息提示框 (綠字/紅字警告) -->
+                <div id="auth-message" class="hidden mb-4 p-3.5 rounded-xl text-sm font-bold flex items-center gap-2"></div>
+
+                <!-- 垃圾郵件匣溫馨提醒 (首次註冊與忘記密碼顯示) -->
+                <div id="spam-reminder" class="hidden mb-5 p-3.5 rounded-xl bg-amber-50 border border-amber-200 text-amber-800 text-xs md:text-sm flex items-start gap-2.5 shadow-sm">
+                    <i class="fa-solid fa-triangle-exclamation text-amber-500 mt-0.5 text-base"></i>
+                    <div>
+                        <strong class="font-bold">溫馨提醒：</strong>註冊確認信或重設密碼信有時會跑到「<span class="underline font-bold text-rose-600">垃圾郵件匣</span>」，請記得前往確認唷！
+                    </div>
+                </div>
+
+                <!-- 登入表單 -->
+                <form id="form-login" onsubmit="handleEmailLogin(event)" class="space-y-4">
+                    <div>
+                        <label class="block text-xs font-bold text-gray-600 uppercase mb-1">電子郵件 Email</label>
+                        <input type="email" id="login-email" required placeholder="請輸入您的 Email" class="w-full px-4 py-3 rounded-xl border border-gray-300 focus:outline-none focus:ring-2 focus:ring-primary text-sm">
+                    </div>
+                    <div>
+                        <label class="block text-xs font-bold text-gray-600 uppercase mb-1">密碼 Password</label>
+                        <div class="relative">
+                            <input type="password" id="login-password" required placeholder="請輸入密碼" class="w-full px-4 py-3 rounded-xl border border-gray-300 focus:outline-none focus:ring-2 focus:ring-primary text-sm pr-10">
+                            <button type="button" onclick="togglePasswordVisibility('login-password', this)" class="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600">
+                                <i class="fa-solid fa-eye"></i>
+                            </button>
+                        </div>
+                    </div>
+                    <button type="submit" id="btn-login-submit" class="w-full bg-primary hover:bg-secondary text-white font-bold py-3 rounded-xl shadow-md hover:shadow-lg transition-all flex items-center justify-center gap-2">
+                        <i class="fa-solid fa-right-to-bracket"></i> 登入系統
+                    </button>
+                </form>
+
+                <!-- 註冊表單 -->
+                <form id="form-register" onsubmit="handleEmailRegister(event)" class="space-y-4 hidden">
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        <div>
+                            <label class="block text-xs font-bold text-gray-600 uppercase mb-1">真實姓名 Full Name</label>
+                            <input type="text" id="reg-name" required placeholder="例如：王小明" class="w-full px-4 py-2.5 rounded-xl border border-gray-300 focus:outline-none focus:ring-2 focus:ring-primary text-sm">
+                        </div>
+                        <div>
+                            <label class="block text-xs font-bold text-gray-600 uppercase mb-1">身份選擇 Identity</label>
+                            <select id="reg-identity" required class="w-full px-4 py-2.5 rounded-xl border border-gray-300 focus:outline-none focus:ring-2 focus:ring-primary text-sm bg-white">
+                                <option value="TONY老師學員">TONY老師學員</option>
+                                <option value="非學員(一般訪客)">非學員(一般訪客)</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div>
+                        <label class="block text-xs font-bold text-gray-600 uppercase mb-1">電子郵件 Email</label>
+                        <input type="email" id="reg-email" required placeholder="將作為登入帳號與接收驗證信用" class="w-full px-4 py-2.5 rounded-xl border border-gray-300 focus:outline-none focus:ring-2 focus:ring-primary text-sm">
+                    </div>
+                    <div>
+                        <label class="block text-xs font-bold text-gray-600 uppercase mb-1">設定密碼 Password (至少 6 碼)</label>
+                        <div class="relative">
+                            <input type="password" id="reg-password" required minlength="6" placeholder="請輸入至少 6 位字元密碼" class="w-full px-4 py-2.5 rounded-xl border border-gray-300 focus:outline-none focus:ring-2 focus:ring-primary text-sm pr-10">
+                            <button type="button" onclick="togglePasswordVisibility('reg-password', this)" class="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600">
+                                <i class="fa-solid fa-eye"></i>
+                            </button>
+                        </div>
+                    </div>
+                    <button type="submit" id="btn-reg-submit" class="w-full bg-emerald-600 hover:bg-emerald-700 text-white font-bold py-3 rounded-xl shadow-md hover:shadow-lg transition-all flex items-center justify-center gap-2">
+                        <i class="fa-solid fa-user-plus"></i> 立即註冊並發送驗證信
+                    </button>
+                </form>
+
+                <!-- 忘記密碼表單 -->
+                <form id="form-reset" onsubmit="handlePasswordReset(event)" class="space-y-4 hidden">
+                    <div>
+                        <label class="block text-xs font-bold text-gray-600 uppercase mb-1">註冊的電子郵件 Email</label>
+                        <input type="email" id="reset-email" required placeholder="請輸入您的註冊信箱" class="w-full px-4 py-3 rounded-xl border border-gray-300 focus:outline-none focus:ring-2 focus:ring-primary text-sm">
+                    </div>
+                    <button type="submit" class="w-full bg-amber-500 hover:bg-amber-600 text-white font-bold py-3 rounded-xl shadow-md transition-all flex items-center justify-center gap-2">
+                        <i class="fa-solid fa-paper-plane"></i> 發送密碼重設信
+                    </button>
+                </form>
+
+                <!-- Google 快速登入 -->
+                <div class="my-6 flex items-center gap-3">
+                    <div class="h-px bg-gray-200 flex-grow"></div>
+                    <span class="text-xs text-gray-400 font-medium">或使用以下方式快速登入</span>
+                    <div class="h-px bg-gray-200 flex-grow"></div>
+                </div>
+
+                <button type="button" onclick="handleGoogleLogin()" class="w-full border border-gray-300 hover:bg-gray-50 text-gray-700 font-bold py-3 rounded-xl transition-all flex items-center justify-center gap-3 shadow-sm">
+                    <img src="https://www.gstatic.com/firebasejs/ui/2.0.0/images/auth/google.svg" class="w-5 h-5" alt="Google">
+                    使用 Google 帳號繼續
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- 主程式區塊 (登入後顯示) -->
+    <div id="app-main-wrapper" class="hidden flex-col min-h-screen">
+
+    <!-- 頂部會員狀態與管理員導覽列 -->
+    <div class="bg-slate-950 text-gray-300 text-xs py-2 px-4 border-b border-slate-800">
+        <div class="container mx-auto flex flex-wrap justify-between items-center gap-2">
+            <div class="flex items-center gap-2">
+                <span class="w-2 h-2 rounded-full bg-emerald-400 animate-pulse"></span>
+                <span>歡迎回來，<strong id="user-display-name" class="text-white">會員</strong></span>
+                <span id="user-role-badge" class="px-2 py-0.5 rounded bg-slate-800 text-blue-300 border border-slate-700 text-[11px]">一般會員</span>
+            </div>
+            <div class="flex items-center gap-3">
+                <button id="btn-open-admin" onclick="toggleModal('admin-modal')" class="hidden bg-amber-500 hover:bg-amber-600 text-slate-950 font-bold px-3 py-1 rounded-full transition-colors items-center gap-1 shadow-sm">
+                    <i class="fa-solid fa-screwdriver-wrench"></i> 進入管理後台
+                </button>
+                <button onclick="handleLogout()" class="text-gray-400 hover:text-white transition-colors flex items-center gap-1">
+                    <i class="fa-solid fa-right-from-bracket"></i> 登出
+                </button>
+            </div>
+        </div>
+    </div>
 
     <header class="bg-gradient-to-r from-slate-900 to-slate-800 text-white shadow-lg">
         <div class="container mx-auto px-4 py-8">
             <div class="flex flex-col md:flex-row items-center justify-between gap-6">
                 <div class="flex items-center gap-4">
                     <div class="w-20 h-20 rounded-full bg-white shadow-xl flex items-center justify-center overflow-hidden shrink-0 relative">
-                        <img src="https://i.postimg.cc/fT2sQW09/1.png" alt="TONY STUDIO Logo" class="w-full h-full object-cover" onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';">
+                        <img id="header-logo-img" src="https://firebasestorage.googleapis.com/v0/b/k16-tony-ai-wisdom-platform.firebasestorage.app/o/assets%2F6av64EOvvqQNAIoXqcPfHC5BBeF3%2F1785039560457_1.png?alt=media&token=19b27497-4101-4436-bc80-b299741b7984" alt="TONY STUDIO Logo" class="w-full h-full object-cover" onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';">
                         <div class="absolute inset-0 hidden items-center justify-center bg-white text-primary">
                             <i class="fa-solid fa-wand-magic-sparkles text-3xl"></i>
                         </div>
                     </div>
                     <div>
                         <h1 class="text-xl md:text-3xl font-bold tracking-wide flex flex-col md:block items-start">
-                            <span>楊文澤 Tony Yang</span>
-                            <span class="text-gray-300 md:ml-2 text-base md:text-2xl font-medium mt-1 md:mt-0">｜AI 共創導師 × 創新顧問</span>
+                            <span id="profile-name-text">楊文澤 Tony Yang</span>
+                            <span id="profile-subtitle-text" class="text-gray-300 md:ml-2 text-base md:text-2xl font-medium mt-1 md:mt-0">｜AI 共創導師 × 創新顧問</span>
                         </h1>
                         <div class="mt-2">
-                            <p class="text-gray-100 text-base font-medium tracking-wide">與 AI 共創，用智慧領航。</p>
-                            <p class="text-gray-400 text-xs uppercase tracking-wider mt-0.5">Co-create with AI. Lead with wisdom.</p>
+                            <p id="profile-slogan-zh" class="text-gray-100 text-base font-medium tracking-wide">與 AI 共創，用智慧領航。</p>
+                            <p id="profile-slogan-en" class="text-gray-400 text-xs uppercase tracking-wider mt-0.5">Co-create with AI. Lead with wisdom.</p>
                         </div>
                     </div>
                 </div>
                 
-                <div class="flex gap-3">
-                    <a href="https://www.facebook.com/share/1Aciyr4XW9/?mibextid=wwXIfr" target="_blank" class="w-9 h-9 rounded-full bg-slate-700 hover:bg-primary flex items-center justify-center transition-colors text-sm" title="Facebook"><i class="fa-brands fa-facebook-f"></i></a>
-                    <a href="https://www.instagram.com/2026tonystudio/" target="_blank" class="w-9 h-9 rounded-full bg-slate-700 hover:bg-pink-600 flex items-center justify-center transition-colors text-sm" title="Instagram"><i class="fa-brands fa-instagram"></i></a>
-                    <a href="https://substack.com/@tonyaistudio" target="_blank" class="w-9 h-9 rounded-full bg-slate-700 hover:bg-orange-500 flex items-center justify-center transition-colors text-sm" title="Substack 部落格"><i class="fa-solid fa-newspaper"></i></a>
-                    <a href="https://youtube.com/@mindnodestudio4045?si=JmEfbd1giiBYeOmJ" target="_blank" class="w-9 h-9 rounded-full bg-slate-700 hover:bg-red-600 flex items-center justify-center transition-colors text-sm" title="YouTube: MindNode Studio"><i class="fa-brands fa-youtube"></i></a>
-                    <a href="https://youtube.com/@mindnodeai?si=MpWsPtGf1uwK6NtM" target="_blank" class="w-9 h-9 rounded-full bg-slate-700 hover:bg-red-600 flex items-center justify-center transition-colors text-sm" title="YouTube: MindNode AI"><i class="fa-brands fa-youtube"></i></a>
-                    <a href="https://www.tiktok.com/@mindnodeai?_r=1&_t=ZS-91toLgMGUJL" target="_blank" class="w-9 h-9 rounded-full bg-slate-700 hover:bg-gray-900 flex items-center justify-center transition-colors text-sm" title="TikTok: MindNode AI"><i class="fa-brands fa-tiktok"></i></a>
-                    <a href="https://www.tiktok.com/@citypilotai?_r=1&_t=ZS-91toKJPMvyc" target="_blank" class="w-9 h-9 rounded-full bg-slate-700 hover:bg-gray-900 flex items-center justify-center transition-colors text-sm" title="TikTok: CityPilot AI"><i class="fa-brands fa-tiktok"></i></a>
-                    <a href="mailto:mindnodeai@gmail.com" class="w-9 h-9 rounded-full bg-slate-700 hover:bg-green-600 flex items-center justify-center transition-colors text-sm" title="Email"><i class="fa-solid fa-envelope"></i></a>
+                <div class="flex gap-3" id="social-links-container">
+                    <a id="social-fb" href="https://www.facebook.com/share/1Aciyr4XW9/?mibextid=wwXIfr" target="_blank" class="w-9 h-9 rounded-full bg-slate-700 hover:bg-primary flex items-center justify-center transition-colors text-sm" title="Facebook"><i class="fa-brands fa-facebook-f"></i></a>
+                    <a id="social-ig" href="https://www.instagram.com/2026tonystudio/" target="_blank" class="w-9 h-9 rounded-full bg-slate-700 hover:bg-pink-600 flex items-center justify-center transition-colors text-sm" title="Instagram"><i class="fa-brands fa-instagram"></i></a>
+                    <a id="social-substack" href="https://substack.com/@tonyaistudio" target="_blank" class="w-9 h-9 rounded-full bg-slate-700 hover:bg-orange-500 flex items-center justify-center transition-colors text-sm" title="Substack 部落格"><i class="fa-solid fa-newspaper"></i></a>
+                    <a id="social-yt1" href="https://youtube.com/@mindnodestudio4045?si=JmEfbd1giiBYeOmJ" target="_blank" class="w-9 h-9 rounded-full bg-slate-700 hover:bg-red-600 flex items-center justify-center transition-colors text-sm" title="YouTube: MindNode Studio"><i class="fa-brands fa-youtube"></i></a>
+                    <a id="social-yt2" href="https://youtube.com/@mindnodeai?si=MpWsPtGf1uwK6NtM" target="_blank" class="w-9 h-9 rounded-full bg-slate-700 hover:bg-red-600 flex items-center justify-center transition-colors text-sm" title="YouTube: MindNode AI"><i class="fa-brands fa-youtube"></i></a>
+                    <a id="social-tt1" href="https://www.tiktok.com/@mindnodeai?_r=1&_t=ZS-91toLgMGUJL" target="_blank" class="w-9 h-9 rounded-full bg-slate-700 hover:bg-gray-900 flex items-center justify-center transition-colors text-sm" title="TikTok: MindNode AI"><i class="fa-brands fa-tiktok"></i></a>
+                    <a id="social-tt2" href="https://www.tiktok.com/@citypilotai?_r=1&_t=ZS-91toKJPMvyc" target="_blank" class="w-9 h-9 rounded-full bg-slate-700 hover:bg-gray-900 flex items-center justify-center transition-colors text-sm" title="TikTok: CityPilot AI"><i class="fa-brands fa-tiktok"></i></a>
+                    <a id="social-email" href="mailto:mindnodeai@gmail.com" class="w-9 h-9 rounded-full bg-slate-700 hover:bg-green-600 flex items-center justify-center transition-colors text-sm" title="Email"><i class="fa-solid fa-envelope"></i></a>
                 </div>
             </div>
         </div>
@@ -132,7 +316,7 @@
                         <div class="inline-flex items-center gap-2 px-3 py-1 bg-blue-50 text-primary text-xs font-bold rounded-full mb-3 border border-blue-100">
                             <i class="fa-solid fa-user-circle"></i> About Me
                         </div>
-                        <h2 class="text-3xl md:text-4xl font-bold text-slate-900 leading-tight">
+                        <h2 id="profile-headline" class="text-3xl md:text-4xl font-bold text-slate-900 leading-tight">
                             融合 60 年人生智慧的<br>
                             <span class="profile-highlight px-1">AI 導師與資深顧問</span>
                         </h2>
@@ -142,7 +326,7 @@
                         <div class="w-full sm:w-2/5 flex-shrink-0 relative group">
                              <div class="absolute inset-0 bg-primary rounded-2xl transform translate-x-3 translate-y-3 opacity-10 group-hover:translate-x-2 group-hover:translate-y-2 transition-transform duration-300"></div>
                              <div class="relative w-full aspect-[3/4] bg-gray-200 rounded-2xl overflow-hidden shadow-md border border-gray-100">
-                                <img src="https://firebasestorage.googleapis.com/v0/b/k16-tony-ai-wisdom-platform.firebasestorage.app/o/assets%2F6av64EOvvqQNAIoXqcPfHC5BBeF3%2F1787580326393_ChatGPT%20Image%202026%E5%B9%B46%E6%9C%8819%E6%97%A5%20%E4%B8%8A%E5%8D%8811_16_14.png?alt=media&token=3c85de41-f36f-46e5-a97a-7bc7eb83a027" alt="Tony 老師專業形象照" class="w-full h-full object-cover group-hover:scale-[1.01] transition-transform duration-500" onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';">
+                                <img id="profile-avatar-img" src="https://firebasestorage.googleapis.com/v0/b/k16-tony-ai-wisdom-platform.firebasestorage.app/o/assets%2F6av64EOvvqQNAIoXqcPfHC5BBeF3%2F1787580326393_ChatGPT%20Image%202026%E5%B9%B46%E6%9C%8819%E6%97%A5%20%E4%B8%8A%E5%8D%8811_16_14.png?alt=media&token=3c85de41-f36f-46e5-a97a-7bc7eb83a027" alt="Tony 老師專業形象照" class="w-full h-full object-cover group-hover:scale-[1.01] transition-transform duration-500" onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';">
                                 <div class="absolute inset-0 hidden items-center justify-center bg-gray-100 text-gray-400">
                                     <i class="fa-solid fa-user text-4xl"></i>
                                 </div>
@@ -150,11 +334,11 @@
                         </div>
                         
                         <div class="flex-1 space-y-4">
-                            <p class="text-gray-600 text-base leading-relaxed text-justify">
+                            <p id="profile-bio-p1" class="text-gray-600 text-base leading-relaxed text-justify">
                                 <i class="fa-solid fa-quote-left text-2xl text-blue-200 float-left mr-2 -mt-1"></i>
                                 <span class="font-bold text-slate-800">我是 Tony</span>，一位始終保持好奇心的創業者與教育者。擁有設計、行銷、商業與創業的跨領域實務經驗，並將這些經驗結合最新的生成式 AI 技術，致力於發展獨特的教學框架。
                             </p>
-                            <p class="text-gray-600 text-base leading-relaxed text-justify">
+                            <p id="profile-bio-p2" class="text-gray-600 text-base leading-relaxed text-justify">
                                 我善良、熱愛學習，並擁有獨立的觀點。我相信 AI 不僅是工具，更是擴展人類思考邊界的夥伴。在這裡，我將帶領您不僅學會「術」，更掌握「道」。
                             </p>
                             <div class="pt-2">
@@ -256,9 +440,378 @@
                 AI 不會取代你，但善用 AI 的人將會引領未來。
                 <i class="fa-solid fa-quote-right text-gray-600 ml-2"></i>
             </div>
-            <p>&copy; 2024 Tony 老師. All rights reserved.</p>
+            <p>&copy; 2020 TonyStudio. 本學習平台由 TONY 楊文澤資深AI科技顧問設計. All Rights Reserved.</p>
         </div>
     </footer>
+
+    </div><!-- 結束 #app-main-wrapper -->
+
+    <!-- 專屬管理者後台 Modal (Admin Dashboard) -->
+    <div id="admin-modal" class="modal fixed inset-0 z-[150] flex items-center justify-center p-2 md:p-6">
+        <div class="absolute inset-0 bg-black/70 backdrop-blur-sm" onclick="toggleModal('admin-modal')"></div>
+        <div class="modal-content bg-white rounded-2xl shadow-2xl w-full max-w-7xl max-h-[92vh] flex flex-col relative z-10 overflow-hidden">
+            <!-- 後台頂部列 -->
+            <div class="bg-slate-900 text-white px-6 py-4 flex flex-wrap justify-between items-center gap-4">
+                <div class="flex items-center gap-3">
+                    <span class="w-10 h-10 rounded-xl bg-amber-500 text-slate-950 flex items-center justify-center font-bold text-lg">
+                        <i class="fa-solid fa-shield-halved"></i>
+                    </span>
+                    <div>
+                        <h2 class="text-lg md:text-xl font-bold">TONY STUDIO 全端 SaaS 管理後台</h2>
+                        <p class="text-xs text-gray-400">最高管理權限：mindnodeai@gmail.com (系統創作者)</p>
+                    </div>
+                </div>
+                <div class="flex flex-wrap gap-2">
+                    <button onclick="switchAdminTab('members')" id="adm-tab-members" class="px-3.5 py-1.5 rounded-lg text-xs md:text-sm font-bold bg-primary text-white">1. 會員權限與紀錄</button>
+                    <button onclick="switchAdminTab('apps')" id="adm-tab-apps" class="px-3.5 py-1.5 rounded-lg text-xs md:text-sm font-bold bg-slate-800 text-gray-300 hover:bg-slate-700">2. 教案 APP 與 AI 上架</button>
+                    <button onclick="switchAdminTab('profile')" id="adm-tab-profile" class="px-3.5 py-1.5 rounded-lg text-xs md:text-sm font-bold bg-slate-800 text-gray-300 hover:bg-slate-700">3. TONY 簡介與社群設定</button>
+                    <button onclick="switchAdminTab('report')" id="adm-tab-report" class="px-3.5 py-1.5 rounded-lg text-xs md:text-sm font-bold bg-slate-800 text-gray-300 hover:bg-slate-700">4. AI 數據分析報告 (Word)</button>
+                    <button onclick="toggleModal('admin-modal')" class="ml-2 text-gray-400 hover:text-white px-2">
+                        <i class="fa-solid fa-xmark text-xl"></i>
+                    </button>
+                </div>
+            </div>
+
+            <!-- 後台內容區 -->
+            <div class="p-6 overflow-y-auto flex-grow bg-gray-50 space-y-6">
+                
+                <!-- 頁籤 1：會員管理與 CSV 匯出 -->
+                <div id="adm-panel-members" class="space-y-4">
+                    <div class="flex flex-wrap justify-between items-center gap-4 bg-white p-4 rounded-xl border border-gray-200 shadow-sm">
+                        <div>
+                            <h3 class="font-bold text-slate-800 text-lg">註冊會員名單與 RBAC 權限管理</h3>
+                            <p class="text-xs text-gray-500">可一鍵升降級權限、檢視登入歷史紀錄、刪除帳號或匯出 Excel 相容 CSV。</p>
+                        </div>
+                        <div class="flex gap-2">
+                            <button onclick="loadAllMembers()" class="px-4 py-2 rounded-lg bg-slate-100 hover:bg-slate-200 text-slate-700 text-sm font-bold flex items-center gap-1.5">
+                                <i class="fa-solid fa-rotate"></i> 重新整理
+                            </button>
+                            <button onclick="exportMembersCSV()" class="px-4 py-2 rounded-lg bg-emerald-600 hover:bg-emerald-700 text-white text-sm font-bold flex items-center gap-1.5 shadow-sm">
+                                <i class="fa-solid fa-file-csv"></i> 匯出 CSV (含 BOM)
+                            </button>
+                        </div>
+                    </div>
+
+                    <div class="bg-white rounded-xl border border-gray-200 shadow-sm overflow-x-auto">
+                        <table class="w-full text-left border-collapse text-sm">
+                            <thead>
+                                <tr class="bg-slate-100 text-slate-700 border-b border-gray-200">
+                                    <th class="p-3.5 font-bold">真實姓名</th>
+                                    <th class="p-3.5 font-bold">信箱 Email</th>
+                                    <th class="p-3.5 font-bold">身份別</th>
+                                    <th class="p-3.5 font-bold">系統權限</th>
+                                    <th class="p-3.5 font-bold">註冊時間</th>
+                                    <th class="p-3.5 font-bold text-center">登入次數</th>
+                                    <th class="p-3.5 font-bold text-right">管理操作</th>
+                                </tr>
+                            </thead>
+                            <tbody id="admin-members-tbody" class="divide-y divide-gray-100">
+                                <!-- JS 動態渲染 -->
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+
+                <!-- 頁籤 2：教案 APP 智慧上架與管理 -->
+                <div id="adm-panel-apps" class="hidden space-y-6">
+                    <div class="bg-white p-6 rounded-xl border border-gray-200 shadow-sm space-y-4">
+                        <div class="flex flex-wrap justify-between items-center gap-2 border-b pb-3">
+                            <div>
+                                <h3 class="font-bold text-slate-800 text-lg flex items-center gap-2">
+                                    <i class="fa-solid fa-wand-magic-sparkles text-primary"></i> 新增 / 編輯 互動教案 APP
+                                </h3>
+                                <p class="text-xs text-gray-500">貼上網址後點擊「AI 一鍵辨識填入」，系統將自動解析主題、分類、說明與配圖！</p>
+                            </div>
+                        </div>
+
+                        <div class="grid grid-cols-1 md:grid-cols-12 gap-4 items-end">
+                            <div class="md:col-span-9">
+                                <label class="block text-xs font-bold text-gray-600 mb-1">1. 教案網址 URL</label>
+                                <input type="url" id="app-url-input" placeholder="https://mindnodeai.github.io/..." class="w-full px-4 py-2.5 rounded-lg border border-gray-300 text-sm focus:ring-2 focus:ring-primary focus:outline-none">
+                            </div>
+                            <div class="md:col-span-3">
+                                <button type="button" onclick="aiAutoFillAppInfo()" id="btn-ai-autofill" class="w-full py-2.5 px-4 bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 text-white font-bold rounded-lg text-sm shadow flex items-center justify-center gap-2">
+                                    <i class="fa-solid fa-robot"></i> AI 一鍵辨識填入
+                                </button>
+                            </div>
+                        </div>
+
+                        <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                            <div>
+                                <label class="block text-xs font-bold text-gray-600 mb-1">2. 教案標題 Title</label>
+                                <input type="text" id="app-title-input" placeholder="例如：K41. 企業 AI 轉型平台" class="w-full px-3.5 py-2 rounded-lg border border-gray-300 text-sm">
+                            </div>
+                            <div>
+                                <div class="flex justify-between items-center mb-1">
+                                    <label class="block text-xs font-bold text-gray-600">3. 所屬分類 Category</label>
+                                    <button type="button" onclick="toggleCategoryManager()" class="text-[11px] text-primary hover:underline font-bold flex items-center gap-1">
+                                        <i class="fa-solid fa-folder-plus"></i> 新增/修改分類
+                                    </button>
+                                </div>
+                                <select id="app-cat-input" class="w-full px-3.5 py-2 rounded-lg border border-gray-300 text-sm bg-white">
+                                    <!-- 由 JS 動態渲染分類選項 -->
+                                </select>
+                            </div>
+                            <div>
+                                <div class="flex justify-between items-center mb-1">
+                                    <label class="block text-xs font-bold text-gray-600">4. 右上角標籤 Tag</label>
+                                    <button type="button" onclick="toggleTagManager()" class="text-[11px] text-amber-600 hover:underline font-bold flex items-center gap-1">
+                                        <i class="fa-solid fa-tags"></i> 新增/修改常用標籤
+                                    </button>
+                                </div>
+                                <div class="flex gap-1.5">
+                                    <input type="text" id="app-tag-input" list="app-tag-datalist" placeholder="可直接輸入或選擇標籤" class="w-full px-3.5 py-2 rounded-lg border border-gray-300 text-sm">
+                                    <datalist id="app-tag-datalist"></datalist>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- 動態分類管理面板 (點擊「新增/修改分類」展開) -->
+                        <div id="category-manager-box" class="hidden bg-blue-50/70 p-4 rounded-xl border border-blue-200 space-y-3">
+                            <div class="flex justify-between items-center">
+                                <h4 class="text-xs font-bold text-blue-900 flex items-center gap-1.5">
+                                    <i class="fa-solid fa-layer-group"></i> 所屬分類管理（支援新增、修改名稱與圖示，自動同步前台導覽列）
+                                </h4>
+                                <button type="button" onclick="toggleCategoryManager()" class="text-xs text-gray-500 hover:text-gray-700"><i class="fa-solid fa-xmark"></i> 收起</button>
+                            </div>
+                            <div class="grid grid-cols-1 md:grid-cols-12 gap-2 items-end">
+                                <div class="md:col-span-3">
+                                    <label class="block text-[11px] font-bold text-gray-600 mb-0.5">分類代碼 ID (英文/數字)</label>
+                                    <input type="text" id="mgr-cat-id" placeholder="例如：custom-ai" class="w-full px-2.5 py-1.5 rounded border border-gray-300 text-xs bg-white">
+                                </div>
+                                <div class="md:col-span-4">
+                                    <label class="block text-[11px] font-bold text-gray-600 mb-0.5">分類顯示名稱</label>
+                                    <input type="text" id="mgr-cat-name" placeholder="例如：企業內訓專區" class="w-full px-2.5 py-1.5 rounded border border-gray-300 text-xs bg-white">
+                                </div>
+                                <div class="md:col-span-3">
+                                    <label class="block text-[11px] font-bold text-gray-600 mb-0.5">圖示 Class (FontAwesome)</label>
+                                    <input type="text" id="mgr-cat-icon" value="fa-solid fa-star" placeholder="fa-solid fa-star" class="w-full px-2.5 py-1.5 rounded border border-gray-300 text-xs bg-white">
+                                </div>
+                                <div class="md:col-span-2">
+                                    <button type="button" onclick="saveOrUpdateCategory()" class="w-full py-1.5 px-3 bg-primary hover:bg-secondary text-white font-bold rounded text-xs">
+                                        新增 / 更新分類
+                                    </button>
+                                </div>
+                            </div>
+                            <div id="mgr-cat-list" class="flex flex-wrap gap-2 pt-2 border-t border-blue-200/60">
+                                <!-- JS 動態渲染現有分類晶片 -->
+                            </div>
+                        </div>
+
+                        <!-- 動態右上角標籤管理面板 (點擊「新增/修改常用標籤」展開) -->
+                        <div id="tag-manager-box" class="hidden bg-amber-50/80 p-4 rounded-xl border border-amber-200 space-y-3">
+                            <div class="flex justify-between items-center">
+                                <h4 class="text-xs font-bold text-amber-900 flex items-center gap-1.5">
+                                    <i class="fa-solid fa-tags"></i> 右上角標籤管理（點擊下方標籤可快速套用、修改或刪除）
+                                </h4>
+                                <button type="button" onclick="toggleTagManager()" class="text-xs text-gray-500 hover:text-gray-700"><i class="fa-solid fa-xmark"></i> 收起</button>
+                            </div>
+                            <div class="flex gap-2">
+                                <input type="text" id="mgr-tag-new" placeholder="輸入新標籤名稱（如：熱門必學）" class="px-3 py-1.5 rounded border border-gray-300 text-xs bg-white flex-grow">
+                                <input type="hidden" id="mgr-tag-old-val" value="">
+                                <button type="button" onclick="saveOrUpdateTag()" id="btn-save-tag" class="py-1.5 px-4 bg-amber-500 hover:bg-amber-600 text-white font-bold rounded text-xs">
+                                    新增 / 修改標籤
+                                </button>
+                            </div>
+                            <div id="mgr-tag-list" class="flex flex-wrap gap-1.5 pt-2 border-t border-amber-200/60">
+                                <!-- JS 動態渲染常用標籤晶片 -->
+                            </div>
+                        </div>
+
+                        <div>
+                            <label class="block text-xs font-bold text-gray-600 mb-1">5. 教案說明 Description</label>
+                            <textarea id="app-desc-input" rows="2" placeholder="請輸入教案特色與應用說明..." class="w-full px-3.5 py-2 rounded-lg border border-gray-300 text-sm"></textarea>
+                        </div>
+
+                        <div class="grid grid-cols-1 md:grid-cols-12 gap-4 items-end">
+                            <div class="md:col-span-6">
+                                <label class="block text-xs font-bold text-gray-600 mb-1">6. 封面圖片網址 (或點擊右側自動尋圖 / 上傳圖檔)</label>
+                                <input type="text" id="app-img-input" placeholder="https://images.unsplash.com/..." class="w-full px-3.5 py-2 rounded-lg border border-gray-300 text-sm">
+                            </div>
+                            <div class="md:col-span-3">
+                                <button type="button" onclick="autoPickWebImage()" class="w-full py-2 px-3 bg-slate-100 hover:bg-slate-200 text-slate-700 font-bold rounded-lg text-xs border border-slate-300 flex items-center justify-center gap-1.5">
+                                    <i class="fa-solid fa-magnifying-glass-chart"></i> 自動匹配高畫質網路圖
+                                </button>
+                            </div>
+                            <div class="md:col-span-3">
+                                <label class="w-full py-2 px-3 bg-amber-50 hover:bg-amber-100 text-amber-800 font-bold rounded-lg text-xs border border-amber-300 flex items-center justify-center gap-1.5 cursor-pointer">
+                                    <i class="fa-solid fa-cloud-arrow-up"></i> 上傳圖片至 Storage
+                                    <input type="file" accept="image/*" class="hidden" onchange="uploadImageToFirebase(event, 'app-img-input')">
+                                </label>
+                            </div>
+                        </div>
+
+                        <div class="pt-2 flex justify-end gap-3">
+                            <input type="hidden" id="app-edit-doc-id" value="">
+                            <input type="hidden" id="app-edit-local-idx" value="">
+                            <button type="button" id="btn-cancel-edit-app" onclick="cancelEditLessonApp()" class="hidden px-4 py-2.5 bg-gray-200 hover:bg-gray-300 text-gray-700 font-bold rounded-xl text-sm">
+                                取消編輯
+                            </button>
+                            <button type="button" id="btn-save-app" onclick="saveNewLessonApp()" class="px-6 py-2.5 bg-emerald-600 hover:bg-emerald-700 text-white font-bold rounded-xl shadow flex items-center gap-2 text-sm">
+                                <i class="fa-solid fa-plus-circle"></i> 儲存並發佈教案
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- 已上架自訂教案列表 -->
+                    <div class="bg-white p-6 rounded-xl border border-gray-200 shadow-sm">
+                        <div class="flex flex-wrap justify-between items-center gap-2 mb-3">
+                            <h4 class="font-bold text-slate-800">所有教案分類與右上角標籤快速修改列表</h4>
+                            <input type="text" id="admin-app-search" oninput="renderCustomAppsAdminList()" placeholder="搜尋要修改分類或標籤的教案..." class="px-3 py-1.5 border rounded-lg text-xs w-64">
+                        </div>
+                        <div id="custom-apps-list" class="space-y-2 text-sm text-gray-600 max-h-96 overflow-y-auto pr-1">
+                            <!-- JS 渲染 -->
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 頁籤 3：TONY 老師簡介與社群連結更新 -->
+                <div id="adm-panel-profile" class="hidden space-y-6">
+                    <div class="bg-white p-6 rounded-xl border border-gray-200 shadow-sm space-y-4">
+                        <h3 class="font-bold text-slate-800 text-lg border-b pb-2">更新首頁 TONY 老師簡介、頭像與社群連結</h3>
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                            <div>
+                                <label class="block text-xs font-bold text-gray-600 mb-1">主標題名稱</label>
+                                <input type="text" id="cfg-name" class="w-full px-3 py-2 border rounded-lg text-sm">
+                            </div>
+                            <div>
+                                <label class="block text-xs font-bold text-gray-600 mb-1">副標題頭銜</label>
+                                <input type="text" id="cfg-subtitle" class="w-full px-3 py-2 border rounded-lg text-sm">
+                            </div>
+                            <div>
+                                <label class="block text-xs font-bold text-gray-600 mb-1">中文標語 Slogan</label>
+                                <input type="text" id="cfg-slogan-zh" class="w-full px-3 py-2 border rounded-lg text-sm">
+                            </div>
+                            <div>
+                                <label class="block text-xs font-bold text-gray-600 mb-1">英文標語 Slogan</label>
+                                <input type="text" id="cfg-slogan-en" class="w-full px-3 py-2 border rounded-lg text-sm">
+                            </div>
+                        </div>
+
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                            <div>
+                                <label class="block text-xs font-bold text-gray-600 mb-1">左上角 LOGO 圖片網址</label>
+                                <div class="flex gap-2">
+                                    <input type="text" id="cfg-logo" class="w-full px-3 py-2 border rounded-lg text-sm">
+                                    <label class="px-3 py-2 bg-slate-100 hover:bg-slate-200 rounded-lg text-xs font-bold cursor-pointer shrink-0 flex items-center">
+                                        上傳 <input type="file" accept="image/*" class="hidden" onchange="uploadImageToFirebase(event, 'cfg-logo')">
+                                    </label>
+                                </div>
+                            </div>
+                            <div>
+                                <label class="block text-xs font-bold text-gray-600 mb-1">TONY 顧問形象照網址</label>
+                                <div class="flex gap-2">
+                                    <input type="text" id="cfg-avatar" class="w-full px-3 py-2 border rounded-lg text-sm">
+                                    <label class="px-3 py-2 bg-slate-100 hover:bg-slate-200 rounded-lg text-xs font-bold cursor-pointer shrink-0 flex items-center">
+                                        上傳 <input type="file" accept="image/*" class="hidden" onchange="uploadImageToFirebase(event, 'cfg-avatar')">
+                                    </label>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                            <div>
+                                <label class="block text-xs font-bold text-gray-600 mb-1">About Me 簡介第一段</label>
+                                <textarea id="cfg-bio1" rows="3" class="w-full px-3 py-2 border rounded-lg text-sm"></textarea>
+                            </div>
+                            <div>
+                                <label class="block text-xs font-bold text-gray-600 mb-1">About Me 簡介第二段</label>
+                                <textarea id="cfg-bio2" rows="3" class="w-full px-3 py-2 border rounded-lg text-sm"></textarea>
+                            </div>
+                        </div>
+
+                        <h4 class="font-bold text-slate-700 pt-2 border-t text-sm">社群媒體連結設定</h4>
+                        <div class="grid grid-cols-1 md:grid-cols-4 gap-3">
+                            <div>
+                                <label class="block text-[11px] font-bold text-gray-500">Facebook</label>
+                                <input type="text" id="cfg-fb" class="w-full px-3 py-1.5 border rounded text-xs">
+                            </div>
+                            <div>
+                                <label class="block text-[11px] font-bold text-gray-500">Instagram</label>
+                                <input type="text" id="cfg-ig" class="w-full px-3 py-1.5 border rounded text-xs">
+                            </div>
+                            <div>
+                                <label class="block text-[11px] font-bold text-gray-500">Substack 部落格</label>
+                                <input type="text" id="cfg-substack" class="w-full px-3 py-1.5 border rounded text-xs">
+                            </div>
+                            <div>
+                                <label class="block text-[11px] font-bold text-gray-500">YouTube (Studio)</label>
+                                <input type="text" id="cfg-yt1" class="w-full px-3 py-1.5 border rounded text-xs">
+                            </div>
+                            <div>
+                                <label class="block text-[11px] font-bold text-gray-500">YouTube (AI)</label>
+                                <input type="text" id="cfg-yt2" class="w-full px-3 py-1.5 border rounded text-xs">
+                            </div>
+                            <div>
+                                <label class="block text-[11px] font-bold text-gray-500">TikTok (MindNode)</label>
+                                <input type="text" id="cfg-tt1" class="w-full px-3 py-1.5 border rounded text-xs">
+                            </div>
+                            <div>
+                                <label class="block text-[11px] font-bold text-gray-500">TikTok (CityPilot)</label>
+                                <input type="text" id="cfg-tt2" class="w-full px-3 py-1.5 border rounded text-xs">
+                            </div>
+                            <div>
+                                <label class="block text-[11px] font-bold text-gray-500">聯絡信箱 (mailto:)</label>
+                                <input type="text" id="cfg-email" class="w-full px-3 py-1.5 border rounded text-xs">
+                            </div>
+                        </div>
+
+                        <div class="flex justify-end pt-3">
+                            <button onclick="saveSiteProfileConfig()" class="px-6 py-2.5 bg-primary hover:bg-secondary text-white font-bold rounded-xl shadow text-sm flex items-center gap-2">
+                                <i class="fa-solid fa-floppy-disk"></i> 儲存簡介與社群設定
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 頁籤 4：AI 分析報告與輸出 Word -->
+                <div id="adm-panel-report" class="hidden space-y-6">
+                    <div class="bg-white p-6 rounded-xl border border-gray-200 shadow-sm space-y-4">
+                        <div class="flex flex-wrap justify-between items-center gap-4 border-b pb-3">
+                            <div>
+                                <h3 class="font-bold text-slate-800 text-lg">AI 營運與學員數據分析報告</h3>
+                                <p class="text-xs text-gray-500">設定起訖時間，自動統計平台註冊學員結構、活躍度與教案分佈，並可匯出為 Microsoft Word (.doc) 報告檔。</p>
+                            </div>
+                            <div class="flex flex-wrap items-center gap-2">
+                                <input type="date" id="report-start-date" class="px-3 py-1.5 border rounded-lg text-sm">
+                                <span class="text-gray-400">至</span>
+                                <input type="date" id="report-end-date" class="px-3 py-1.5 border rounded-lg text-sm">
+                                <button onclick="generateAIReport()" class="px-4 py-2 bg-indigo-600 hover:bg-indigo-700 text-white font-bold rounded-lg text-sm flex items-center gap-1.5">
+                                    <i class="fa-solid fa-wand-magic-sparkles"></i> 產出 AI 分析報告
+                                </button>
+                                <button onclick="exportReportToWord()" class="px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white font-bold rounded-lg text-sm flex items-center gap-1.5 shadow">
+                                    <i class="fa-solid fa-file-word"></i> 輸出成 WORD 檔 (.doc)
+                                </button>
+                            </div>
+                        </div>
+
+                        <div id="ai-report-content" class="p-6 bg-slate-50 rounded-xl border border-slate-200 prose max-w-none text-sm leading-relaxed space-y-3">
+                            <p class="text-gray-400 text-center py-8">請選擇起訖日期並點擊「產出 AI 分析報告」按鈕。</p>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </div>
+
+    <!-- 會員登入歷史紀錄 Modal -->
+    <div id="history-modal" class="modal fixed inset-0 z-[160] flex items-center justify-center p-4">
+        <div class="absolute inset-0 bg-black/60 backdrop-blur-sm" onclick="toggleModal('history-modal')"></div>
+        <div class="modal-content bg-white rounded-2xl shadow-2xl w-full max-w-lg p-6 relative z-10">
+            <div class="flex justify-between items-center border-b pb-3 mb-4">
+                <h3 class="font-bold text-lg text-slate-800"><i class="fa-solid fa-clock-rotate-left text-primary mr-2"></i>會員歷史紀錄</h3>
+                <button onclick="toggleModal('history-modal')" class="text-gray-400 hover:text-gray-600"><i class="fa-solid fa-xmark"></i></button>
+            </div>
+            <div id="history-modal-body" class="max-h-80 overflow-y-auto space-y-2 text-sm text-gray-600"></div>
+        </div>
+    </div>
+
+    <!-- 通用訊息提示 Toast -->
+    <div id="sys-toast" class="fixed bottom-5 right-5 z-[300] hidden bg-slate-900 text-white px-5 py-3 rounded-xl shadow-2xl border border-slate-700 text-sm font-medium items-center gap-2.5">
+        <i class="fa-solid fa-circle-info text-blue-400"></i>
+        <span id="sys-toast-text">系統訊息</span>
+    </div>
 
     <div id="resume-modal" class="modal fixed inset-0 z-[100] flex items-center justify-center p-4">
         <div class="absolute inset-0 bg-black/60 backdrop-blur-sm" onclick="toggleModal('resume-modal')"></div>
@@ -774,9 +1327,12 @@
 
         let activeCategory = 'all';
         let searchQuery = '';
+        let presetTags = ['獲利實戰', '企業內訓', '註冊專屬', '全局觀', '品牌行銷', 'AI 實戰', '證照備考', '遊戲沙盤', '熱門推薦'];
 
         function init() {
             renderCategoryButtons();
+            renderAdminCategorySelect();
+            renderAdminTagDatalist();
             renderCards();
             
             searchInputDesktop.addEventListener('input', (e) => {
@@ -787,6 +1343,199 @@
                 searchQuery = e.target.value.toLowerCase();
                 renderCards();
             });
+        }
+
+        // 同步渲染後台「所屬分類」下拉選單與管理列表
+        function renderAdminCategorySelect() {
+            const selectEl = document.getElementById('app-cat-input');
+            if (selectEl) {
+                const currentVal = selectEl.value || 'consulting';
+                selectEl.innerHTML = categories
+                    .filter(c => c.id !== 'all')
+                    .map(c => `<option value="${c.id}">${c.name}</option>`)
+                    .join('');
+                if (categories.some(c => c.id === currentVal)) {
+                    selectEl.value = currentVal;
+                }
+            }
+
+            const listEl = document.getElementById('mgr-cat-list');
+            if (listEl) {
+                listEl.innerHTML = categories.filter(c => c.id !== 'all').map(c => `
+                    <div class="inline-flex items-center gap-1.5 bg-white px-2.5 py-1 rounded-lg border border-blue-200 text-xs shadow-sm">
+                        <i class="${c.icon} text-primary"></i>
+                        <span class="font-bold text-slate-700">${c.name}</span>
+                        <span class="text-[10px] text-gray-400">(${c.id})</span>
+                        <button type="button" onclick="selectCategoryForEdit('${c.id}')" class="text-blue-600 hover:text-blue-800 ml-1" title="修改此分類">
+                            <i class="fa-solid fa-pen"></i>
+                        </button>
+                        <button type="button" onclick="deleteCategoryItem('${c.id}')" class="text-rose-500 hover:text-rose-700" title="刪除此分類">
+                            <i class="fa-solid fa-trash-can"></i>
+                        </button>
+                    </div>
+                `).join('');
+            }
+        }
+
+        // 同步渲染後台「右上角標籤」下拉建議與管理列表
+        function renderAdminTagDatalist() {
+            // 收集所有教案出現過的標籤 + 預設常用標籤
+            const dynamicTags = new Set(presetTags);
+            lessons.forEach(l => { if (l.tag) dynamicTags.add(l.tag); });
+            const allTagsArr = Array.from(dynamicTags);
+
+            const datalist = document.getElementById('app-tag-datalist');
+            if (datalist) {
+                datalist.innerHTML = allTagsArr.map(t => `<option value="${t}">`).join('');
+            }
+
+            const tagListEl = document.getElementById('mgr-tag-list');
+            if (tagListEl) {
+                tagListEl.innerHTML = allTagsArr.map(t => `
+                    <div class="inline-flex items-center gap-1 bg-white px-2.5 py-1 rounded-full border border-amber-300 text-xs shadow-sm">
+                        <button type="button" onclick="applyTagToInput('${t.replace(/'/g, "\\'")}')" class="font-bold text-amber-800 hover:underline" title="點擊套用此標籤">
+                            #${t}
+                        </button>
+                        <button type="button" onclick="prepareEditTag('${t.replace(/'/g, "\\'")}')" class="text-blue-600 hover:text-blue-800 ml-1" title="修改此標籤名稱(同步更新所有同標籤教案)">
+                            <i class="fa-solid fa-pen text-[10px]"></i>
+                        </button>
+                        <button type="button" onclick="removePresetTag('${t.replace(/'/g, "\\'")}')" class="text-rose-500 hover:text-rose-700" title="移除標籤">
+                            <i class="fa-solid fa-xmark text-[11px]"></i>
+                        </button>
+                    </div>
+                `).join('');
+            }
+        }
+
+        window.toggleCategoryManager = function() {
+            const box = document.getElementById('category-manager-box');
+            box.classList.toggle('hidden');
+            renderAdminCategorySelect();
+        };
+
+        window.toggleTagManager = function() {
+            const box = document.getElementById('tag-manager-box');
+            box.classList.toggle('hidden');
+            renderAdminTagDatalist();
+        };
+
+        window.selectCategoryForEdit = function(catId) {
+            const cat = categories.find(c => c.id === catId);
+            if (!cat) return;
+            document.getElementById('mgr-cat-id').value = cat.id;
+            document.getElementById('mgr-cat-name').value = cat.name;
+            document.getElementById('mgr-cat-icon').value = cat.icon || 'fa-solid fa-folder';
+        };
+
+        window.saveOrUpdateCategory = async function() {
+            const idInput = document.getElementById('mgr-cat-id').value.trim();
+            const nameInput = document.getElementById('mgr-cat-name').value.trim();
+            const iconInput = document.getElementById('mgr-cat-icon').value.trim() || 'fa-solid fa-folder';
+
+            if (!idInput || !nameInput) {
+                showToast('請輸入分類代碼 ID 與分類顯示名稱！');
+                return;
+            }
+
+            const existingIdx = categories.findIndex(c => c.id === idInput);
+            if (existingIdx > -1) {
+                categories[existingIdx].name = nameInput;
+                categories[existingIdx].icon = iconInput;
+                showToast(`已修改分類「${nameInput}」！`);
+            } else {
+                categories.push({ id: idInput, name: nameInput, icon: iconInput });
+                showToast(`已新增分類「${nameInput}」！`);
+            }
+
+            renderCategoryButtons();
+            renderAdminCategorySelect();
+            renderCards();
+            document.getElementById('app-cat-input').value = idInput;
+            document.getElementById('mgr-cat-id').value = '';
+            document.getElementById('mgr-cat-name').value = '';
+
+            await syncCategoriesAndTagsToCloud();
+        };
+
+        window.deleteCategoryItem = async function(catId) {
+            if (categories.length <= 2) {
+                showToast('至少需保留一個分類！');
+                return;
+            }
+            const idx = categories.findIndex(c => c.id === catId);
+            if (idx > -1) {
+                const removedName = categories[idx].name;
+                categories.splice(idx, 1);
+                if (activeCategory === catId) activeCategory = 'all';
+                renderCategoryButtons();
+                renderAdminCategorySelect();
+                renderCards();
+                showToast(`已刪除分類：${removedName}`);
+                await syncCategoriesAndTagsToCloud();
+            }
+        };
+
+        window.applyTagToInput = function(tagVal) {
+            document.getElementById('app-tag-input').value = tagVal;
+            showToast(`已套用右上角標籤：${tagVal}`);
+        };
+
+        window.prepareEditTag = function(oldTagVal) {
+            document.getElementById('mgr-tag-new').value = oldTagVal;
+            document.getElementById('mgr-tag-old-val').value = oldTagVal;
+            document.getElementById('btn-save-tag').innerText = `確認修改「${oldTagVal}」`;
+        };
+
+        window.saveOrUpdateTag = async function() {
+            const newTag = document.getElementById('mgr-tag-new').value.trim();
+            const oldTag = document.getElementById('mgr-tag-old-val').value.trim();
+            if (!newTag) {
+                showToast('請輸入標籤名稱！');
+                return;
+            }
+
+            if (oldTag && oldTag !== newTag) {
+                // 批次修改所有使用舊標籤的教案與常用標籤庫
+                const pIdx = presetTags.indexOf(oldTag);
+                if (pIdx > -1) presetTags[pIdx] = newTag;
+                else presetTags.unshift(newTag);
+
+                lessons.forEach(l => {
+                    if (l.tag === oldTag) l.tag = newTag;
+                });
+                showToast(`已將標籤「${oldTag}」全面修改為「${newTag}」！`);
+            } else {
+                if (!presetTags.includes(newTag)) presetTags.unshift(newTag);
+                showToast(`已新增右上角標籤：「${newTag}」`);
+            }
+
+            document.getElementById('app-tag-input').value = newTag;
+            document.getElementById('mgr-tag-new').value = '';
+            document.getElementById('mgr-tag-old-val').value = '';
+            document.getElementById('btn-save-tag').innerText = '新增 / 修改標籤';
+
+            renderAdminTagDatalist();
+            renderCards();
+            renderCustomAppsAdminList();
+            await syncCategoriesAndTagsToCloud();
+        };
+
+        window.removePresetTag = async function(tagVal) {
+            presetTags = presetTags.filter(t => t !== tagVal);
+            renderAdminTagDatalist();
+            showToast(`已從常用清單移除標籤：${tagVal}`);
+            await syncCategoriesAndTagsToCloud();
+        };
+
+        async function syncCategoriesAndTagsToCloud() {
+            if (!db) return;
+            try {
+                await db.collection('site_settings').doc('taxonomy').set({
+                    categories: categories,
+                    presetTags: presetTags,
+                    updatedAt: new Date().toISOString()
+                }, { merge: true });
+            } catch (e) {}
         }
 
         function renderCategoryButtons() {
@@ -882,6 +1631,847 @@
         }
 
         init();
+
+        // =========================================================================
+        // TONY STUDIO 全端 SaaS 系統 (Firebase Auth / Firestore / Storage / Admin)
+        // =========================================================================
+        const firebaseConfig = {
+            apiKey: "AIzaSyA9D2MX7thzq3HuB8bbN_IM961ilwFvql4",
+            authDomain: "tony-app-home-page.firebaseapp.com",
+            projectId: "tony-app-home-page",
+            storageBucket: "tony-app-home-page.firebasestorage.app",
+            messagingSenderId: "282351011617",
+            appId: "1:282351011617:web:eec27d0e5c41e87d4e2060",
+            measurementId: "G-S95J6WJG9M"
+        };
+
+        const SUPER_ADMIN_EMAIL = "mindnodeai@gmail.com";
+        let auth, db, storage;
+        let currentUserData = null;
+        let allMembersCache = [];
+        let customLessonsCache = [];
+
+        try {
+            if (!firebase.apps.length) {
+                firebase.initializeApp(firebaseConfig);
+            }
+            auth = firebase.auth();
+            db = firebase.firestore();
+            storage = firebase.storage();
+        } catch (err) {
+            console.error("Firebase 初始化異常:", err);
+        }
+
+        function showToast(msg) {
+            const toast = document.getElementById('sys-toast');
+            const text = document.getElementById('sys-toast-text');
+            if (!toast || !text) return;
+            text.innerText = msg;
+            toast.classList.remove('hidden');
+            toast.classList.add('flex');
+            setTimeout(() => {
+                toast.classList.add('hidden');
+                toast.classList.remove('flex');
+            }, 3800);
+        }
+
+        function showAuthMessage(msg, isError = false) {
+            const box = document.getElementById('auth-message');
+            if (!box) return;
+            box.classList.remove('hidden', 'bg-red-50', 'text-red-600', 'border-red-200', 'bg-emerald-50', 'text-emerald-700', 'border-emerald-200');
+            if (isError) {
+                box.classList.add('bg-red-50', 'text-red-600', 'border', 'border-red-200');
+                box.innerHTML = `<i class="fa-solid fa-circle-exclamation"></i> <span>${msg}</span>`;
+            } else {
+                box.classList.add('bg-emerald-50', 'text-emerald-700', 'border', 'border-emerald-200');
+                box.innerHTML = `<i class="fa-solid fa-circle-check"></i> <span>${msg}</span>`;
+            }
+        }
+
+        window.switchAuthTab = function(tab) {
+            const tabs = ['login', 'register', 'reset'];
+            tabs.forEach(t => {
+                const btn = document.getElementById('tab-' + t);
+                const form = document.getElementById('form-' + t);
+                if (t === tab) {
+                    btn.classList.add('border-primary', 'text-primary');
+                    btn.classList.remove('border-transparent', 'text-gray-400');
+                    form.classList.remove('hidden');
+                } else {
+                    btn.classList.remove('border-primary', 'text-primary');
+                    btn.classList.add('border-transparent', 'text-gray-400');
+                    form.classList.add('hidden');
+                }
+            });
+            document.getElementById('auth-message').classList.add('hidden');
+            const spamReminder = document.getElementById('spam-reminder');
+            if (tab === 'register' || tab === 'reset') {
+                spamReminder.classList.remove('hidden');
+            } else {
+                spamReminder.classList.add('hidden');
+            }
+        };
+
+        window.togglePasswordVisibility = function(inputId, btn) {
+            const input = document.getElementById(inputId);
+            const icon = btn.querySelector('i');
+            if (input.type === 'password') {
+                input.type = 'text';
+                icon.classList.remove('fa-eye');
+                icon.classList.add('fa-eye-slash');
+            } else {
+                input.type = 'password';
+                icon.classList.remove('fa-eye-slash');
+                icon.classList.add('fa-eye');
+            }
+        };
+
+        // 註冊與嚴格信箱驗證 (Double Opt-in)
+        window.handleEmailRegister = async function(e) {
+            e.preventDefault();
+            const name = document.getElementById('reg-name').value.trim();
+            const identity = document.getElementById('reg-identity').value;
+            const email = document.getElementById('reg-email').value.trim().toLowerCase();
+            const password = document.getElementById('reg-password').value;
+
+            try {
+                const cred = await auth.createUserWithEmailAndPassword(email, password);
+                const user = cred.user;
+                await user.updateProfile({ displayName: name });
+
+                const isSuperAdmin = (email === SUPER_ADMIN_EMAIL.toLowerCase());
+                const nowStr = new Date().toISOString();
+
+                await db.collection('users').doc(user.uid).set({
+                    uid: user.uid,
+                    name: name,
+                    email: email,
+                    identity: identity,
+                    role: isSuperAdmin ? 'admin' : 'user',
+                    isCreator: isSuperAdmin,
+                    createdAt: nowStr,
+                    loginCount: 0,
+                    history: [`${nowStr} - 完成帳號註冊 (${identity})`]
+                }, { merge: true });
+
+                await user.sendEmailVerification();
+                await auth.signOut();
+
+                switchAuthTab('login');
+                document.getElementById('spam-reminder').classList.remove('hidden');
+                showAuthMessage('註冊成功！請至信箱點擊驗證連結後再行登入。', false);
+            } catch (err) {
+                showAuthMessage('註冊失敗：' + (err.message || '請檢查輸入資訊'), true);
+            }
+        };
+
+        // Email 登入與驗證檢查
+        window.handleEmailLogin = async function(e) {
+            e.preventDefault();
+            const email = document.getElementById('login-email').value.trim().toLowerCase();
+            const password = document.getElementById('login-password').value;
+
+            try {
+                const cred = await auth.signInWithEmailAndPassword(email, password);
+                const user = cred.user;
+
+                if (!user.emailVerified && email !== SUPER_ADMIN_EMAIL.toLowerCase()) {
+                    await user.sendEmailVerification().catch(() => {});
+                    await auth.signOut();
+                    document.getElementById('spam-reminder').classList.remove('hidden');
+                    showAuthMessage('您的信箱尚未完成驗證！系統已重新寄發驗證信，請至信箱點擊驗證（含垃圾郵件匣）後再登入。', true);
+                    return;
+                }
+
+                await syncUserLoginRecord(user);
+            } catch (err) {
+                showAuthMessage('登入失敗：帳號或密碼錯誤，或帳號尚未註冊 (' + err.code + ')', true);
+            }
+        };
+
+        // Google 登入
+        window.handleGoogleLogin = async function() {
+            try {
+                const provider = new firebase.auth.GoogleAuthProvider();
+                const cred = await auth.signInWithPopup(provider);
+                await syncUserLoginRecord(cred.user);
+            } catch (err) {
+                showAuthMessage('Google 登入未完成：' + err.message, true);
+            }
+        };
+
+        // 忘記密碼
+        window.handlePasswordReset = async function(e) {
+            e.preventDefault();
+            const email = document.getElementById('reset-email').value.trim();
+            try {
+                await auth.sendPasswordResetEmail(email);
+                document.getElementById('spam-reminder').classList.remove('hidden');
+                showAuthMessage('密碼重設信已寄出！請前往您的信箱（並留意垃圾郵件匣）點擊重設連結。', false);
+            } catch (err) {
+                showAuthMessage('發送失敗：' + err.message, true);
+            }
+        };
+
+        // 同步會員 RBAC 權限與登入歷史紀錄
+        async function syncUserLoginRecord(user) {
+            if (!user) return;
+            const email = (user.email || '').toLowerCase();
+            const isSuperAdmin = (email === SUPER_ADMIN_EMAIL.toLowerCase());
+            const nowStr = new Date().toISOString();
+            const userRef = db.collection('users').doc(user.uid);
+
+            try {
+                const doc = await userRef.get();
+                if (!doc.exists) {
+                    const newData = {
+                        uid: user.uid,
+                        name: user.displayName || email.split('@')[0],
+                        email: email,
+                        identity: isSuperAdmin ? '系統創作者' : 'TONY老師學員',
+                        role: isSuperAdmin ? 'admin' : 'user',
+                        isCreator: isSuperAdmin,
+                        createdAt: nowStr,
+                        loginCount: 1,
+                        lastLoginAt: nowStr,
+                        history: [`${nowStr} - 首次登入系統`]
+                    };
+                    await userRef.set(newData);
+                    currentUserData = newData;
+                } else {
+                    const existing = doc.data();
+                    const updatedRole = isSuperAdmin ? 'admin' : (existing.role || 'user');
+                    const newCount = (existing.loginCount || 0) + 1;
+                    const hist = Array.isArray(existing.history) ? existing.history.slice(-49) : [];
+                    hist.push(`${nowStr} - 登入系統 (第 ${newCount} 次)`);
+
+                    const updatePayload = {
+                        role: updatedRole,
+                        isCreator: isSuperAdmin,
+                        loginCount: newCount,
+                        lastLoginAt: nowStr,
+                        history: hist
+                    };
+                    await userRef.update(updatePayload);
+                    currentUserData = { ...existing, ...updatePayload };
+                }
+            } catch (err) {
+                console.warn("Firestore 讀取會員狀態備援:", err);
+                currentUserData = {
+                    uid: user.uid,
+                    name: user.displayName || email,
+                    email: email,
+                    role: isSuperAdmin ? 'admin' : 'user',
+                    isCreator: isSuperAdmin
+                };
+            }
+
+            enterMainPortal();
+        }
+
+        function enterMainPortal() {
+            document.getElementById('auth-gate').classList.add('hidden');
+            const wrapper = document.getElementById('app-main-wrapper');
+            wrapper.classList.remove('hidden');
+            wrapper.classList.add('flex');
+
+            if (currentUserData) {
+                document.getElementById('user-display-name').innerText = currentUserData.name || currentUserData.email;
+                const badge = document.getElementById('user-role-badge');
+                const adminBtn = document.getElementById('btn-open-admin');
+
+                if (currentUserData.role === 'admin' || currentUserData.email === SUPER_ADMIN_EMAIL) {
+                    badge.innerText = currentUserData.email === SUPER_ADMIN_EMAIL ? '系統創作者 (最高管理員)' : '管理員 Admin';
+                    badge.className = 'px-2 py-0.5 rounded bg-amber-500/20 text-amber-300 border border-amber-500/40 text-[11px] font-bold';
+                    adminBtn.classList.remove('hidden');
+                    adminBtn.classList.add('inline-flex');
+                    loadAllMembers();
+                } else {
+                    badge.innerText = currentUserData.identity || '一般會員';
+                    badge.className = 'px-2 py-0.5 rounded bg-slate-800 text-blue-300 border border-slate-700 text-[11px]';
+                    adminBtn.classList.add('hidden');
+                }
+            }
+
+            loadCloudCustomizations();
+        }
+
+        // 快速預覽模式 (供離線或沙盒測試)
+        window.bypassForPreview = function() {
+            currentUserData = {
+                uid: 'preview-admin',
+                name: 'TONY 楊文澤老師 (預覽模式)',
+                email: SUPER_ADMIN_EMAIL,
+                identity: '系統創作者',
+                role: 'admin',
+                isCreator: true
+            };
+            enterMainPortal();
+            showToast('已進入快速預覽模式（具備管理員預覽視野）');
+        };
+
+        window.handleLogout = async function() {
+            if (auth) await auth.signOut().catch(() => {});
+            currentUserData = null;
+            document.getElementById('app-main-wrapper').classList.add('hidden');
+            document.getElementById('auth-gate').classList.remove('hidden');
+        };
+
+        if (auth) {
+            auth.onAuthStateChanged(async (user) => {
+                if (user && (user.emailVerified || (user.email && user.email.toLowerCase() === SUPER_ADMIN_EMAIL.toLowerCase()))) {
+                    await syncUserLoginRecord(user);
+                }
+            });
+        }
+
+        // =========================================================================
+        // 後台管理功能 (會員權限升降、歷史紀錄、匯出 CSV、AI 上架、簡介更新、Word 報告)
+        // =========================================================================
+        window.switchAdminTab = function(tabName) {
+            const tabs = ['members', 'apps', 'profile', 'report'];
+            tabs.forEach(t => {
+                const btn = document.getElementById('adm-tab-' + t);
+                const panel = document.getElementById('adm-panel-' + t);
+                if (t === tabName) {
+                    btn.className = 'px-3.5 py-1.5 rounded-lg text-xs md:text-sm font-bold bg-primary text-white';
+                    panel.classList.remove('hidden');
+                } else {
+                    btn.className = 'px-3.5 py-1.5 rounded-lg text-xs md:text-sm font-bold bg-slate-800 text-gray-300 hover:bg-slate-700';
+                    panel.classList.add('hidden');
+                }
+            });
+        };
+
+        window.loadAllMembers = async function() {
+            const tbody = document.getElementById('admin-members-tbody');
+            if (!tbody || !db) return;
+            tbody.innerHTML = `<tr><td colspan="7" class="p-6 text-center text-gray-400">載入會員資料中...</td></tr>`;
+
+            try {
+                const snap = await db.collection('users').get();
+                allMembersCache = [];
+                snap.forEach(doc => allMembersCache.push({ id: doc.id, ...doc.data() }));
+
+                if (allMembersCache.length === 0) {
+                    allMembersCache = [{
+                        id: 'creator',
+                        name: 'TONY 楊文澤老師',
+                        email: SUPER_ADMIN_EMAIL,
+                        identity: '系統創作者',
+                        role: 'admin',
+                        isCreator: true,
+                        createdAt: new Date().toISOString(),
+                        loginCount: 1,
+                        history: ['系統創作者初始化紀錄']
+                    }];
+                }
+
+                renderMembersTable();
+            } catch (err) {
+                tbody.innerHTML = `<tr><td colspan="7" class="p-6 text-center text-red-500">讀取失敗：${err.message}</td></tr>`;
+            }
+        };
+
+        function renderMembersTable() {
+            const tbody = document.getElementById('admin-members-tbody');
+            tbody.innerHTML = allMembersCache.map((m, idx) => {
+                const isCreator = (m.email && m.email.toLowerCase() === SUPER_ADMIN_EMAIL.toLowerCase()) || m.isCreator;
+                const roleBadge = isCreator
+                    ? `<span class="px-2.5 py-1 rounded-full text-xs font-bold bg-amber-100 text-amber-800 border border-amber-300"><i class="fa-solid fa-crown mr-1"></i>系統創作者 (Admin)</span>`
+                    : (m.role === 'admin'
+                        ? `<span class="px-2.5 py-1 rounded-full text-xs font-bold bg-blue-100 text-blue-700">管理員 Admin</span>`
+                        : `<span class="px-2.5 py-1 rounded-full text-xs font-medium bg-gray-100 text-gray-600">一般會員 User</span>`);
+
+                const dateFormatted = m.createdAt ? new Date(m.createdAt).toLocaleString('zh-TW') : '-';
+
+                const actionButtons = isCreator
+                    ? `<span class="text-xs text-gray-400 italic mr-2">最高權限鎖定</span>
+                       <button onclick="viewMemberHistory(${idx})" class="px-2.5 py-1 bg-slate-100 hover:bg-slate-200 text-slate-700 rounded text-xs font-bold">歷史紀錄</button>`
+                    : `<button onclick="toggleMemberRole('${m.id}', '${m.role}')" class="px-2.5 py-1 ${m.role === 'admin' ? 'bg-amber-500 text-white' : 'bg-blue-600 text-white'} hover:opacity-90 rounded text-xs font-bold mr-1">
+                         ${m.role === 'admin' ? '降為 User' : '升為 Admin'}
+                       </button>
+                       <button onclick="viewMemberHistory(${idx})" class="px-2.5 py-1 bg-slate-100 hover:bg-slate-200 text-slate-700 rounded text-xs font-bold mr-1">紀錄</button>
+                       <button onclick="deleteMemberDoc('${m.id}', '${m.email}')" class="px-2.5 py-1 bg-rose-50 hover:bg-rose-100 text-rose-600 rounded text-xs font-bold">刪除</button>`;
+
+                return `
+                <tr class="hover:bg-slate-50 transition-colors">
+                    <td class="p-3.5 font-bold text-slate-800">${m.name || '-'}</td>
+                    <td class="p-3.5 text-gray-600">${m.email || '-'}</td>
+                    <td class="p-3.5"><span class="px-2 py-0.5 bg-blue-50 text-blue-700 rounded text-xs font-medium">${m.identity || '一般訪客'}</span></td>
+                    <td class="p-3.5">${roleBadge}</td>
+                    <td class="p-3.5 text-gray-500 text-xs">${dateFormatted}</td>
+                    <td class="p-3.5 text-center font-bold text-slate-700">${m.loginCount || 1}</td>
+                    <td class="p-3.5 text-right whitespace-nowrap">${actionButtons}</td>
+                </tr>`;
+            }).join('');
+        }
+
+        window.toggleMemberRole = async function(docId, currentRole) {
+            const newRole = currentRole === 'admin' ? 'user' : 'admin';
+            try {
+                await db.collection('users').doc(docId).update({ role: newRole });
+                showToast(`已成功將會員權限更改為 ${newRole.toUpperCase()}`);
+                loadAllMembers();
+            } catch (err) {
+                showToast('權限更新失敗：' + err.message);
+            }
+        };
+
+        window.deleteMemberDoc = async function(docId, email) {
+            if (email && email.toLowerCase() === SUPER_ADMIN_EMAIL.toLowerCase()) {
+                showToast('系統創作者帳號受保護，不可刪除！');
+                return;
+            }
+            try {
+                await db.collection('users').doc(docId).delete();
+                showToast(`已刪除會員紀錄：${email}`);
+                loadAllMembers();
+            } catch (err) {
+                showToast('刪除失敗：' + err.message);
+            }
+        };
+
+        window.viewMemberHistory = function(idx) {
+            const m = allMembersCache[idx];
+            if (!m) return;
+            const body = document.getElementById('history-modal-body');
+            const list = Array.isArray(m.history) && m.history.length > 0
+                ? m.history.map(h => `<div class="p-2.5 bg-slate-50 rounded-lg border border-slate-100 text-xs">${h}</div>`).join('')
+                : `<div class="text-center text-gray-400 py-4">尚無詳細歷史紀錄</div>`;
+            body.innerHTML = `<div class="mb-2 font-bold text-slate-800">${m.name} (${m.email})</div>` + list;
+            toggleModal('history-modal');
+        };
+
+        // 5. 商業數據匯出 CSV (含 \ufeff BOM 標記防止 Excel 中文亂碼)
+        window.exportMembersCSV = function() {
+            if (!allMembersCache.length) {
+                showToast('目前無會員資料可匯出');
+                return;
+            }
+            const headers = ['真實姓名', '電子郵件', '身份別', '系統權限', '註冊時間', '登入次數'];
+            const rows = allMembersCache.map(m => [
+                `"${(m.name || '').replace(/"/g, '""')}"`,
+                `"${(m.email || '').replace(/"/g, '""')}"`,
+                `"${(m.identity || '').replace(/"/g, '""')}"`,
+                `"${m.role || 'user'}"`,
+                `"${m.createdAt || ''}"`,
+                `"${m.loginCount || 1}"`
+            ]);
+            const csvContent = "\ufeff" + [headers.join(','), ...rows.map(r => r.join(','))].join('\n');
+            const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = `TONY_SaaS_Members_${new Date().toISOString().slice(0,10)}.csv`;
+            document.body.appendChild(a);
+            a.click();
+            document.body.removeChild(a);
+            showToast('已成功匯出繁體中文 CSV 名單！');
+        };
+
+        // AI 一鍵辨識網址主題、分類與說明
+        const curatedUnsplashPool = [
+            "https://images.unsplash.com/photo-1518770660439-4636190af475?auto=format&fit=crop&w=800&q=80",
+            "https://images.unsplash.com/photo-1551288049-bebda4e38f71?auto=format&fit=crop&w=800&q=80",
+            "https://images.unsplash.com/photo-1552664730-d307ca884978?auto=format&fit=crop&w=800&q=80",
+            "https://images.unsplash.com/photo-1460925895917-afdab827c52f?auto=format&fit=crop&w=800&q=80",
+            "https://images.unsplash.com/photo-1522071820081-009f0129c71c?auto=format&fit=crop&w=800&q=80",
+            "https://images.unsplash.com/photo-1507413245164-6160d8298b31?auto=format&fit=crop&w=800&q=80"
+        ];
+
+        window.aiAutoFillAppInfo = async function() {
+            const url = document.getElementById('app-url-input').value.trim();
+            if (!url) {
+                showToast('請先輸入教案網址 URL！');
+                return;
+            }
+            const btn = document.getElementById('btn-ai-autofill');
+            btn.innerHTML = `<i class="fa-solid fa-spinner fa-spin"></i> AI 智慧解析中...`;
+
+            let slug = url.split('/').filter(Boolean).pop() || 'AI_Project';
+            slug = decodeURIComponent(slug).replace(/^TONY_/i, '').replace(/\d{6,8}$/, '');
+
+            let detectedCat = 'consulting';
+            let prefixCode = 'K';
+            if (/GAME/i.test(url)) { detectedCat = 'gamification'; prefixCode = 'GAME'; }
+            else if (/LINEOA|_L\d/i.test(url)) { detectedCat = 'line-oa'; prefixCode = 'L'; }
+            else if (/_G\d|Class/i.test(url)) { detectedCat = 'school'; prefixCode = 'G'; }
+            else if (/_D\d/i.test(url)) { detectedCat = 'wisdom'; prefixCode = 'D'; }
+            else if (/gemini\.google\.com\/gem/i.test(url)) { detectedCat = 'gem-auto'; prefixCode = 'H'; }
+            else if (/_A\d|_B\d|_C\d/i.test(url)) { detectedCat = 'tools'; prefixCode = 'A'; }
+
+            const readableName = slug.replace(/[-_]/g, ' ').trim();
+            document.getElementById('app-cat-input').value = detectedCat;
+            document.getElementById('app-title-input').value = `${prefixCode}. ${readableName} 智慧實戰系統`;
+            document.getElementById('app-tag-input').value = 'AI 實戰';
+            document.getElementById('app-desc-input').value = `結合 TONY 老師顧問框架與生成式 AI 技術打造的「${readableName}」互動式教學與決策輔助平台，協助學員與企業快速落地應用。`;
+            autoPickWebImage();
+
+            btn.innerHTML = `<i class="fa-solid fa-robot"></i> AI 一鍵辨識填入`;
+            showToast('AI 已完成網址辨識並自動填入欄位與配圖！');
+        };
+
+        window.autoPickWebImage = function() {
+            const randomImg = curatedUnsplashPool[Math.floor(Math.random() * curatedUnsplashPool.length)];
+            document.getElementById('app-img-input').value = randomImg;
+        };
+
+        // 上傳圖片至 Firebase Storage
+        window.uploadImageToFirebase = async function(event, targetInputId) {
+            const file = event.target.files[0];
+            if (!file || !storage) return;
+            showToast('正在上傳圖片至 Firebase Storage...');
+            try {
+                const path = `portal_uploads/${Date.now()}_${file.name}`;
+                const ref = storage.ref(path);
+                await ref.put(file);
+                const downloadURL = await ref.getDownloadURL();
+                document.getElementById(targetInputId).value = downloadURL;
+                showToast('圖片上傳成功！已自動填入圖片連結。');
+            } catch (err) {
+                showToast('圖片上傳失敗：' + err.message);
+            }
+        };
+
+        window.saveNewLessonApp = async function() {
+            const title = document.getElementById('app-title-input').value.trim();
+            const category = document.getElementById('app-cat-input').value;
+            const tag = document.getElementById('app-tag-input').value.trim() || '最新上架';
+            const desc = document.getElementById('app-desc-input').value.trim();
+            const link = document.getElementById('app-url-input').value.trim() || '#';
+            const image = document.getElementById('app-img-input').value.trim() || curatedUnsplashPool[0];
+            const editDocId = document.getElementById('app-edit-doc-id').value;
+            const editLocalIdx = document.getElementById('app-edit-local-idx').value;
+
+            if (!title) {
+                showToast('請填寫教案標題！');
+                return;
+            }
+
+            if (!presetTags.includes(tag)) {
+                presetTags.unshift(tag);
+                renderAdminTagDatalist();
+            }
+
+            const lessonPayload = { title, category, desc, link, image, tag, updatedAt: new Date().toISOString() };
+
+            // 如果是編輯現有教案
+            if (editLocalIdx !== '') {
+                const idx = parseInt(editLocalIdx, 10);
+                if (lessons[idx]) {
+                    lessons[idx] = { ...lessons[idx], ...lessonPayload };
+                }
+                renderCards();
+                renderCustomAppsAdminList();
+
+                try {
+                    if (db) {
+                        if (editDocId) {
+                            await db.collection('custom_lessons').doc(editDocId).set(lessonPayload, { merge: true });
+                        } else {
+                            await db.collection('custom_lessons').add({ ...lessonPayload, createdAt: new Date().toISOString() });
+                        }
+                        loadCloudCustomizations();
+                    }
+                    showToast(`已成功修改教案分類與標籤：${title}`);
+                } catch (err) {
+                    showToast('已更新畫面教案：' + title);
+                }
+                cancelEditLessonApp();
+                return;
+            }
+
+            // 新增教案
+            const newLesson = { ...lessonPayload, createdAt: new Date().toISOString() };
+            lessons.unshift(newLesson);
+            renderCards();
+            renderCustomAppsAdminList();
+
+            try {
+                if (db) {
+                    await db.collection('custom_lessons').add(newLesson);
+                    loadCloudCustomizations();
+                }
+                showToast(`已成功新增並發佈教案：${title}`);
+                cancelEditLessonApp();
+            } catch (err) {
+                showToast('已更新畫面，但雲端儲存受限：' + err.message);
+            }
+        };
+
+        window.editLessonFromAdmin = function(lessonIdx) {
+            const item = lessons[lessonIdx];
+            if (!item) return;
+
+            document.getElementById('app-url-input').value = item.link || '';
+            document.getElementById('app-title-input').value = item.title || '';
+            renderAdminCategorySelect();
+            document.getElementById('app-cat-input').value = item.category || 'consulting';
+            document.getElementById('app-tag-input').value = item.tag || '';
+            document.getElementById('app-desc-input').value = item.desc || '';
+            document.getElementById('app-img-input').value = item.image || '';
+            document.getElementById('app-edit-local-idx').value = lessonIdx;
+
+            const cloudMatch = customLessonsCache.find(c => c.title === item.title || c.link === item.link);
+            document.getElementById('app-edit-doc-id').value = cloudMatch ? cloudMatch.id : '';
+
+            document.getElementById('btn-cancel-edit-app').classList.remove('hidden');
+            const saveBtn = document.getElementById('btn-save-app');
+            saveBtn.innerHTML = `<i class="fa-solid fa-pen-to-square"></i> 確認修改教案 (含分類/標籤)`;
+
+            document.getElementById('adm-panel-apps').scrollIntoView({ behavior: 'smooth' });
+            showToast(`正在編輯「${item.title}」，可於上方直接修改分類與右上角標籤！`);
+        };
+
+        window.cancelEditLessonApp = function() {
+            document.getElementById('app-url-input').value = '';
+            document.getElementById('app-title-input').value = '';
+            document.getElementById('app-tag-input').value = '';
+            document.getElementById('app-desc-input').value = '';
+            document.getElementById('app-img-input').value = '';
+            document.getElementById('app-edit-doc-id').value = '';
+            document.getElementById('app-edit-local-idx').value = '';
+            document.getElementById('btn-cancel-edit-app').classList.add('hidden');
+            document.getElementById('btn-save-app').innerHTML = `<i class="fa-solid fa-plus-circle"></i> 儲存並發佈教案`;
+        };
+
+        window.deleteCustomLesson = async function(docId) {
+            try {
+                await db.collection('custom_lessons').doc(docId).delete();
+                showToast('已從雲端移除該筆新增教案');
+                loadCloudCustomizations();
+            } catch (err) {
+                showToast('移除失敗：' + err.message);
+            }
+        };
+
+        // 載入與儲存 TONY 簡介與雲端新增教案
+        async function loadCloudCustomizations() {
+            initProfileFormValues();
+            renderCustomAppsAdminList();
+            if (!db) return;
+
+            try {
+                const taxDoc = await db.collection('site_settings').doc('taxonomy').get();
+                if (taxDoc.exists) {
+                    const taxData = taxDoc.data();
+                    if (Array.isArray(taxData.categories) && taxData.categories.length > 0) {
+                        categories.length = 0;
+                        taxData.categories.forEach(c => categories.push(c));
+                    }
+                    if (Array.isArray(taxData.presetTags) && taxData.presetTags.length > 0) {
+                        presetTags = taxData.presetTags;
+                    }
+                    renderCategoryButtons();
+                    renderAdminCategorySelect();
+                    renderAdminTagDatalist();
+                }
+            } catch (e) {}
+
+            try {
+                const snap = await db.collection('custom_lessons').orderBy('createdAt', 'desc').get();
+                customLessonsCache = [];
+                snap.forEach(doc => {
+                    const data = doc.data();
+                    customLessonsCache.push({ id: doc.id, ...data });
+                    const existingIdx = lessons.findIndex(l => l.title === data.title || (l.link === data.link && data.link !== '#'));
+                    if (existingIdx > -1) {
+                        lessons[existingIdx] = { ...lessons[existingIdx], ...data };
+                    } else {
+                        lessons.unshift(data);
+                    }
+                });
+                renderAdminTagDatalist();
+                renderCards();
+                renderCustomAppsAdminList();
+            } catch (e) {}
+
+            try {
+                const cfgDoc = await db.collection('site_settings').doc('profile').get();
+                if (cfgDoc.exists) {
+                    applyProfileConfigToDOM(cfgDoc.data());
+                    initProfileFormValues();
+                }
+            } catch (e) {}
+        }
+
+        function renderCustomAppsAdminList() {
+            const container = document.getElementById('custom-apps-list');
+            if (!container) return;
+            const kw = (document.getElementById('admin-app-search')?.value || '').toLowerCase().trim();
+
+            const indexedLessons = lessons
+                .map((item, idx) => ({ item, idx }))
+                .filter(({ item }) => !kw || item.title.toLowerCase().includes(kw) || (item.tag || '').toLowerCase().includes(kw));
+
+            if (!indexedLessons.length) {
+                container.innerHTML = `<p class="text-gray-400 text-xs">找不到符合條件的教案。</p>`;
+                return;
+            }
+
+            container.innerHTML = indexedLessons.slice(0, 60).map(({ item, idx }) => {
+                const catObj = categories.find(c => c.id === item.category);
+                const catName = catObj ? catObj.name : item.category;
+                const cloudDoc = customLessonsCache.find(c => c.title === item.title && c.link === item.link);
+
+                return `
+                <div class="flex flex-wrap justify-between items-center gap-2 p-3 bg-slate-50 hover:bg-blue-50/40 rounded-lg border border-gray-200 transition-colors">
+                    <div class="flex flex-wrap items-center gap-2">
+                        <span class="px-2 py-0.5 bg-blue-100 text-primary rounded text-xs font-bold">${catName}</span>
+                        <span class="px-2 py-0.5 bg-amber-100 text-amber-800 rounded text-xs font-bold">#${item.tag || '無標籤'}</span>
+                        <span class="font-bold text-slate-800 text-sm">${item.title}</span>
+                    </div>
+                    <div class="flex items-center gap-2">
+                        <button type="button" onclick="editLessonFromAdmin(${idx})" class="px-3 py-1 bg-white border border-blue-300 hover:bg-blue-600 hover:text-white text-blue-600 rounded-lg text-xs font-bold transition-colors flex items-center gap-1">
+                            <i class="fa-solid fa-pen"></i> 修改分類/標籤
+                        </button>
+                        ${cloudDoc ? `<button type="button" onclick="deleteCustomLesson('${cloudDoc.id}')" class="px-2.5 py-1 bg-rose-50 hover:bg-rose-100 text-rose-600 rounded-lg text-xs font-bold">刪除</button>` : ''}
+                    </div>
+                </div>
+                `;
+            }).join('');
+        }
+
+        function initProfileFormValues() {
+            document.getElementById('cfg-name').value = document.getElementById('profile-name-text').innerText;
+            document.getElementById('cfg-subtitle').value = document.getElementById('profile-subtitle-text').innerText;
+            document.getElementById('cfg-slogan-zh').value = document.getElementById('profile-slogan-zh').innerText;
+            document.getElementById('cfg-slogan-en').value = document.getElementById('profile-slogan-en').innerText;
+            document.getElementById('cfg-logo').value = document.getElementById('header-logo-img').src;
+            document.getElementById('cfg-avatar').value = document.getElementById('profile-avatar-img').src;
+            document.getElementById('cfg-bio1').value = document.getElementById('profile-bio-p1').innerText.trim();
+            document.getElementById('cfg-bio2').value = document.getElementById('profile-bio-p2').innerText.trim();
+            document.getElementById('cfg-fb').value = document.getElementById('social-fb').href;
+            document.getElementById('cfg-ig').value = document.getElementById('social-ig').href;
+            document.getElementById('cfg-substack').value = document.getElementById('social-substack').href;
+            document.getElementById('cfg-yt1').value = document.getElementById('social-yt1').href;
+            document.getElementById('cfg-yt2').value = document.getElementById('social-yt2').href;
+            document.getElementById('cfg-tt1').value = document.getElementById('social-tt1').href;
+            document.getElementById('cfg-tt2').value = document.getElementById('social-tt2').href;
+            document.getElementById('cfg-email').value = document.getElementById('social-email').href;
+        }
+
+        function applyProfileConfigToDOM(cfg) {
+            if (!cfg) return;
+            if (cfg.name) document.getElementById('profile-name-text').innerText = cfg.name;
+            if (cfg.subtitle) document.getElementById('profile-subtitle-text').innerText = cfg.subtitle;
+            if (cfg.sloganZh) document.getElementById('profile-slogan-zh').innerText = cfg.sloganZh;
+            if (cfg.sloganEn) document.getElementById('profile-slogan-en').innerText = cfg.sloganEn;
+            if (cfg.logo) document.getElementById('header-logo-img').src = cfg.logo;
+            if (cfg.avatar) document.getElementById('profile-avatar-img').src = cfg.avatar;
+            if (cfg.bio1) document.getElementById('profile-bio-p1').innerText = cfg.bio1;
+            if (cfg.bio2) document.getElementById('profile-bio-p2').innerText = cfg.bio2;
+            if (cfg.fb) document.getElementById('social-fb').href = cfg.fb;
+            if (cfg.ig) document.getElementById('social-ig').href = cfg.ig;
+            if (cfg.substack) document.getElementById('social-substack').href = cfg.substack;
+            if (cfg.yt1) document.getElementById('social-yt1').href = cfg.yt1;
+            if (cfg.yt2) document.getElementById('social-yt2').href = cfg.yt2;
+            if (cfg.tt1) document.getElementById('social-tt1').href = cfg.tt1;
+            if (cfg.tt2) document.getElementById('social-tt2').href = cfg.tt2;
+            if (cfg.email) document.getElementById('social-email').href = cfg.email;
+        }
+
+        window.saveSiteProfileConfig = async function() {
+            const cfg = {
+                name: document.getElementById('cfg-name').value.trim(),
+                subtitle: document.getElementById('cfg-subtitle').value.trim(),
+                sloganZh: document.getElementById('cfg-slogan-zh').value.trim(),
+                sloganEn: document.getElementById('cfg-slogan-en').value.trim(),
+                logo: document.getElementById('cfg-logo').value.trim(),
+                avatar: document.getElementById('cfg-avatar').value.trim(),
+                bio1: document.getElementById('cfg-bio1').value.trim(),
+                bio2: document.getElementById('cfg-bio2').value.trim(),
+                fb: document.getElementById('cfg-fb').value.trim(),
+                ig: document.getElementById('cfg-ig').value.trim(),
+                substack: document.getElementById('cfg-substack').value.trim(),
+                yt1: document.getElementById('cfg-yt1').value.trim(),
+                yt2: document.getElementById('cfg-yt2').value.trim(),
+                tt1: document.getElementById('cfg-tt1').value.trim(),
+                tt2: document.getElementById('cfg-tt2').value.trim(),
+                email: document.getElementById('cfg-email').value.trim(),
+                updatedAt: new Date().toISOString()
+            };
+            applyProfileConfigToDOM(cfg);
+            try {
+                if (db) await db.collection('site_settings').doc('profile').set(cfg, { merge: true });
+                showToast('TONY 顧問簡介與社群設定已成功更新！');
+            } catch (err) {
+                showToast('已在畫面套用更新（雲端同步：' + err.message + '）');
+            }
+        };
+
+        // 6. AI 分析報告產出與輸出 WORD 檔 (.doc)
+        window.generateAIReport = function() {
+            const startVal = document.getElementById('report-start-date').value || '2026-01-01';
+            const endVal = document.getElementById('report-end-date').value || new Date().toISOString().slice(0, 10);
+            const startDate = new Date(startVal + 'T00:00:00');
+            const endDate = new Date(endVal + 'T23:59:59');
+
+            const filteredMembers = allMembersCache.filter(m => {
+                if (!m.createdAt) return true;
+                const d = new Date(m.createdAt);
+                return d >= startDate && d <= endDate;
+            });
+
+            const studentCount = filteredMembers.filter(m => (m.identity || '').includes('學員')).length;
+            const visitorCount = filteredMembers.length - studentCount;
+            const totalLogins = filteredMembers.reduce((acc, cur) => acc + (cur.loginCount || 1), 0);
+
+            const catSummary = categories.filter(c => c.id !== 'all').map(c => {
+                const count = lessons.filter(l => l.category === c.id).length;
+                return `<li><strong>${c.name}</strong>：共 ${count} 項互動教案</li>`;
+            }).join('');
+
+            const reportHTML = `
+                <div id="word-export-area" style="font-family: 'Noto Sans TC', Microsoft JhengHei, sans-serif; color: #1e293b;">
+                    <h2 style="font-size: 22px; font-weight: bold; color: #1e40af; border-bottom: 2px solid #2563eb; padding-bottom: 8px;">
+                        2026 Tony 共創導師 × 創新顧問｜SaaS 平台 AI 營運分析報告
+                    </h2>
+                    <p style="font-size: 13px; color: #64748b; margin-top: 4px;">
+                        統計區間：<strong>${startVal}</strong> 至 <strong>${endVal}</strong> ｜ 報告生成時間：${new Date().toLocaleString('zh-TW')}
+                    </p>
+                    <h3 style="font-size: 17px; font-weight: bold; margin-top: 18px; color: #0f172a;">一、 會員結構與活躍度摘要</h3>
+                    <ul>
+                        <li>區間內活躍/註冊會員總數：<strong>${filteredMembers.length}</strong> 人</li>
+                        <li>TONY 老師學員人數：<strong>${studentCount}</strong> 人 ｜ 一般訪客/非學員：<strong>${visitorCount}</strong> 人</li>
+                        <li>累積總登入互動次數：<strong>${totalLogins}</strong> 次</li>
+                    </ul>
+                    <h3 style="font-size: 17px; font-weight: bold; margin-top: 18px; color: #0f172a;">二、 平台教案資產盤點（共 ${lessons.length} 項教案）</h3>
+                    <ul>${catSummary}</ul>
+                    <h3 style="font-size: 17px; font-weight: bold; margin-top: 18px; color: #0f172a;">三、 TONY AI 顧問策略洞察與建議</h3>
+                    <p>
+                        1. <strong>學員轉化與高黏著度</strong>：目前平台涵蓋「遊戲化教學 (GAME01~GAME19)」、「顧問諮詢 (K系列/E系列)」及「Gem 自動化 (H系列)」等超過 250+ 項實戰工具，建議於企業內訓與大學課程中持續透過「註冊專屬」教案引導學員登入互動。<br>
+                        2. <strong>跨領域 AI 賦能成效</strong>：透過遊戲化沙盤與產業專屬 Prompt 工具，能有效提升學員課堂參與度與課後實作留存率。
+                    </p>
+                </div>
+            `;
+            document.getElementById('ai-report-content').innerHTML = reportHTML;
+            showToast('AI 營運數據分析報告已產出！');
+        };
+
+        window.exportReportToWord = function() {
+            const area = document.getElementById('word-export-area');
+            if (!area) {
+                generateAIReport();
+            }
+            const content = document.getElementById('word-export-area').innerHTML;
+            const docHTML = `
+                <html xmlns:o='urn:schemas-microsoft-com:office:office' xmlns:w='urn:schemas-microsoft-com:office:word' xmlns='http://www.w3.org/TR/REC-html40'>
+                <head><meta charset='utf-8'><title>TONY_SaaS_AI_Report</title></head>
+                <body>${content}</body>
+                </html>
+            `;
+            const blob = new Blob(['\ufeff', docHTML], { type: 'application/msword' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = `TONY_SaaS_AI分析報告_${new Date().toISOString().slice(0,10)}.doc`;
+            document.body.appendChild(a);
+            a.click();
+            document.body.removeChild(a);
+            showToast('已成功輸出成 WORD 檔 (.doc)！');
+        };
     </script>
 </body>
 </html>
