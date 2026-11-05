@@ -100,7 +100,7 @@
             <div class="lg:w-5/12 bg-gradient-to-br from-slate-900 via-slate-800 to-blue-950 text-white p-6 md:p-8 flex flex-col justify-between relative overflow-hidden">
                 <div class="relative z-10">
                     <div class="flex items-center gap-3 mb-6">
-                        <img src="https://firebasestorage.googleapis.com/v0/b/k16-tony-ai-wisdom-platform.firebasestorage.app/o/assets%2F6av64EOvvqQNAIoXqcPfHC5BBeF3%2F1785039560457_1.png?alt=media&token=19b27497-4101-4436-bc80-b299741b7984" alt="Logo" class="w-12 h-12 rounded-full bg-white p-0.5 object-cover shadow-md">
+                        <img id="auth-gate-logo-img" src="https://firebasestorage.googleapis.com/v0/b/k16-tony-ai-wisdom-platform.firebasestorage.app/o/assets%2F6av64EOvvqQNAIoXqcPfHC5BBeF3%2F1785039560457_1.png?alt=media&token=19b27497-4101-4436-bc80-b299741b7984" alt="Logo" class="w-12 h-12 rounded-full bg-white p-0.5 object-cover shadow-md">
                         <div>
                             <h2 class="font-bold text-lg tracking-wide text-white">2026 Tony 共創導師</h2>
                             <p class="text-xs text-blue-300">創新顧問 | 互動教案入口首頁</p>
@@ -108,7 +108,7 @@
                     </div>
 
                     <div class="flex items-center gap-4 mb-5 bg-white/5 p-3.5 rounded-2xl border border-white/10 backdrop-blur-sm">
-                        <img src="https://firebasestorage.googleapis.com/v0/b/k16-tony-ai-wisdom-platform.firebasestorage.app/o/assets%2F6av64EOvvqQNAIoXqcPfHC5BBeF3%2F1787580326393_ChatGPT%20Image%202026%E5%B9%B46%E6%9C%8819%E6%97%A5%20%E4%B8%8A%E5%8D%8811_16_14.png?alt=media&token=3c85de41-f36f-46e5-a97a-7bc7eb83a027" alt="TONY 楊文澤老師" class="w-16 h-20 rounded-xl object-cover shadow-md shrink-0 border border-white/20">
+                        <img id="auth-gate-avatar-img" src="https://firebasestorage.googleapis.com/v0/b/k16-tony-ai-wisdom-platform.firebasestorage.app/o/assets%2F6av64EOvvqQNAIoXqcPfHC5BBeF3%2F1787580326393_ChatGPT%20Image%202026%E5%B9%B46%E6%9C%8819%E6%97%A5%20%E4%B8%8A%E5%8D%8811_16_14.png?alt=media&token=3c85de41-f36f-46e5-a97a-7bc7eb83a027" alt="TONY 楊文澤老師" class="w-16 h-20 rounded-xl object-cover shadow-md shrink-0 border border-white/20">
                         <div>
                             <div class="inline-block px-2 py-0.5 bg-amber-500/20 text-amber-300 text-[11px] font-bold rounded mb-1 border border-amber-400/30">平台創作者簡介</div>
                             <h3 class="text-lg font-bold">TONY 楊文澤老師</h3>
@@ -625,7 +625,12 @@
 
                         <div class="grid grid-cols-1 md:grid-cols-12 gap-4 items-end">
                             <div class="md:col-span-6">
-                                <label class="block text-xs font-bold text-gray-600 mb-1">6. 封面圖片網址 (或點擊右側自動尋圖 / 上傳圖檔)</label>
+                                <div class="flex flex-wrap justify-between items-center gap-1 mb-1">
+                                    <label class="block text-xs font-bold text-gray-600">6. 封面圖片網址 (或點擊右側自動尋圖 / 上傳圖檔)</label>
+                                    <span class="px-2 py-0.5 bg-indigo-50 text-indigo-700 border border-indigo-200 rounded text-[11px] font-bold">
+                                        <i class="fa-solid fa-ruler-combined mr-1"></i>建議製圖尺寸：800 × 450 px (16:9 橫式)
+                                    </span>
+                                </div>
                                 <input type="text" id="app-img-input" placeholder="https://images.unsplash.com/..." class="w-full px-3.5 py-2 rounded-lg border border-gray-300 text-sm">
                             </div>
                             <div class="md:col-span-3">
@@ -634,9 +639,9 @@
                                 </button>
                             </div>
                             <div class="md:col-span-3">
-                                <label class="w-full py-2 px-3 bg-amber-50 hover:bg-amber-100 text-amber-800 font-bold rounded-lg text-xs border border-amber-300 flex items-center justify-center gap-1.5 cursor-pointer">
-                                    <i class="fa-solid fa-cloud-arrow-up"></i> 上傳圖片至 Storage
-                                    <input type="file" accept="image/*" class="hidden" onchange="uploadImageToFirebase(event, 'app-img-input')">
+                                <label class="w-full py-2 px-3 bg-amber-50 hover:bg-amber-100 text-amber-800 font-bold rounded-lg text-xs border border-amber-300 flex items-center justify-center gap-1.5 cursor-pointer" title="系統將自動壓縮至最佳尺寸後上傳">
+                                    <i class="fa-solid fa-cloud-arrow-up"></i> 上傳圖片 (自動壓縮)
+                                    <input type="file" accept="image/*" class="hidden" onchange="uploadImageToFirebase(event, 'app-img-input', 'lesson_covers')">
                                 </label>
                             </div>
                         </div>
@@ -686,25 +691,40 @@
                                 <label class="block text-xs font-bold text-gray-600 mb-1">英文標語 Slogan</label>
                                 <input type="text" id="cfg-slogan-en" class="w-full px-3 py-2 border rounded-lg text-sm">
                             </div>
-                        </div>
-
-                        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-                            <div>
-                                <label class="block text-xs font-bold text-gray-600 mb-1">左上角 LOGO 圖片網址</label>
-                                <div class="flex gap-2">
-                                    <input type="text" id="cfg-logo" class="w-full px-3 py-2 border rounded-lg text-sm">
-                                    <label class="px-3 py-2 bg-slate-100 hover:bg-slate-200 rounded-lg text-xs font-bold cursor-pointer shrink-0 flex items-center">
-                                        上傳 <input type="file" accept="image/*" class="hidden" onchange="uploadImageToFirebase(event, 'cfg-logo')">
-                                    </label>
+                            <div class="p-4 bg-slate-50 rounded-xl border border-slate-200 flex flex-col gap-3">
+                                <div class="flex flex-wrap justify-between items-center gap-1">
+                                    <label class="block text-xs font-bold text-slate-700">左上角 LOGO 圖片 (上傳自動壓縮套用)</label>
+                                    <span class="px-2 py-0.5 bg-blue-50 text-blue-700 border border-blue-200 rounded text-[11px] font-bold">
+                                        <i class="fa-solid fa-ruler-combined mr-1"></i>建議製圖尺寸：400 × 400 px (1:1 正方形圓標)
+                                    </span>
+                                </div>
+                                <div class="flex items-center gap-4">
+                                    <img id="cfg-logo-preview" src="" alt="LOGO 預覽" class="w-16 h-16 rounded-full object-cover bg-white border border-gray-300 shadow-sm shrink-0">
+                                    <div class="flex-grow space-y-2">
+                                        <label class="w-full py-2 px-3 bg-primary hover:bg-secondary text-white rounded-lg text-xs font-bold cursor-pointer inline-flex items-center justify-center gap-2 shadow-sm transition-all">
+                                            <i class="fa-solid fa-cloud-arrow-up"></i> 選擇 LOGO 上傳至 Storage (自動壓縮更新)
+                                            <input type="file" accept="image/*" class="hidden" onchange="uploadImageToFirebase(event, 'cfg-logo', 'brand_assets/logo')">
+                                        </label>
+                                        <input type="text" id="cfg-logo" oninput="document.getElementById('cfg-logo-preview').src = this.value" placeholder="上傳後系統自動填入，或貼上外部圖片網址" class="w-full px-2.5 py-1.5 border rounded text-[11px] text-gray-500 bg-white">
+                                    </div>
                                 </div>
                             </div>
-                            <div>
-                                <label class="block text-xs font-bold text-gray-600 mb-1">TONY 顧問形象照網址</label>
-                                <div class="flex gap-2">
-                                    <input type="text" id="cfg-avatar" class="w-full px-3 py-2 border rounded-lg text-sm">
-                                    <label class="px-3 py-2 bg-slate-100 hover:bg-slate-200 rounded-lg text-xs font-bold cursor-pointer shrink-0 flex items-center">
-                                        上傳 <input type="file" accept="image/*" class="hidden" onchange="uploadImageToFirebase(event, 'cfg-avatar')">
-                                    </label>
+                            <div class="p-4 bg-slate-50 rounded-xl border border-slate-200 flex flex-col gap-3">
+                                <div class="flex flex-wrap justify-between items-center gap-1">
+                                    <label class="block text-xs font-bold text-slate-700">TONY 顧問形象照 (上傳自動壓縮套用)</label>
+                                    <span class="px-2 py-0.5 bg-amber-50 text-amber-800 border border-amber-200 rounded text-[11px] font-bold">
+                                        <i class="fa-solid fa-ruler-combined mr-1"></i>建議製圖尺寸：600 × 800 px (3:4 直式比例)
+                                    </span>
+                                </div>
+                                <div class="flex items-center gap-4">
+                                    <img id="cfg-avatar-preview" src="" alt="顧問形象照預覽" class="w-16 h-20 rounded-xl object-cover bg-white border border-gray-300 shadow-sm shrink-0">
+                                    <div class="flex-grow space-y-2">
+                                        <label class="w-full py-2 px-3 bg-amber-500 hover:bg-amber-600 text-white rounded-lg text-xs font-bold cursor-pointer inline-flex items-center justify-center gap-2 shadow-sm transition-all">
+                                            <i class="fa-solid fa-cloud-arrow-up"></i> 選擇形象照上傳至 Storage (自動壓縮更新)
+                                            <input type="file" accept="image/*" class="hidden" onchange="uploadImageToFirebase(event, 'cfg-avatar', 'brand_assets/avatar')">
+                                        </label>
+                                        <input type="text" id="cfg-avatar" oninput="document.getElementById('cfg-avatar-preview').src = this.value" placeholder="上傳後系統自動填入，或貼上外部圖片網址" class="w-full px-2.5 py-1.5 border rounded text-[11px] text-gray-500 bg-white">
+                                    </div>
                                 </div>
                             </div>
                         </div>
@@ -1742,26 +1762,41 @@
                 const isSuperAdmin = (email === SUPER_ADMIN_EMAIL.toLowerCase());
                 const nowStr = new Date().toISOString();
 
-                await db.collection('users').doc(user.uid).set({
-                    uid: user.uid,
-                    name: name,
-                    email: email,
-                    identity: identity,
-                    role: isSuperAdmin ? 'admin' : 'user',
-                    isCreator: isSuperAdmin,
-                    createdAt: nowStr,
-                    loginCount: 0,
-                    history: [`${nowStr} - 完成帳號註冊 (${identity})`]
-                }, { merge: true });
-
+                // 先寄發驗證信，確保即使 Firestore 規則尚未發佈也不會中斷驗證信發送
                 await user.sendEmailVerification();
+
+                try {
+                    await db.collection('users').doc(user.uid).set({
+                        uid: user.uid,
+                        name: name,
+                        email: email,
+                        identity: identity,
+                        role: isSuperAdmin ? 'admin' : 'user',
+                        isCreator: isSuperAdmin,
+                        createdAt: nowStr,
+                        loginCount: 0,
+                        history: [`${nowStr} - 完成帳號註冊 (${identity})`]
+                    }, { merge: true });
+                } catch (dbErr) {
+                    console.warn("註冊時寫入 Firestore 暫時略過 (將於首次登入自動補齊):", dbErr);
+                }
+
                 await auth.signOut();
 
                 switchAuthTab('login');
+                document.getElementById('login-email').value = email;
                 document.getElementById('spam-reminder').classList.remove('hidden');
-                showAuthMessage('註冊成功！請至信箱點擊驗證連結後再行登入。', false);
+                showAuthMessage('註冊成功！請至信箱點擊驗證連結後再行登入（最高管理員可直接登入）。', false);
             } catch (err) {
-                showAuthMessage('註冊失敗：' + (err.message || '請檢查輸入資訊'), true);
+                if (err.code === 'auth/email-already-in-use') {
+                    switchAuthTab('login');
+                    document.getElementById('login-email').value = email;
+                    showAuthMessage('此信箱已經註冊過了！已為您切換至「會員登入」，請直接輸入密碼或點選下方 Google 登入。', false);
+                } else if (err.code === 'auth/operation-not-allowed') {
+                    showAuthMessage('請先至 Firebase Console -> Authentication -> Sign-in method 啟用「電子郵件/密碼」登入功能！', true);
+                } else {
+                    showAuthMessage('註冊失敗：' + (err.message || '請檢查輸入資訊'), true);
+                }
             }
         };
 
@@ -1774,6 +1809,7 @@
             try {
                 const cred = await auth.signInWithEmailAndPassword(email, password);
                 const user = cred.user;
+                await user.reload(); // 強制重新整理最新信箱驗證狀態
 
                 if (!user.emailVerified && email !== SUPER_ADMIN_EMAIL.toLowerCase()) {
                     await user.sendEmailVerification().catch(() => {});
@@ -1785,7 +1821,15 @@
 
                 await syncUserLoginRecord(user);
             } catch (err) {
-                showAuthMessage('登入失敗：帳號或密碼錯誤，或帳號尚未註冊 (' + err.code + ')', true);
+                if (err.code === 'auth/invalid-credential' || err.code === 'auth/wrong-password') {
+                    showAuthMessage('登入失敗：密碼輸入有誤，或者此信箱曾使用「Google 帳號」登入過。請確認密碼、點擊「忘記密碼」重設，或直接使用下方 Google 按鈕登入！', true);
+                } else if (err.code === 'auth/user-not-found') {
+                    showAuthMessage('查無此信箱帳號，請點選上方「註冊新帳號」進行註冊。', true);
+                } else if (err.code === 'auth/too-many-requests') {
+                    showAuthMessage('嘗試登入次數過多，系統暫時保護鎖定，請稍候再試或使用「忘記密碼」重設。', true);
+                } else {
+                    showAuthMessage('登入未完成：' + err.message + ' (' + err.code + ')', true);
+                }
             }
         };
 
@@ -1796,7 +1840,11 @@
                 const cred = await auth.signInWithPopup(provider);
                 await syncUserLoginRecord(cred.user);
             } catch (err) {
-                showAuthMessage('Google 登入未完成：' + err.message, true);
+                if (err.code === 'auth/unauthorized-domain') {
+                    showAuthMessage('目前預覽視窗網域尚未加入 Firebase 授權網域！您可以先使用上方「Email 帳號密碼登入」或點擊左下角「快速預覽模式」。', true);
+                } else {
+                    showAuthMessage('Google 登入未完成：' + err.message, true);
+                }
             }
         };
 
@@ -1916,14 +1964,6 @@
             document.getElementById('app-main-wrapper').classList.add('hidden');
             document.getElementById('auth-gate').classList.remove('hidden');
         };
-
-        if (auth) {
-            auth.onAuthStateChanged(async (user) => {
-                if (user && (user.emailVerified || (user.email && user.email.toLowerCase() === SUPER_ADMIN_EMAIL.toLowerCase()))) {
-                    await syncUserLoginRecord(user);
-                }
-            });
-        }
 
         // =========================================================================
         // 後台管理功能 (會員權限升降、歷史紀錄、匯出 CSV、AI 上架、簡介更新、Word 報告)
@@ -2117,20 +2157,123 @@
             document.getElementById('app-img-input').value = randomImg;
         };
 
-        // 上傳圖片至 Firebase Storage
-        window.uploadImageToFirebase = async function(event, targetInputId) {
-            const file = event.target.files[0];
-            if (!file || !storage) return;
-            showToast('正在上傳圖片至 Firebase Storage...');
+        // 圖片上傳前自動智慧壓縮引擎 (保留透明背景支援與高畫質最佳化)
+        function compressImageBeforeUpload(file, targetInputId) {
+            return new Promise((resolve) => {
+                // SVG 或 GIF 動圖不壓縮，直接回傳原檔
+                if (!file.type.startsWith('image/') || file.type === 'image/svg+xml' || file.type === 'image/gif') {
+                    return resolve(file);
+                }
+
+                // 依據不同圖檔位置設定最佳最大寬高限制与壓縮率
+                let maxWidth = 1000;
+                let maxHeight = 600;
+                let quality = 0.82;
+
+                if (targetInputId === 'cfg-logo') {
+                    maxWidth = 400;
+                    maxHeight = 400;
+                    quality = 0.88;
+                } else if (targetInputId === 'cfg-avatar') {
+                    maxWidth = 800;
+                    maxHeight = 1066;
+                    quality = 0.85;
+                }
+
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    const img = new Image();
+                    img.onload = function() {
+                        let width = img.width;
+                        let height = img.height;
+
+                        if (width > maxWidth || height > maxHeight) {
+                            const ratio = Math.min(maxWidth / width, maxHeight / height);
+                            width = Math.round(width * ratio);
+                            height = Math.round(height * ratio);
+                        }
+
+                        const canvas = document.createElement('canvas');
+                        canvas.width = width;
+                        canvas.height = height;
+                        const ctx = canvas.getContext('2d');
+                        ctx.imageSmoothingEnabled = true;
+                        ctx.imageSmoothingQuality = 'high';
+                        ctx.drawImage(img, 0, 0, width, height);
+
+                        // LOGO 若為 PNG 則轉為支援透明背景的 WebP，其餘轉為高壓縮率 WebP / JPEG
+                        const outputType = 'image/webp';
+                        canvas.toBlob((blob) => {
+                            if (!blob || blob.size >= file.size) {
+                                resolve(file);
+                            } else {
+                                const baseName = file.name.replace(/\.[^/.]+$/, "");
+                                const compressedFile = new File([blob], `${baseName}.webp`, {
+                                    type: outputType,
+                                    lastModified: Date.now()
+                                });
+                                resolve(compressedFile);
+                            }
+                        }, outputType, quality);
+                    };
+                    img.onerror = () => resolve(file);
+                    img.src = e.target.result;
+                };
+                reader.onerror = () => resolve(file);
+                reader.readAsDataURL(file);
+            });
+        }
+
+        // 上傳圖片至 Firebase Storage 並自動綁定與同步至系統
+        window.uploadImageToFirebase = async function(event, targetInputId, customSubFolder = 'general') {
+            const rawFile = event.target.files[0];
+            if (!rawFile) return;
+            if (!storage) {
+                showToast('Firebase Storage 尚未初始化完成');
+                return;
+            }
+
+            const originalKB = (rawFile.size / 1024).toFixed(1);
+            showToast(`正在智慧壓縮圖片「${rawFile.name}」(原始 ${originalKB} KB)...`);
+
             try {
-                const path = `portal_uploads/${Date.now()}_${file.name}`;
+                const compressedFile = await compressImageBeforeUpload(rawFile, targetInputId);
+                const compressedKB = (compressedFile.size / 1024).toFixed(1);
+                const safeName = compressedFile.name.replace(/[^a-zA-Z0-9._-]/g, '_');
+                const path = `portal_uploads/${customSubFolder}/${Date.now()}_${safeName}`;
                 const ref = storage.ref(path);
-                await ref.put(file);
+                await ref.put(compressedFile);
                 const downloadURL = await ref.getDownloadURL();
-                document.getElementById(targetInputId).value = downloadURL;
-                showToast('圖片上傳成功！已自動填入圖片連結。');
+
+                // 自動寫入對應欄位
+                const inputEl = document.getElementById(targetInputId);
+                if (inputEl) inputEl.value = downloadURL;
+
+                // 若為 LOGO 或 顧問形象照，立即更新預覽圖、前台畫面，並自動寫入 Firestore 儲存！
+                if (targetInputId === 'cfg-logo') {
+                    const prev = document.getElementById('cfg-logo-preview');
+                    if (prev) prev.src = downloadURL;
+                    document.getElementById('header-logo-img').src = downloadURL;
+                    const gateLogo = document.getElementById('auth-gate-logo-img');
+                    if (gateLogo) gateLogo.src = downloadURL;
+                    if (db) await db.collection('site_settings').doc('profile').set({ logo: downloadURL, updatedAt: new Date().toISOString() }, { merge: true });
+                    showToast(`LOGO 壓縮上傳成功 (${originalKB}KB ➔ ${compressedKB}KB) 並已自動套用！`);
+                } else if (targetInputId === 'cfg-avatar') {
+                    const prev = document.getElementById('cfg-avatar-preview');
+                    if (prev) prev.src = downloadURL;
+                    document.getElementById('profile-avatar-img').src = downloadURL;
+                    const gateAvatar = document.getElementById('auth-gate-avatar-img');
+                    if (gateAvatar) gateAvatar.src = downloadURL;
+                    if (db) await db.collection('site_settings').doc('profile').set({ avatar: downloadURL, updatedAt: new Date().toISOString() }, { merge: true });
+                    showToast(`顧問形象照壓縮上傳成功 (${originalKB}KB ➔ ${compressedKB}KB) 並已自動套用！`);
+                } else {
+                    showToast(`封面圖壓縮上傳成功 (${originalKB}KB ➔ ${compressedKB}KB)！系統已自動帶入。`);
+                }
             } catch (err) {
-                showToast('圖片上傳失敗：' + err.message);
+                console.error('Storage Upload Error:', err);
+                showToast('Storage 上傳失敗：請確認已發佈 storage.rules 規則 (' + err.message + ')');
+            } finally {
+                event.target.value = '';
             }
         };
 
@@ -2338,8 +2481,14 @@
             document.getElementById('cfg-subtitle').value = document.getElementById('profile-subtitle-text').innerText;
             document.getElementById('cfg-slogan-zh').value = document.getElementById('profile-slogan-zh').innerText;
             document.getElementById('cfg-slogan-en').value = document.getElementById('profile-slogan-en').innerText;
-            document.getElementById('cfg-logo').value = document.getElementById('header-logo-img').src;
-            document.getElementById('cfg-avatar').value = document.getElementById('profile-avatar-img').src;
+            const currentLogo = document.getElementById('header-logo-img').src;
+            const currentAvatar = document.getElementById('profile-avatar-img').src;
+            document.getElementById('cfg-logo').value = currentLogo;
+            document.getElementById('cfg-avatar').value = currentAvatar;
+            const logoPrev = document.getElementById('cfg-logo-preview');
+            if (logoPrev) logoPrev.src = currentLogo;
+            const avatarPrev = document.getElementById('cfg-avatar-preview');
+            if (avatarPrev) avatarPrev.src = currentAvatar;
             document.getElementById('cfg-bio1').value = document.getElementById('profile-bio-p1').innerText.trim();
             document.getElementById('cfg-bio2').value = document.getElementById('profile-bio-p2').innerText.trim();
             document.getElementById('cfg-fb').value = document.getElementById('social-fb').href;
@@ -2358,8 +2507,20 @@
             if (cfg.subtitle) document.getElementById('profile-subtitle-text').innerText = cfg.subtitle;
             if (cfg.sloganZh) document.getElementById('profile-slogan-zh').innerText = cfg.sloganZh;
             if (cfg.sloganEn) document.getElementById('profile-slogan-en').innerText = cfg.sloganEn;
-            if (cfg.logo) document.getElementById('header-logo-img').src = cfg.logo;
-            if (cfg.avatar) document.getElementById('profile-avatar-img').src = cfg.avatar;
+            if (cfg.logo) {
+                document.getElementById('header-logo-img').src = cfg.logo;
+                const gateLogo = document.getElementById('auth-gate-logo-img');
+                if (gateLogo) gateLogo.src = cfg.logo;
+                const logoPrev = document.getElementById('cfg-logo-preview');
+                if (logoPrev) logoPrev.src = cfg.logo;
+            }
+            if (cfg.avatar) {
+                document.getElementById('profile-avatar-img').src = cfg.avatar;
+                const gateAvatar = document.getElementById('auth-gate-avatar-img');
+                if (gateAvatar) gateAvatar.src = cfg.avatar;
+                const avatarPrev = document.getElementById('cfg-avatar-preview');
+                if (avatarPrev) avatarPrev.src = cfg.avatar;
+            }
             if (cfg.bio1) document.getElementById('profile-bio-p1').innerText = cfg.bio1;
             if (cfg.bio2) document.getElementById('profile-bio-p2').innerText = cfg.bio2;
             if (cfg.fb) document.getElementById('social-fb').href = cfg.fb;
@@ -2370,6 +2531,21 @@
             if (cfg.tt1) document.getElementById('social-tt1').href = cfg.tt1;
             if (cfg.tt2) document.getElementById('social-tt2').href = cfg.tt2;
             if (cfg.email) document.getElementById('social-email').href = cfg.email;
+        }
+
+        if (auth) {
+            // 頁面載入時立即從雲端讀取最新 LOGO 與 TONY 顧問形象照，讓登入頁也能同步顯示 Storage 最新圖檔
+            if (db) {
+                db.collection('site_settings').doc('profile').get().then(doc => {
+                    if (doc.exists) applyProfileConfigToDOM(doc.data());
+                }).catch(() => {});
+            }
+
+            auth.onAuthStateChanged(async (user) => {
+                if (user && (user.emailVerified || (user.email && user.email.toLowerCase() === SUPER_ADMIN_EMAIL.toLowerCase()))) {
+                    await syncUserLoginRecord(user);
+                }
+            });
         }
 
         window.saveSiteProfileConfig = async function() {
