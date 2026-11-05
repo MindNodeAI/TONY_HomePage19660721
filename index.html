@@ -477,12 +477,58 @@
                 
                 <!-- 頁籤 1：會員管理與 CSV 匯出 -->
                 <div id="adm-panel-members" class="space-y-4">
+                    <!-- VIP 專屬白名單邀請制管理區塊 -->
+                    <div class="bg-gradient-to-r from-amber-50 to-orange-50 p-5 rounded-xl border border-amber-200 shadow-sm space-y-3">
+                        <div class="flex flex-wrap justify-between items-center gap-3">
+                            <div class="flex items-center gap-2.5">
+                                <span class="w-9 h-9 rounded-lg bg-amber-500 text-white flex items-center justify-center font-bold shadow-sm">
+                                    <i class="fa-solid fa-user-lock"></i>
+                                </span>
+                                <div>
+                                    <h3 class="font-bold text-slate-800 text-base flex items-center gap-2">
+                                        VIP 學員信箱白名單控制（限制僅指定 Email 可註冊與登入）
+                                        <span id="whitelist-mode-badge" class="px-2 py-0.5 text-[11px] rounded-full bg-emerald-600 text-white font-bold">嚴格白名單已開啟</span>
+                                    </h3>
+                                    <p class="text-xs text-gray-600">開啟後，只有下方白名單內的 Email（以及創作者 mindnodeai@gmail.com）才能註冊或使用 Google 登入，其他人一律攔截阻擋！</p>
+                                </div>
+                            </div>
+                            <label class="inline-flex items-center cursor-pointer bg-white px-3.5 py-2 rounded-xl border border-amber-300 shadow-sm">
+                                <input type="checkbox" id="toggle-strict-whitelist" checked onchange="toggleWhitelistMode(this.checked)" class="sr-only peer">
+                                <div class="relative w-10 h-5 bg-gray-300 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-4 after:w-4 after:transition-all peer-checked:bg-emerald-600"></div>
+                                <span class="ml-2.5 text-xs font-bold text-slate-700">啟用嚴格白名單限制</span>
+                            </label>
+                        </div>
+
+                        <div class="grid grid-cols-1 md:grid-cols-12 gap-3 items-start pt-2 border-t border-amber-200/60">
+                            <div class="md:col-span-8">
+                                <label class="block text-xs font-bold text-amber-900 mb-1">新增准許註冊/登入的 Email（可一次貼上多筆，用換行、空白或逗號分隔）</label>
+                                <textarea id="whitelist-input" rows="2" placeholder="例如：student1@gmail.com, student2@gmail.com" class="w-full px-3.5 py-2 rounded-lg border border-amber-300 text-xs bg-white focus:outline-none focus:ring-2 focus:ring-amber-500"></textarea>
+                            </div>
+                            <div class="md:col-span-4 flex flex-col gap-2 md:pt-5">
+                                <button type="button" onclick="addEmailsToWhitelist()" class="w-full py-2 px-4 bg-amber-600 hover:bg-amber-700 text-white font-bold rounded-lg text-xs shadow-sm flex items-center justify-center gap-1.5">
+                                    <i class="fa-solid fa-plus-circle"></i> 加入准許白名單並同步雲端
+                                </button>
+                                <span id="whitelist-count-label" class="text-[11px] text-amber-800 font-bold text-right">目前共 1 個准許信箱</span>
+                            </div>
+                        </div>
+
+                        <div id="whitelist-chips-container" class="flex flex-wrap gap-1.5 pt-2 max-h-36 overflow-y-auto">
+                            <!-- JS 動態渲染白名單 Email 晶片 -->
+                        </div>
+                    </div>
+
                     <div class="flex flex-wrap justify-between items-center gap-4 bg-white p-4 rounded-xl border border-gray-200 shadow-sm">
                         <div>
                             <h3 class="font-bold text-slate-800 text-lg">註冊會員名單與 RBAC 權限管理</h3>
                             <p class="text-xs text-gray-500">可一鍵升降級權限、檢視登入歷史紀錄、刪除帳號或匯出 Excel 相容 CSV。</p>
                         </div>
-                        <div class="flex gap-2">
+                        <div class="flex flex-wrap gap-2">
+                            <button onclick="forceRestoreAllFromCloud()" class="px-3.5 py-2 rounded-lg bg-blue-50 hover:bg-blue-100 text-primary border border-blue-200 text-xs md:text-sm font-bold flex items-center gap-1.5" title="從 Firebase 雲端強制拉取最新分類、教案順序與簡介設定">
+                                <i class="fa-solid fa-cloud-arrow-down"></i> 從雲端還原最新設定
+                            </button>
+                            <button onclick="forcePushAllToCloud()" class="px-3.5 py-2 rounded-lg bg-indigo-50 hover:bg-indigo-100 text-indigo-700 border border-indigo-200 text-xs md:text-sm font-bold flex items-center gap-1.5" title="將目前畫面上的所有分類、教案順序、白名單強制寫入 Firebase 雲端">
+                                <i class="fa-solid fa-cloud-arrow-up"></i> 將目前設定全數存上雲端
+                            </button>
                             <button onclick="loadAllMembers()" class="px-4 py-2 rounded-lg bg-slate-100 hover:bg-slate-200 text-slate-700 text-sm font-bold flex items-center gap-1.5">
                                 <i class="fa-solid fa-rotate"></i> 重新整理
                             </button>
@@ -976,17 +1022,26 @@
 
         const categories = [
             { id: 'all', name: '全部顯示', icon: 'fa-solid fa-border-all' },
-            { id: 'line-oa', name: 'LINE OA行銷', icon: 'fa-brands fa-line' },
-            { id: 'gamification', name: '遊戲化教學', icon: 'fa-solid fa-gamepad' },
-            { id: 'ai-industries', name: '百工百業用AI', icon: 'fa-solid fa-briefcase' },
-            { id: 'school', name: '學校課程', icon: 'fa-solid fa-graduation-cap' },
+            { id: 'tony-tools', name: 'TONY常用工具', icon: 'fa-solid fa-star' },
             { id: 'consulting', name: '顧問諮詢', icon: 'fa-solid fa-handshake' },
+            { id: 'gamification', name: '遊戲化教學', icon: 'fa-solid fa-gamepad' },
             { id: 'wisdom', name: '人間智慧', icon: 'fa-solid fa-book-open-reader' },
             { id: 'tools', name: '創作工具', icon: 'fa-solid fa-toolbox' },
+            { id: 'school', name: '學校課程', icon: 'fa-solid fa-graduation-cap' },
+            { id: 'line-oa', name: 'LINE OA行銷', icon: 'fa-brands fa-line' },
+            { id: 'ai-industries', name: '百工百業用AI', icon: 'fa-solid fa-briefcase' },
             { id: 'gem-auto', name: 'Gem自動化 (H系列)', icon: 'fa-solid fa-robot' }
         ];
 
         const lessons = [
+            // ==========================================
+            // 0. TONY常用工具 (優先置頂顯示)
+            // ==========================================
+            { title: "K20. TONY老師的個人部落格", category: "tony-tools", desc: "走進 TONY 老師的知识分享空間，探索生成式 AI、品牌行銷、企業管理與人文思考。透過專欄文章與主題專題，連結跨域觀點與實務經驗，為工作轉型、教學創新與持續學習帶來啟發。", link: "https://mindnodeai.github.io/TONY_k20TonyBlog19660721/", image: "https://images.unsplash.com/photo-1499750310107-5fef28a66643?auto=format&fit=crop&w=800&q=80", tag: "個人部落格" },
+            { title: "K16. TONY老師的 AI創意智慧平台 (線上圖庫)", category: "tony-tools", desc: "走進 TONY 老師的知識分享空間，探索生成式 AI、品牌行銷、企業管理與人文思考。透過專欄文章與主題專題，連結跨域觀點與實務經驗，為工作轉型、教學創新與持續學習帶來啟發。", link: "https://mindnodeai.github.io/TONY_K16TONYAIWisdomPlatform20260726/", image: "https://images.unsplash.com/photo-1558655146-d09347e92766?auto=format&fit=crop&w=800&q=80", tag: "創意圖庫" },
+            { title: "K23. TONY老師的專題Video Blog", category: "tony-tools", desc: "透過專題短影片，探索植物萌芽、動物成長、昆蟲蛻變與海洋生態，並欣賞瀕危生命、詩詞影像及音樂創作。為喜愛自然與人文的觀眾，開啟兼具知識、感動與創意的觀影旅程。", link: "https://mindnodeai.github.io/TONY_K23TonyVideoBlog19660721/", image: "https://images.unsplash.com/photo-1516321318423-f06f85e504b3?auto=format&fit=crop&w=800&q=80", tag: "Video Blog" },
+            { title: "K26. 語音轉文字及翻譯中心", category: "tony-tools", desc: "結合 Gemini 模型強大運算能力，打造專屬的高效語音轉譯與即時多國語言翻譯中心，大幅提升跨語溝通與逐字稿紀錄效率。", link: "https://mindnodeai.github.io/TONY_K26GeminiTranscribePro20260827/", image: "https://images.unsplash.com/photo-1589903308904-1010c2294adc?auto=format&fit=crop&w=800&q=80", tag: "語音翻譯" },
+
             // ==========================================
             // 1. LINE OA行銷 (L系列)
             // ==========================================
@@ -1072,17 +1127,13 @@
             { title: "K13. 物業法令總匯查詢 AI 助理3.5", category: "consulting", desc: "提供物業管理與社區營運相關法規的智慧查詢服務，協助快速解答法令疑難。", link: "https://mindnodeai.github.io/TONY_K13PropertyLawsandRegulationsAI20260720/", image: "https://images.unsplash.com/photo-1589829085413-56de8ae18c73?auto=format&fit=crop&w=800&q=80", tag: "法規查詢" },
             { title: "K14. BrandBase AI Branding (免API)", category: "consulting", desc: "無須串接 API 即可使用的品牌建立輔助工具，快速建構品牌核心與視覺風格。", link: "https://mindnodeai.github.io/TONY_BrandBaseAIBranding20260721/", image: "https://images.unsplash.com/photo-1542744094-3a31f272c490?auto=format&fit=crop&w=800&q=80", tag: "品牌建構" },
             { title: "K15. AI個人健康養身管家 (全域API)", category: "consulting", desc: "結合全域 API 技術打造專屬個人健康管家，提供客製化的日常養身建議與健康管理。", link: "https://mindnodeai.github.io/TONY_K15HealthCheckup20260724/", image: "https://images.unsplash.com/photo-1494390248081-4e521a5940db?auto=format&fit=crop&w=800&q=80", tag: "健康管家" },
-            { title: "K16. TONY老師的 AI創意智慧平台 (線上圖庫)", category: "consulting", desc: "整合多元 AI 創意工具與線上圖庫，提供豐富的視覺素材與設計靈感。", link: "https://mindnodeai.github.io/TONY_K16TONYAIWisdomPlatform20260726/", image: "https://images.unsplash.com/photo-1558655146-d09347e92766?auto=format&fit=crop&w=800&q=80", tag: "創意圖庫" },
             { title: "K17. 拍一下，就知道怎麼辦(AI行動翻譯機)(全域API)", category: "consulting", desc: "結合影像辨識與即時翻譯的 AI 行動助理，整合全域 API 提供無縫的多語解決方案。", link: "https://mindnodeai.github.io/TONY_K17AIActionTranslator20260802/", image: "https://images.unsplash.com/photo-1512428559087-560fa5ceab42?auto=format&fit=crop&w=800&q=80", tag: "行動翻譯" },
             { title: "K18. Persona Bloom｜三重意象人格探索", category: "consulting", desc: "透過三重意象模型，深度探索並展現豐富的人格特質，發掘潛在優勢。", link: "https://mindnodeai.github.io/TONY_K18PersonaBloom20260802/", image: "https://images.unsplash.com/photo-1544717305-2782549b5136?auto=format&fit=crop&w=800&q=80", tag: "人格探索" },
             { title: "K19. AI 課堂互動與理解分析", category: "consulting", desc: "運用 AI 分析課堂學生的互動反饋與理解程度，協助教師即時調整教學策略，提升學習成效。", link: "https://mindnodeai.github.io/TONY_K19ClassStudentResponse20260803/", image: "https://images.unsplash.com/photo-1577896851231-70ef18881754?auto=format&fit=crop&w=800&q=80", tag: "教學分析" },
-            { title: "K20. TONY老師的個人部落格", category: "consulting", desc: "分享 TONY 老師的個人見解、生活點滴與跨領域的深刻洞察。", link: "https://mindnodeai.github.io/TONY_k20TonyBlog19660721/", image: "https://images.unsplash.com/photo-1499750310107-5fef28a66643?auto=format&fit=crop&w=800&q=80", tag: "個人部落格" },
             { title: "K21. AI 成果深化工作室(搭配企業內訓用)", category: "consulting", desc: "專為企業內訓設計，協助團隊將 AI 學習成果深度轉化並落地應用於實際業務。", link: "https://mindnodeai.github.io/TONY_K21AIOutcomeStudio20260721/", image: "https://images.unsplash.com/photo-1552664730-d307ca884978?auto=format&fit=crop&w=800&q=80", tag: "企業內訓" },
             { title: "K22. AI社區保全智慧排班系統", category: "consulting", desc: "運用 AI 智慧運算，自動優化社區保全排班表，精準配置人力並降低管理成本。", link: "https://mindnodeai.github.io/TONY_AICommunitySecurity20260808/", image: "https://images.unsplash.com/photo-1554224155-8d04cb21cd6c?auto=format&fit=crop&w=800&q=80", tag: "智慧排班" },
-            { title: "K23. TONY老師的專題Video Blog 3.7", category: "consulting", desc: "專屬 TONY 老師的專題 Video Blog，分享最新的影音觀點與生活洞察。", link: "https://mindnodeai.github.io/TONY_K23TonyVideoBlog19660721/", image: "https://images.unsplash.com/photo-1516321318423-f06f85e504b3?auto=format&fit=crop&w=800&q=80", tag: "Video Blog" },
             { title: "K24. TONY老師的勞退新制個人專戶規劃", category: "consulting", desc: "專為勞退新制個人專戶設計的 AI 規劃工具，協助試算與優化退休金配置，安穩佈局未來。", link: "https://mindnodeai.github.io/TONY_K24TonyLaborPensionSys20260825/", image: "https://images.unsplash.com/photo-1554224154-26032ffc0d07?auto=format&fit=crop&w=800&q=80", tag: "退休規劃" },
             { title: "K25. Samsung SES管理控制中樞", category: "consulting", desc: "專為 Samsung SES 打造的管理控制中樞平台，提供高效的營運監控與數據分析輔助決策。", link: "https://mindnodeai.github.io/TONY_K25SESControlTower20260826/", image: "https://images.unsplash.com/photo-1551288049-bebda4e38f71?auto=format&fit=crop&w=800&q=80", tag: "營運管理" },
-            { title: "K26. 語音轉文字及翻譯中心 (Gemini Transcribe Pro)", category: "consulting", desc: "結合 Gemini 模型強大運算能力，打造專屬的高效語音轉譯與即時多國語言翻譯中心，大幅提升跨語溝通與逐字稿紀錄效率。", link: "https://mindnodeai.github.io/TONY_K26GeminiTranscribePro20260827/", image: "https://images.unsplash.com/photo-1589903308904-1010c2294adc?auto=format&fit=crop&w=800&q=80", tag: "語音翻譯" },
             { title: "K27. TONY Skill Builder", category: "consulting", desc: "結合 AI 技術的個人化技能培訓與成長發展平台，協助精準建構專業能力與職涯學習路徑。", link: "https://mindnodeai.github.io/TONY_K27SkillBuilder20260901/", image: "https://images.unsplash.com/photo-1513258496099-48168024aec0?auto=format&fit=crop&w=800&q=80", tag: "技能培訓" },
             { title: "K28. 顧問級的企業六層診斷系統", category: "consulting", desc: "運用顧問級六層診斷框架，由上而下深度剖析企業營運體質，精準定位問題並提供全方位優化策略。", link: "https://mindnodeai.github.io/TONY_K28_6LayerConsultantSystem20260914/", image: "https://images.unsplash.com/photo-1454165804606-c3d57bc86b40?auto=format&fit=crop&w=800&q=80", tag: "企業診斷" },
             { title: "K29. DeepProposal 專案計畫提案生成系統 (ReAct)", category: "consulting", desc: "運用 ReAct 框架打造的深度專案企劃生成系統，協助快速產出結構化、具邏輯性的提案計畫。", link: "https://mindnodeai.github.io/TONY_k29DeepproposalReact/", image: "https://images.unsplash.com/photo-1552664730-d307ca884978?auto=format&fit=crop&w=800&q=80", tag: "提案生成" },
@@ -1370,39 +1421,51 @@
         let activeCategory = 'all';
         let searchQuery = '';
         let presetTags = ['獲利實戰', '企業內訓', '註冊專屬', '全局觀', '品牌行銷', 'AI 實戰', '證照備考', '遊戲沙盤', '熱門推薦'];
-        const TAXONOMY_STORAGE_KEY = 'TONY_SAAS_TAXONOMY_V1';
-        const LESSONS_ORDER_STORAGE_KEY = 'TONY_SAAS_LESSONS_ORDER_V1';
+        const TAXONOMY_STORAGE_KEY = 'TONY_SAAS_TAXONOMY_V2';
+        const LESSONS_ORDER_STORAGE_KEY = 'TONY_SAAS_LESSONS_ORDER_V2';
 
-        // 依據已儲存的排序鍵值陣列，重排 lessons 陣列並保留分類與標籤覆寫
-        function applySavedLessonsOrderArray(orderList) {
+        // 擷取教案編號前綴 (例如 "K20.", "K16.", "GAME07.") 作為穩定跨版本比對依據
+        function getLessonCodePrefix(titleStr) {
+            if (!titleStr) return '';
+            const m = titleStr.trim().match(/^([A-Za-z]+\d+(?:-\d+)?)\./);
+            return m ? m[1].toUpperCase() : '';
+        }
+
+        // 依據已儲存的排序鍵值陣列，僅重排 lessons 順序，不覆蓋 custom_lessons 的分類與內容
+        function applySavedLessonsOrderArray(orderList, allowCategoryOverride = false) {
             if (!Array.isArray(orderList) || orderList.length === 0) return;
             const mapByKey = new Map();
+            const mapByCode = new Map();
             lessons.forEach((item) => {
                 const key = item.title;
                 if (!mapByKey.has(key)) mapByKey.set(key, item);
+                const code = getLessonCodePrefix(item.title);
+                if (code && !mapByCode.has(code)) mapByCode.set(code, item);
             });
 
             const reordered = [];
-            const usedKeys = new Set();
+            const usedItems = new Set();
 
             orderList.forEach(saved => {
                 const key = typeof saved === 'string' ? saved : saved.title;
-                if (key && mapByKey.has(key) && !usedKeys.has(key)) {
-                    const target = mapByKey.get(key);
-                    if (typeof saved === 'object' && saved !== null) {
-                        if (saved.category) target.category = saved.category;
+                const code = getLessonCodePrefix(key);
+                const target = mapByKey.get(key) || (code ? mapByCode.get(code) : null);
+                if (target && !usedItems.has(target)) {
+                    if (allowCategoryOverride && typeof saved === 'object' && saved !== null && !target._fromCloudCustom) {
+                        if (saved.category && categories.some(c => c.id === saved.category)) {
+                            target.category = saved.category;
+                        }
                         if (saved.tag !== undefined) target.tag = saved.tag;
                     }
                     reordered.push(target);
-                    usedKeys.add(key);
+                    usedItems.add(target);
                 }
             });
 
-            // 將未在舊排序清單中的新教案排在後面
             lessons.forEach(item => {
-                if (!usedKeys.has(item.title)) {
+                if (!usedItems.has(item)) {
                     reordered.push(item);
-                    usedKeys.add(item.title);
+                    usedItems.add(item);
                 }
             });
 
@@ -1410,8 +1473,22 @@
             reordered.forEach(item => lessons.push(item));
         }
 
-        // 啟動時優先從本地儲存載入最新分類順序、標籤與教案排序，確保重新整理絕不遺失
+        // 確保「TONY常用工具」分類永遠存在並對齊 TONY 老師的分類ID
+        function ensureTonyToolsCategoryExists() {
+            const hasTonyCat = categories.some(c => c.name.includes('TONY常用') || c.id === 'tony-tools');
+            if (!hasTonyCat) {
+                categories.splice(1, 0, { id: 'tony-tools', name: 'TONY常用工具', icon: 'fa-solid fa-star' });
+            }
+        }
+
+        // 啟動時優先從本地儲存載入最新分類順序、標籤與教案排序
         function restoreTaxonomyFromLocal() {
+            // 清除上一版曾誤存舊分類的快取
+            try {
+                localStorage.removeItem('TONY_SAAS_TAXONOMY_V1');
+                localStorage.removeItem('TONY_SAAS_LESSONS_ORDER_V1');
+            } catch (e) {}
+
             try {
                 const raw = localStorage.getItem(TAXONOMY_STORAGE_KEY);
                 if (raw) {
@@ -1419,6 +1496,7 @@
                     if (Array.isArray(parsed.categories) && parsed.categories.length > 0) {
                         categories.length = 0;
                         parsed.categories.forEach(c => categories.push(c));
+                        ensureTonyToolsCategoryExists();
                     }
                     if (Array.isArray(parsed.presetTags) && parsed.presetTags.length > 0) {
                         presetTags = parsed.presetTags;
@@ -1433,12 +1511,20 @@
                 if (orderRaw) {
                     const orderParsed = JSON.parse(orderRaw);
                     if (Array.isArray(orderParsed.order)) {
-                        applySavedLessonsOrderArray(orderParsed.order);
+                        applySavedLessonsOrderArray(orderParsed.order, false);
                     }
                 }
             } catch (e) {
                 console.warn('本地教案順序讀取略過:', e);
             }
+
+            try {
+                const profileRaw = localStorage.getItem('TONY_SAAS_PROFILE_V1');
+                if (profileRaw) {
+                    const profileParsed = JSON.parse(profileRaw);
+                    applyProfileConfigToDOM(profileParsed);
+                }
+            } catch (e) {}
         }
 
         // 儲存所有教案的排列順序、所屬分類與右上角標籤至 LocalStorage 與 Firestore
@@ -1902,6 +1988,14 @@
         let allMembersCache = [];
         let customLessonsCache = [];
 
+        // VIP 白名單狀態設定 (預設開啟嚴格白名單模式，亦可直接在預設陣列中加入信箱)
+        const WHITELIST_STORAGE_KEY = 'TONY_SAAS_EMAIL_WHITELIST_V1';
+        let strictWhitelistEnabled = true;
+        let allowedEmailsList = [
+            SUPER_ADMIN_EMAIL.toLowerCase()
+            // 您也可以直接在此處預先寫入信箱，或直接從管理後台動態新增！
+        ];
+
         try {
             if (!firebase.apps.length) {
                 firebase.initializeApp(firebaseConfig);
@@ -1912,6 +2006,144 @@
         } catch (err) {
             console.error("Firebase 初始化異常:", err);
         }
+
+        // 載入本機與 Firestore 雲端的最新 VIP 白名單設定
+        async function loadEmailWhitelistConfig() {
+            try {
+                const localRaw = localStorage.getItem(WHITELIST_STORAGE_KEY);
+                if (localRaw) {
+                    const parsed = JSON.parse(localRaw);
+                    if (typeof parsed.enabled === 'boolean') strictWhitelistEnabled = parsed.enabled;
+                    if (Array.isArray(parsed.emails)) {
+                        allowedEmailsList = Array.from(new Set([SUPER_ADMIN_EMAIL.toLowerCase(), ...parsed.emails.map(e => e.toLowerCase().trim())]));
+                    }
+                }
+            } catch (e) {}
+
+            if (db) {
+                try {
+                    const doc = await db.collection('site_settings').doc('access_control').get();
+                    if (doc.exists) {
+                        const data = doc.data();
+                        if (typeof data.enabled === 'boolean') strictWhitelistEnabled = data.enabled;
+                        if (Array.isArray(data.emails)) {
+                            allowedEmailsList = Array.from(new Set([SUPER_ADMIN_EMAIL.toLowerCase(), ...data.emails.map(e => e.toLowerCase().trim())]));
+                        }
+                        localStorage.setItem(WHITELIST_STORAGE_KEY, JSON.stringify({
+                            enabled: strictWhitelistEnabled,
+                            emails: allowedEmailsList
+                        }));
+                    }
+                } catch (e) {}
+            }
+            renderWhitelistAdminUI();
+        }
+
+        // 檢查某個 Email 是否獲准註冊或登入
+        async function checkIsEmailAllowed(email) {
+            if (!email) return false;
+            const cleanEmail = email.trim().toLowerCase();
+            if (cleanEmail === SUPER_ADMIN_EMAIL.toLowerCase()) return true;
+
+            await loadEmailWhitelistConfig();
+            if (!strictWhitelistEnabled) return true;
+
+            // 若該信箱已經在管理員建立的會員名單中，或位於白名單陣列中，則放行
+            return allowedEmailsList.includes(cleanEmail);
+        }
+
+        // 渲染後台白名單管理介面
+        function renderWhitelistAdminUI() {
+            const toggleEl = document.getElementById('toggle-strict-whitelist');
+            const badgeEl = document.getElementById('whitelist-mode-badge');
+            const countEl = document.getElementById('whitelist-count-label');
+            const chipsEl = document.getElementById('whitelist-chips-container');
+
+            if (toggleEl) toggleEl.checked = strictWhitelistEnabled;
+            if (badgeEl) {
+                if (strictWhitelistEnabled) {
+                    badgeEl.className = 'px-2 py-0.5 text-[11px] rounded-full bg-emerald-600 text-white font-bold';
+                    badgeEl.innerText = '嚴格白名單已開啟';
+                } else {
+                    badgeEl.className = 'px-2 py-0.5 text-[11px] rounded-full bg-gray-400 text-white font-bold';
+                    badgeEl.innerText = '目前開放所有人註冊';
+                }
+            }
+            if (countEl) countEl.innerText = `目前共 ${allowedEmailsList.length} 個准許信箱`;
+            if (chipsEl) {
+                chipsEl.innerHTML = allowedEmailsList.map(email => {
+                    const isSuper = (email === SUPER_ADMIN_EMAIL.toLowerCase());
+                    return `
+                        <div class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-bold ${isSuper ? 'bg-amber-500 text-white' : 'bg-white text-slate-700 border border-amber-300'} shadow-sm">
+                            <i class="fa-solid ${isSuper ? 'fa-crown' : 'fa-envelope-circle-check text-emerald-600'}"></i>
+                            <span>${email}</span>
+                            ${isSuper ? '' : `<button type="button" onclick="removeEmailFromWhitelist('${email}')" class="text-rose-500 hover:text-rose-700 ml-1" title="從白名單移除"><i class="fa-solid fa-xmark"></i></button>`}
+                        </div>
+                    `;
+                }).join('');
+            }
+        }
+
+        async function saveWhitelistToCloud() {
+            const payload = {
+                enabled: strictWhitelistEnabled,
+                emails: allowedEmailsList,
+                updatedAt: new Date().toISOString()
+            };
+            try {
+                localStorage.setItem(WHITELIST_STORAGE_KEY, JSON.stringify(payload));
+            } catch (e) {}
+
+            if (db) {
+                try {
+                    await db.collection('site_settings').doc('access_control').set(payload, { merge: true });
+                } catch (e) {
+                    console.warn('白名單雲端同步提示:', e);
+                }
+            }
+            renderWhitelistAdminUI();
+        }
+
+        window.toggleWhitelistMode = async function(isChecked) {
+            strictWhitelistEnabled = isChecked;
+            await saveWhitelistToCloud();
+            showToast(strictWhitelistEnabled ? '已開啟「嚴格白名單模式」：僅准許名單內的 Email 可註冊與登入！' : '已關閉白名單限制：開放所有訪客註冊登入。');
+        };
+
+        window.addEmailsToWhitelist = async function() {
+            const raw = document.getElementById('whitelist-input').value;
+            if (!raw.trim()) {
+                showToast('請先輸入欲准許的 Email 信箱！');
+                return;
+            }
+            const extracted = raw
+                .split(/[\n,;，；\s]+/)
+                .map(s => s.trim().toLowerCase())
+                .filter(s => s.includes('@') && s.includes('.'));
+
+            if (extracted.length === 0) {
+                showToast('請輸入格式正確的 Email 地址！');
+                return;
+            }
+
+            allowedEmailsList = Array.from(new Set([SUPER_ADMIN_EMAIL.toLowerCase(), ...allowedEmailsList, ...extracted]));
+            document.getElementById('whitelist-input').value = '';
+            await saveWhitelistToCloud();
+            showToast(`已成功將 ${extracted.length} 個信箱加入准許白名單！`);
+        };
+
+        window.removeEmailFromWhitelist = async function(targetEmail) {
+            if (targetEmail.toLowerCase() === SUPER_ADMIN_EMAIL.toLowerCase()) {
+                showToast('系統創作者信箱不可移除！');
+                return;
+            }
+            allowedEmailsList = allowedEmailsList.filter(e => e !== targetEmail.toLowerCase());
+            await saveWhitelistToCloud();
+            showToast(`已從白名單移除：${targetEmail}`);
+        };
+
+        // 啟動時預先載入白名單設定
+        loadEmailWhitelistConfig();
 
         function showToast(msg) {
             const toast = document.getElementById('sys-toast');
@@ -1977,13 +2209,20 @@
             }
         };
 
-        // 註冊與嚴格信箱驗證 (Double Opt-in)
+        // 註冊與嚴格信箱驗證 (Double Opt-in + 白名單攔截)
         window.handleEmailRegister = async function(e) {
             e.preventDefault();
             const name = document.getElementById('reg-name').value.trim();
             const identity = document.getElementById('reg-identity').value;
             const email = document.getElementById('reg-email').value.trim().toLowerCase();
             const password = document.getElementById('reg-password').value;
+
+            // 第一關：檢查是否在 TONY 老師授權的 Email 白名單內
+            const isAllowed = await checkIsEmailAllowed(email);
+            if (!isAllowed) {
+                showAuthMessage('抱歉！此信箱 (' + email + ') 未在 TONY 老師授權的准許名單內，無法註冊本系統。請聯繫管理員開通權限！', true);
+                return;
+            }
 
             try {
                 const cred = await auth.createUserWithEmailAndPassword(email, password);
@@ -2024,18 +2263,25 @@
                     document.getElementById('login-email').value = email;
                     showAuthMessage('此信箱已經註冊過了！已為您切換至「會員登入」，請直接輸入密碼或點選下方 Google 登入。', false);
                 } else if (err.code === 'auth/operation-not-allowed') {
-                    showAuthMessage('請先至 Firebase Console -> Authentication -> Sign-in method 啟用「電子郵件/密碼」登入功能！', true);
+                    showAuthMessage('請至 Firebase Console -> Authentication -> Sign-in method 啟用「電子郵件/密碼」登入功能！', true);
                 } else {
-                    showAuthMessage('註冊失敗：' + (err.message || '請檢查輸入資訊'), true);
+                    showAuthMessage('註冊提示：' + err.message, true);
                 }
             }
         };
 
-        // Email 登入與驗證檢查
+        // Email 登入與驗證檢查 (+ 白名單攔截)
         window.handleEmailLogin = async function(e) {
             e.preventDefault();
             const email = document.getElementById('login-email').value.trim().toLowerCase();
             const password = document.getElementById('login-password').value;
+
+            // 第一關：檢查是否在 TONY 老師授權的 Email 白名單內
+            const isAllowed = await checkIsEmailAllowed(email);
+            if (!isAllowed) {
+                showAuthMessage('拒絕存取：此信箱 (' + email + ') 未在 TONY 老師授權的准許白名單內，無法登入！', true);
+                return;
+            }
 
             try {
                 const cred = await auth.signInWithEmailAndPassword(email, password);
@@ -2055,20 +2301,30 @@
                 if (err.code === 'auth/invalid-credential' || err.code === 'auth/wrong-password') {
                     showAuthMessage('登入失敗：密碼輸入有誤，或者此信箱曾使用「Google 帳號」登入過。請確認密碼、點擊「忘記密碼」重設，或直接使用下方 Google 按鈕登入！', true);
                 } else if (err.code === 'auth/user-not-found') {
-                    showAuthMessage('查無此信箱帳號，請點選上方「註冊新帳號」進行註冊。', true);
-                } else if (err.code === 'auth/too-many-requests') {
-                    showAuthMessage('嘗試登入次數過多，系統暫時保護鎖定，請稍候再試或使用「忘記密碼」重設。', true);
+                    switchAuthTab('register');
+                    document.getElementById('reg-email').value = email;
+                    showAuthMessage('此信箱尚未建立密碼帳號，已為您切換至「註冊新帳號」！', true);
                 } else {
-                    showAuthMessage('登入未完成：' + err.message + ' (' + err.code + ')', true);
+                    showAuthMessage('登入失敗：' + err.message, true);
                 }
             }
         };
 
-        // Google 登入
+        // Google 登入 (+ 白名單攔截與未授權自動清除)
         window.handleGoogleLogin = async function() {
             try {
                 const provider = new firebase.auth.GoogleAuthProvider();
                 const cred = await auth.signInWithPopup(provider);
+                const gEmail = (cred.user.email || '').toLowerCase();
+
+                const isAllowed = await checkIsEmailAllowed(gEmail);
+                if (!isAllowed) {
+                    // 若未在白名單內，直接刪除剛建立的未授權 Auth 紀錄並強制登出
+                    try { await cred.user.delete(); } catch (delErr) { await auth.signOut(); }
+                    showAuthMessage('拒絕存取：您的 Google 帳號 (' + gEmail + ') 未在 TONY 老師授權的准許名單內，無法登入本系統！', true);
+                    return;
+                }
+
                 await syncUserLoginRecord(cred.user);
             } catch (err) {
                 if (err.code === 'auth/unauthorized-domain') {
@@ -2096,6 +2352,15 @@
         async function syncUserLoginRecord(user) {
             if (!user) return;
             const email = (user.email || '').toLowerCase();
+
+            // 防止未授權帳號透過已存 Session 自動進入
+            const isAllowed = await checkIsEmailAllowed(email);
+            if (!isAllowed) {
+                await auth.signOut().catch(() => {});
+                showAuthMessage('您的帳號 (' + email + ') 未在系統准許白名單內，已自動登出。', true);
+                return;
+            }
+
             const isSuperAdmin = (email === SUPER_ADMIN_EMAIL.toLowerCase());
             const nowStr = new Date().toISOString();
             const userRef = db.collection('users').doc(user.uid);
@@ -2217,32 +2482,82 @@
         window.loadAllMembers = async function() {
             const tbody = document.getElementById('admin-members-tbody');
             if (!tbody || !db) return;
-            tbody.innerHTML = `<tr><td colspan="7" class="p-6 text-center text-gray-400">載入會員資料中...</td></tr>`;
+            tbody.innerHTML = `<tr><td colspan="7" class="p-6 text-center text-gray-400"><i class="fa-solid fa-spinner fa-spin mr-2"></i>載入會員資料中...</td></tr>`;
+
+            // 檢查目前是否已透過真實 Firebase Auth 登入
+            const activeAuthUser = auth ? auth.currentUser : null;
 
             try {
+                if (!activeAuthUser) {
+                    throw new Error('PREVIEW_MODE_NO_AUTH');
+                }
                 const snap = await db.collection('users').get();
                 allMembersCache = [];
                 snap.forEach(doc => allMembersCache.push({ id: doc.id, ...doc.data() }));
 
                 if (allMembersCache.length === 0) {
-                    allMembersCache = [{
-                        id: 'creator',
-                        name: 'TONY 楊文澤老師',
-                        email: SUPER_ADMIN_EMAIL,
-                        identity: '系統創作者',
-                        role: 'admin',
-                        isCreator: true,
-                        createdAt: new Date().toISOString(),
-                        loginCount: 1,
-                        history: ['系統創作者初始化紀錄']
-                    }];
+                    allMembersCache = buildFallbackMembersList();
+                } else {
+                    try {
+                        localStorage.setItem('TONY_SAAS_MEMBERS_CACHE_V1', JSON.stringify(allMembersCache));
+                    } catch (e) {}
                 }
 
                 renderMembersTable();
             } catch (err) {
-                tbody.innerHTML = `<tr><td colspan="7" class="p-6 text-center text-red-500">讀取失敗：${err.message}</td></tr>`;
+                console.warn('Firestore users 讀取提示:', err.message);
+                // 自動切換至本地快取與白名單建構之會員名單，避免顯示紅字錯誤
+                allMembersCache = buildFallbackMembersList();
+                renderMembersTable();
+
+                if (!activeAuthUser) {
+                    showToast('目前為「快速預覽模式」，顯示的是本地與白名單預覽資料；使用正式帳號登入即可讀寫雲端會員庫！');
+                } else {
+                    showToast('提示：請確認已將最新 firestore.rules 複製並發佈至 Firebase Console -> Firestore -> Rules！');
+                }
             }
         };
+
+        // 當處於快速預覽模式或尚未在 Firebase 後台發佈 Rules 時，自動組合完整管理員與白名單會員列表
+        function buildFallbackMembersList() {
+            try {
+                const cached = localStorage.getItem('TONY_SAAS_MEMBERS_CACHE_V1');
+                if (cached) {
+                    const parsed = JSON.parse(cached);
+                    if (Array.isArray(parsed) && parsed.length > 0) return parsed;
+                }
+            } catch (e) {}
+
+            const nowISO = new Date().toISOString();
+            const baseList = [{
+                id: 'creator',
+                name: 'TONY 楊文澤老師',
+                email: SUPER_ADMIN_EMAIL,
+                identity: '系統創作者',
+                role: 'admin',
+                isCreator: true,
+                createdAt: nowISO,
+                loginCount: 1,
+                history: [`${nowISO} - 系統創作者最高權限初始化`]
+            }];
+
+            allowedEmailsList.forEach((em, idx) => {
+                if (em.toLowerCase() !== SUPER_ADMIN_EMAIL.toLowerCase()) {
+                    baseList.push({
+                        id: 'vip-' + idx,
+                        name: em.split('@')[0],
+                        email: em,
+                        identity: 'TONY老師學員 (VIP白名單)',
+                        role: 'user',
+                        isCreator: false,
+                        createdAt: nowISO,
+                        loginCount: 0,
+                        history: [`${nowISO} - 已加入 VIP 准許登入白名單，等待學員首次登入`]
+                    });
+                }
+            });
+            return baseList;
+        }
 
         function renderMembersTable() {
             const tbody = document.getElementById('admin-members-tbody');
@@ -2561,6 +2876,7 @@
             lessons.unshift(newLesson);
             renderCards();
             renderCustomAppsAdminList();
+            await saveLessonsOrderState(false);
 
             try {
                 if (db) {
@@ -2626,100 +2942,160 @@
             renderCustomAppsAdminList();
             if (!db) return;
 
+            const standardCatIds = new Set(['all', 'line-oa', 'gamification', 'ai-industries', 'school', 'consulting', 'wisdom', 'tools', 'gem-auto']);
+
+            // 1. 獨立讀取雲端分類與常用標籤庫 (taxonomy)
             try {
                 const taxDoc = await db.collection('site_settings').doc('taxonomy').get();
                 if (taxDoc.exists) {
                     const taxData = taxDoc.data();
-                    let localUpdatedAt = '';
-                    try {
-                        const localRaw = localStorage.getItem(TAXONOMY_STORAGE_KEY);
-                        if (localRaw) localUpdatedAt = JSON.parse(localRaw).updatedAt || '';
-                    } catch (e) {}
-
-                    // 只有當雲端資料比本地更新（或本地無紀錄）時，才用雲端資料覆蓋，否則將本地最新修改推上雲端
-                    if (!localUpdatedAt || (taxData.updatedAt && taxData.updatedAt >= localUpdatedAt)) {
-                        if (Array.isArray(taxData.categories) && taxData.categories.length > 0) {
+                    if (Array.isArray(taxData.categories) && taxData.categories.length > 0) {
+                        // 只有當雲端分類包含「TONY常用工具」或超過預設分類數時才採用，否則保留已恢復的截圖分類順序
+                        const cloudHasTonyCat = taxData.categories.some(c => c.name && c.name.includes('TONY'));
+                        if (cloudHasTonyCat) {
                             categories.length = 0;
                             taxData.categories.forEach(c => categories.push(c));
+                        } else {
+                            ensureTonyToolsCategoryExists();
                         }
-                        if (Array.isArray(taxData.presetTags) && taxData.presetTags.length > 0) {
-                            presetTags = taxData.presetTags;
-                        }
-                        localStorage.setItem(TAXONOMY_STORAGE_KEY, JSON.stringify({
-                            categories: categories,
-                            presetTags: presetTags,
-                            updatedAt: taxData.updatedAt || new Date().toISOString()
-                        }));
-                    } else {
-                        // 本地有更新的順序或分類，自動補同步上雲端
-                        syncCategoriesAndTagsToCloud();
+                        renderCategoryButtons();
+                        renderAdminCategorySelect();
                     }
-                    renderCategoryButtons();
-                    renderAdminCategorySelect();
-                    renderAdminTagDatalist();
-                    renderCustomAppsAdminList();
-                } else {
-                    // 雲端尚無 taxonomy 文件時，主動將目前設定初始化寫入雲端
-                    syncCategoriesAndTagsToCloud();
+                    if (Array.isArray(taxData.presetTags) && taxData.presetTags.length > 0) {
+                        presetTags = taxData.presetTags;
+                        renderAdminTagDatalist();
+                    }
                 }
-            } catch (e) {}
+            } catch (e) {
+                console.warn('讀取雲端分類 (taxonomy) 提示:', e);
+            }
 
+            // 找出目前「TONY常用工具」的實際分類 ID
+            const tonyCatObj = categories.find(c => c.name.includes('TONY常用') || c.id === 'tony-tools') || { id: 'tony-tools' };
+            const tonyCatId = tonyCatObj.id;
+
+            // 2. 先讀取教案順序快照 (lessons_order) 僅作排序參考，不覆蓋 custom_lessons
             try {
-                const snap = await db.collection('custom_lessons').orderBy('createdAt', 'desc').get();
+                const orderDoc = await db.collection('site_settings').doc('lessons_order').get();
+                if (orderDoc.exists) {
+                    const orderData = orderDoc.data();
+                    if (Array.isArray(orderData.order) && orderData.order.length > 0) {
+                        applySavedLessonsOrderArray(orderData.order, false);
+                    }
+                }
+            } catch (e) {
+                console.warn('讀取雲端教案順序 (lessons_order) 提示:', e);
+            }
+
+            // 3. 最後讀取並強制套用雲端所有修改過或新增的教案 (custom_lessons)，確保您修改的 20 堂課、圖片與分類 100% 優先勝出！
+            try {
+                const snap = await db.collection('custom_lessons').get();
                 customLessonsCache = [];
+                const docsArr = [];
                 snap.forEach(doc => {
-                    const data = doc.data();
-                    customLessonsCache.push({ id: doc.id, ...data });
-                    const existingIdx = lessons.findIndex(l => l.title === data.title || (l.link === data.link && data.link !== '#'));
+                    docsArr.push({ id: doc.id, ...doc.data() });
+                });
+
+                // 依照修改時間由舊到新排序，讓最後一次修改精準覆蓋
+                docsArr.sort((a, b) => {
+                    const timeA = a.updatedAt || a.createdAt || '';
+                    const timeB = b.updatedAt || b.createdAt || '';
+                    return timeA.localeCompare(timeB);
+                });
+
+                const validCatIds = new Set(categories.map(c => c.id));
+
+                docsArr.forEach(data => {
+                    customLessonsCache.push(data);
+
+                    // 若該筆修改紀錄的 category 是之前建立「TONY常用工具」時的自訂代碼 (不在標準 8 大分類內)，自動歸位至「TONY常用工具」！
+                    let resolvedCategory = data.category;
+                    if (resolvedCategory && (!validCatIds.has(resolvedCategory) || !standardCatIds.has(resolvedCategory))) {
+                        if (!validCatIds.has(resolvedCategory)) {
+                            resolvedCategory = tonyCatId;
+                        }
+                    }
+
+                    const dataCode = getLessonCodePrefix(data.title);
+                    const existingIdx = lessons.findIndex(l => {
+                        if (l.title === data.title) return true;
+                        if (data.link && data.link !== '#' && l.link === data.link) return true;
+                        const lCode = getLessonCodePrefix(l.title);
+                        if (dataCode && lCode && dataCode === lCode) return true;
+                        return false;
+                    });
+
+                    const mergedData = {
+                        ...data,
+                        category: resolvedCategory || data.category,
+                        _fromCloudCustom: true
+                    };
+
                     if (existingIdx > -1) {
-                        lessons[existingIdx] = { ...lessons[existingIdx], ...data };
+                        lessons[existingIdx] = { ...lessons[existingIdx], ...mergedData };
                     } else {
-                        lessons.unshift(data);
+                        lessons.unshift(mergedData);
                     }
                 });
 
-                // 載入雲端儲存的教案排列順序 (比對本機與雲端最新時間戳)
-                try {
-                    const orderDoc = await db.collection('site_settings').doc('lessons_order').get();
-                    let localOrderUpdatedAt = '';
-                    let localOrderArr = null;
-                    try {
-                        const localRaw = localStorage.getItem(LESSONS_ORDER_STORAGE_KEY);
-                        if (localRaw) {
-                            const parsed = JSON.parse(localRaw);
-                            localOrderUpdatedAt = parsed.updatedAt || '';
-                            localOrderArr = parsed.order || null;
-                        }
-                    } catch (e) {}
-
-                    if (orderDoc.exists) {
-                        const cloudOrderData = orderDoc.data();
-                        if (!localOrderUpdatedAt || (cloudOrderData.updatedAt && cloudOrderData.updatedAt >= localOrderUpdatedAt)) {
-                            applySavedLessonsOrderArray(cloudOrderData.order);
-                            localStorage.setItem(LESSONS_ORDER_STORAGE_KEY, JSON.stringify(cloudOrderData));
-                        } else if (localOrderArr) {
-                            applySavedLessonsOrderArray(localOrderArr);
-                            saveLessonsOrderState(false);
-                        }
-                    } else if (localOrderArr) {
-                        applySavedLessonsOrderArray(localOrderArr);
-                        saveLessonsOrderState(false);
+                // 確保「TONY常用工具」中的 K20, K16, K23, K26 依照您截圖的順序排在最前面
+                const priorityCodes = ['K20', 'K16', 'K23', 'K26'];
+                for (let i = priorityCodes.length - 1; i >= 0; i--) {
+                    const code = priorityCodes[i];
+                    const idx = lessons.findIndex(l => getLessonCodePrefix(l.title) === code);
+                    if (idx > -1) {
+                        lessons[idx].category = tonyCatId;
+                        const [item] = lessons.splice(idx, 1);
+                        lessons.unshift(item);
                     }
-                } catch (orderErr) {}
+                }
+            } catch (e) {
+                console.warn('讀取雲端教案變更 (custom_lessons) 提示:', e);
+            }
 
-                renderAdminTagDatalist();
-                renderCards();
-                renderCustomAppsAdminList();
-            } catch (e) {}
+            renderCategoryButtons();
+            renderAdminCategorySelect();
+            renderAdminTagDatalist();
+            renderCards();
+            renderCustomAppsAdminList();
 
+            // 4. 獨立讀取 TONY 老師簡介與頭像設定 (profile)
             try {
                 const cfgDoc = await db.collection('site_settings').doc('profile').get();
                 if (cfgDoc.exists) {
-                    applyProfileConfigToDOM(cfgDoc.data());
+                    const cloudCfg = cfgDoc.data();
+                    applyProfileConfigToDOM(cloudCfg);
+                    try { localStorage.setItem('TONY_SAAS_PROFILE_V1', JSON.stringify(cloudCfg)); } catch (e) {}
                     initProfileFormValues();
                 }
             } catch (e) {}
         }
+
+        // 強制從 Firebase 雲端拉取所有設定並覆蓋還原
+        window.forceRestoreAllFromCloud = async function() {
+            if (!db) {
+                showToast('Firebase 尚未連線');
+                return;
+            }
+            showToast('正在從 Firebase 雲端完整撈回您所有修改過的教案分類、標籤與排序...');
+            try {
+                await loadCloudCustomizations();
+                await loadEmailWhitelistConfig();
+                showToast(`✅ 已成功從雲端撈回 ${customLessonsCache.length} 筆教案修改紀錄與最新排序！`);
+            } catch (err) {
+                showToast('雲端還原提示：' + err.message);
+            }
+        };
+
+        // 一鍵將目前畫面上的所有設定（分類、教案順序、簡介、白名單）強制同步寫入 Firebase 雲端
+        window.forcePushAllToCloud = async function() {
+            showToast('正在將目前所有設定同步寫入 Firebase 雲端...');
+            await syncCategoriesAndTagsToCloud(false);
+            await saveLessonsOrderState(false);
+            await saveSiteProfileConfig();
+            await saveWhitelistToCloud();
+            showToast('✅ 已將目前分類順序、教案排序、簡介與白名單全數強制寫入雲端！');
+        };
 
         function renderCustomAppsAdminList() {
             const container = document.getElementById('custom-apps-list');
@@ -2949,12 +3325,8 @@
         }
 
         if (auth) {
-            // 頁面載入時立即從雲端讀取最新 LOGO 與 TONY 顧問形象照，讓登入頁也能同步顯示 Storage 最新圖檔
-            if (db) {
-                db.collection('site_settings').doc('profile').get().then(doc => {
-                    if (doc.exists) applyProfileConfigToDOM(doc.data());
-                }).catch(() => {});
-            }
+            // 頁面一啟動即刻載入雲端所有客製化設定（分類順序、教案排序、新增教案、LOGO 與形象照）
+            loadCloudCustomizations();
 
             auth.onAuthStateChanged(async (user) => {
                 if (user && (user.emailVerified || (user.email && user.email.toLowerCase() === SUPER_ADMIN_EMAIL.toLowerCase()))) {
@@ -2984,6 +3356,7 @@
                 updatedAt: new Date().toISOString()
             };
             applyProfileConfigToDOM(cfg);
+            try { localStorage.setItem('TONY_SAAS_PROFILE_V1', JSON.stringify(cfg)); } catch (e) {}
             try {
                 if (db) await db.collection('site_settings').doc('profile').set(cfg, { merge: true });
                 showToast('TONY 顧問簡介與社群設定已成功更新！');
